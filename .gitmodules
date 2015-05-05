@@ -1,0 +1,3 @@
+[submodule "Cpponfiguration"]
+	path = ext/Cpponfig
+	url = https://github.com/nabijaczleweli/Cpponfiguration.git

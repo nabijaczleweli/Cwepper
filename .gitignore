@@ -29,3 +29,6 @@
 
 # Miscellaneous
 .DS_Store
+out/
+*.s*-toks
+*.s*-workspace

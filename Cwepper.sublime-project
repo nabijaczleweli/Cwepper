@@ -1,0 +1,39 @@
+{
+	"build_systems":
+	[
+		{
+			"cmd": "make -C\"$project_path\" git all",
+			"name": "Build Cwepper"
+		}
+	],
+	"folders":
+	[
+		{
+			"follow_symlinks": true,
+			"name": "Source",
+			"path": "src"
+		},
+		{
+			"file_include_patterns":
+			[
+				"*Makefile*"
+			],
+			"folder_exclude_patterns":
+			[
+				"*"
+			],
+			"follow_symlinks": true,
+			"name": "Makefiles",
+			"path": "."
+		},
+		{
+			"follow_symlinks": true,
+			"name": "External code",
+			"path": "ext/All"
+		}
+	],
+	"settings":
+	{
+		"tab_size": 2
+	}
+}
