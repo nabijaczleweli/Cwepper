@@ -20,6 +20,98 @@
 // CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-int main() {
-	return 0;
+#include "app/application.hpp"
+#include "reference/container.hpp"
+#include "util/broken_gcc.hpp"
+#include "util/configurable.hpp"
+#include <cpponfiguration/cpponfig_version.hpp>
+#include <audiere.h>
+#include <ctime>
+#include <iostream>
+#include <random>
+#include <stdexcept>
+
+
+using namespace std;
+using namespace cpponfig;
+
+
+static application * app;
+
+
+void init_app(int argc, char * argv[]);
+void deinit_app();
+void init_deps();
+
+
+int main(int argc, char * argv[]) {
+	init_deps();
+	init_app(argc, argv);
+	const auto result = app->run();
+	deinit_app();
+	if(result)
+		cerr << "`app->run()` failed! Oh noes!";
+	return result;
+}
+
+
+void init_app(int, char *[]) {
+	if(!app)
+		app = new application;
+	else
+		throw invalid_argument("`app` has been tampered with (`!= nullptr`)! Value: " + to_string<void *>(app));
+
+	app_configuration.configure();
+}
+
+void deinit_app() {
+	delete app;
+	app = nullptr;
+}
+
+void init_deps() {
+	class deps_configable : public configurable {
+		private:
+			/** Would actually configure libraries and app components. */
+			virtual void config(configuration &) override {
+				cout << "GCC version " << __GNUC__ << '.' << __GNUC_MINOR__ << '.' << __GNUC_PATCHLEVEL__ << " doesn\'t need initialization.\n"
+				        "SFML version " << SFML_VERSION_MAJOR << '.' << SFML_VERSION_MINOR << " doesn\'t need initialization.\n"
+				        "audiere version " << audiere::GetVersion() << " doesn\'t need initialization.\n";
+			}
+
+		public:
+			deps_configable() : configurable(nothrow) {}
+
+			void preconfig() {
+				cout << "Cpponfiguration version " << cpponfiguration_version << " initializing...\n";
+				configuration::datetime_footer_type = configuration::datetime_mode::gmt;
+				cout << "Cpponfiguration initialized.\n";
+			}
+	};
+
+
+	cout << "Initializing dependencies under "
+#ifdef _WIN32
+	"Windows"
+#elif defined(unix) || defined(__unix__) || defined(__unix)
+	"UNIX"
+#elif defined(__APPLE__)
+	"Mac OS X"
+#elif defined(__linux__)
+	"Linux"
+#elif defined(__FreeBSD__)
+	"FreeBSD"
+#else
+	"an unknown OS"
+#endif
+	"...\n\n";
+
+
+	deps_configable dependencies_config;
+	dependencies_config.preconfig();
+	app_configuration.load();
+	app_configuration.add(dependencies_config);
+	app_configuration.configure();
+	app_configuration.sof_comments = {"This is " + app_name + "\'s configuration file.", "Properties\' order will NOT persist."};
+	cout << "\nAll dependencies initialized.\n\n";
 }

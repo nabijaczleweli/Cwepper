@@ -2,7 +2,7 @@
 	"build_systems":
 	[
 		{
-			"cmd": "make -C\"$project_path\" git all",
+			"cmd": "make --no-print-directory -C\"$project_path\" git all",
 			"name": "Build Cwepper"
 		}
 	],
@@ -12,6 +12,11 @@
 			"follow_symlinks": true,
 			"name": "Source",
 			"path": "src"
+		},
+		{
+			"follow_symlinks": true,
+			"name": "Resources",
+			"path": "assets"
 		},
 		{
 			"file_include_patterns":
@@ -29,7 +34,7 @@
 		{
 			"follow_symlinks": true,
 			"name": "External code",
-			"path": "ext/All"
+			"path": "ext/all"
 		}
 	],
 	"settings":

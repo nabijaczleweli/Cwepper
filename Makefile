@@ -23,12 +23,12 @@
 include configMakefile
 
 
-SUBMODULES_GIT = $(shell git submodule status --recursive | sed "s/ [0-9a-f]* //g" | sed "s/ .*//g")
-SUBSYSTEMS_SFML = system window graphics
-CUSTOM_DLLS = $(foreach submod,$(SUBMODULES_GIT),$(wildcard $(submod)/$(OUTDIR)*$(DLL)))
-LDDLLS = audiere $(foreach subsystem,$(SUBSYSTEMS_SFML),sfml-$(subsystem)-2) $(foreach custdll,$(CUSTOM_DLLS),$(basename $(notdir $(custdll))))
-LDAR = -fpic -L"$(foreach custdll,$(CUSTOM_DLLS),$(dir $(custdll)))" $(foreach dll,$(LDDLLS),-l$(dll))
-SOURCES = $(sort $(filter-out ./ext/%,$(shell find src -name *.cpp)))
+SUBMODULES_GIT := $(shell git submodule status --recursive | sed "s/ [0-9a-f]* //g" | sed "s/ .*//g")
+SUBSYSTEMS_SFML := system window graphics
+CUSTOM_DLLS := $(foreach submod,$(SUBMODULES_GIT),$(wildcard $(submod)/$(OUTDIR)*$(DLL)))
+LDDLLS := audiere $(foreach subsystem,$(SUBSYSTEMS_SFML),sfml-$(subsystem)-2) $(foreach custdll,$(CUSTOM_DLLS),$(basename $(notdir $(custdll))))
+LDAR := -fpic $(foreach custdll,$(CUSTOM_DLLS),-L"$(dir $(custdll))") $(foreach dll,$(LDDLLS),-l$(dll))
+SOURCES := $(sort $(filter-out ./ext/%,$(shell find src -name *.cpp)))
 
 
 .PHONY : clean all release git
@@ -36,6 +36,7 @@ SOURCES = $(sort $(filter-out ./ext/%,$(shell find src -name *.cpp)))
 
 all : $(subst $(SRCDIR),$(OBJDIR),$(subst .cpp,$(OBJ),$(SOURCES)))
 	$(CPP) $(CPPAR) -o$(OUTDIR)Cwepper$(EXE) $(subst $(SRCDIR),$(OBJDIR),$^) $(LDAR)
+	@cp -ur $(ASSETDIR) $(OUTDIR)
 
 clean :
 	rm -rf $(OUTDIR) $(RELEASEDIR)
@@ -51,8 +52,13 @@ release : clean all
 git :
 	git submodule    update  --recursive --init
 	git submodule -q foreach --recursive "make --silent --no-print-directory dll"
+	@rm -rf "ext/all/*"
+	@mkdir "ext/all" || :
+#	`cp` instead of `ln -s` here, because, apparently, "Permission denied"
+#	git submodule -q foreach             "ln -s $(subst \,/,$(shell pwd))/$$path/src $(subst \,/,$(shell pwd))/ext/all/$$name"
+	git submodule -q foreach             "cp -rl $(subst \,/,$(shell pwd))/$$path/src $(subst \,/,$(shell pwd))/ext/all/$$name"
 
 
 $(OBJDIR)%$(OBJ) : $(SRCDIR)%.cpp
-	@mkdir -p $(dir $@)
+	@mkdir -p $(dir $@) || :
 	$(CPP) $(CPPAR) -c -o$@ $^

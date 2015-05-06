@@ -21,37 +21,38 @@
 
 
 ifeq "$(OS)" "Windows_NT"
-	EXE = .exe
-	devnull = nul
-	nop = echo > $(devnull)
-	DLL = .dll
+	EXE := .exe
+	devnull := nul
+	nop := echo > $(devnull)
+	DLL := .dll
 else
-	EXE = .out
-	devnull = /dev/null
-	nop = echo > $(devnull)
+	EXE := .out
+	devnull := /dev/null
+	nop := echo > $(devnull)
 	ifeq "$(OS)" "Darwin"
-		DLL = .dylib
+		DLL := .dylib
 	else
-		DLL = .so
+		DLL := .so
 	endif
 endif
 
-OBJ = .o
-ARCH = .a
-AR = ar
-CPP = c++
-CPPAR = -Os -std=c++14 -Wall -Wextra -pipe -fomit-frame-pointer -shared-libstdc++ -Iext/All
-STRIP = strip
-STRIPAR = --strip-all --remove-section=.comment --remove-section=.note
+OBJ := .o
+ARCH := .a
+AR := ar
+CPP := c++
+CPPAR := -Os -std=c++14 -Wall -Wextra -pipe -fomit-frame-pointer -shared-libstdc++ -Iext/all
+STRIP := strip
+STRIPAR := --strip-all --remove-section=.comment --remove-section=.note
 
-OUTDIR = out/
-OBJDIR = $(OUTDIR)obj/
-SRCDIR = src/
-RELEASEDIR = release
+OUTDIR := out/
+OBJDIR := $(OUTDIR)obj/
+SRCDIR := src/
+ASSETDIR = assets/
+RELEASEDIR := release
 ifeq "$(OS)" "Windows_NT"
-	SHELL = cmd
-	DLLDIR = $(shell c:\WINDOWS\system32\cmd.exe /s /c call win/which.bat c++ | c:\WINDOWS\system32\find.exe "c++")
-	SHELL = /bin/sh
+	SHELL := cmd
+	DLLDIR := $(dir $(shell c:\WINDOWS\system32\cmd.exe /s /c call win/which.bat c++ | c:\WINDOWS\system32\find.exe "c++"))
+	SHELL := /bin/sh
 else
-	DLLDIR = $(shell type -p $(CPP))
+	DLLDIR := $(dir $(shell type -p $(CPP)))
 endif
