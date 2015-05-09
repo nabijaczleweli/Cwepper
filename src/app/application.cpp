@@ -24,13 +24,14 @@
 #include "../util/broken_gcc.hpp"
 #include "../util/configurable.hpp"
 #include "../util/file.hpp"
-#include <algorithm>
-#include <cstdlib>
-#include <SFML/System.hpp>
+#include <type_traits>
+#include <chrono>
 
 
 using namespace sf;
 using namespace std;
+using namespace std::chrono;
+using namespace std::chrono_literals;
 using namespace cpponfig;
 
 
@@ -49,7 +50,8 @@ int application::run() {
 
 	return loop();
 }
-
+bool forcedraw = true;
+time_point<high_resolution_clock> lastdraw;
 int application::loop() {
 	while(window.isOpen()) {
 		if(const int i = draw())
@@ -67,6 +69,7 @@ int application::loop() {
 					break;
 				case Event::MouseButtonPressed :
 					window.requestFocus();
+					forcedraw = true;
 					break;
 				case Event::Count :
 					throw Event::Count;
@@ -78,11 +81,17 @@ int application::loop() {
 }
 
 int application::draw() {
+	if(!forcedraw && (high_resolution_clock::now() - lastdraw) < 1000ms)
+		return 0;
+
 	window.clear(Color::Black);
 
 	// Draw stuff here!
 
 	window.display();
+
+	forcedraw = false;
+	lastdraw = high_resolution_clock::now();
 	return 0;
 }
 
