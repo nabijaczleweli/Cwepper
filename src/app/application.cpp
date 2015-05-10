@@ -42,11 +42,8 @@ application::~application() {}
 int application::run() {
 	window.create(VideoMode::getDesktopMode(), app_name, Style::Fullscreen);
 
-	// Window icon's pixels aren't needed after loading them.
-	Image * icon = new Image;
-	if(icon->loadFromFile(textures_root + "/gui/general/window_main.png"))
-		window.setIcon(icon->getSize().x, icon->getSize().x, icon->getPixelsPtr());
-	delete icon; icon = nullptr;
+	const Image & icon = main_texture_loader(textures_root + "/gui/general/window_main.png");
+	window.setIcon(icon.getSize().x, icon.getSize().x, icon.getPixelsPtr());
 
 	return loop();
 }

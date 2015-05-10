@@ -26,6 +26,7 @@
 
 
 #include "../resource/configurables_configuration.hpp"
+#include "../resource/texture_loader.hpp"
 #include <audiere.h>
 #include <SFML/Graphics.hpp>
 #include <string>
@@ -38,6 +39,7 @@ extern const std::string sound_root;
 
 extern const std::string app_name;
 extern       configurables_configuration app_configuration;
+extern       texture_loader main_texture_loader;
 
 
 extern const sf::Font font_standard;

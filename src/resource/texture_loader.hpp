@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 
-// Copyright (c) 2014 nabijaczleweli
+// Copyright (c) 2015 nabijaczleweli
 
 // Permission is hereby granted, free of charge, to any person obtaining a copy of
 // this software and associated documentation files (the "Software"), to deal in
@@ -20,29 +20,37 @@
 // CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-#include "container.hpp"
+#include <SFML/Graphics.hpp>
+#include <unordered_map>
+#include <iterator>
+#include <string>
 
 
-using namespace sf;
-using namespace std;
-using namespace audiere;
+class texture_loader {
+	private:
+		class caching_image : public sf::Image {
+			public:
+				/** `typedef`ed here, since we can't use incomplete type (forward declaration) above */
+				typedef std::unordered_map<std::string, std::pair<sf::Texture, caching_image>> cache_t;
 
+			private:
+				cache_t & textures;
 
-const string assets_root("./assets");
-const string textures_root("./assets/textures");
-const string font_root("./assets/fonts");
-const string sound_root("./assets/sound");
+			public:
+				explicit caching_image(cache_t & txts);
+				caching_image(const caching_image &) = default;
+				caching_image(caching_image &&) = default;
 
-const string app_name("Cwepper");
-      configurables_configuration app_configuration("./" + app_name + ".cfg");
-      texture_loader main_texture_loader;
+				bool loadFromFile(const std::string & filename) /*override*/;
+		};
 
+		typedef caching_image::cache_t cache_t;
 
-const Font font_standard([&]() {
-	Font tmp;
-	tmp.loadFromFile(font_root + "/2-Questa_Grande_Regular.otf");
-	return move(tmp);
-}());
+		cache_t cache;
 
+		void load(const std::string & filename);
 
-const AudioDevicePtr audio_device(OpenDevice());
+	public:
+		sf::Texture & operator[](const std::string & filename);
+		sf::Image & operator()(const std::string & filename);
+};

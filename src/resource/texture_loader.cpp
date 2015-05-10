@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 
-// Copyright (c) 2014 nabijaczleweli
+// Copyright (c) 2015 nabijaczleweli
 
 // Permission is hereby granted, free of charge, to any person obtaining a copy of
 // this software and associated documentation files (the "Software"), to deal in
@@ -20,29 +20,40 @@
 // CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-#include "container.hpp"
+#include "texture_loader.hpp"
 
 
 using namespace sf;
 using namespace std;
-using namespace audiere;
 
 
-const string assets_root("./assets");
-const string textures_root("./assets/textures");
-const string font_root("./assets/fonts");
-const string sound_root("./assets/sound");
+void texture_loader::load(const string & filename) {
+	auto itr = cache.find(filename);
+	if(itr == cache.end()) {
+		caching_image img(cache);
+		img.loadFromFile(filename);
+	}
+}
 
-const string app_name("Cwepper");
-      configurables_configuration app_configuration("./" + app_name + ".cfg");
-      texture_loader main_texture_loader;
+Texture & texture_loader::operator[](const string & filename) {
+	load(filename);
+	return cache.find(filename)->second.first;
+}
+
+Image & texture_loader::operator()(const string & filename) {
+	load(filename);
+	return cache.find(filename)->second.second;
+}
 
 
-const Font font_standard([&]() {
-	Font tmp;
-	tmp.loadFromFile(font_root + "/2-Questa_Grande_Regular.otf");
-	return move(tmp);
-}());
+texture_loader::caching_image::caching_image(cache_t & txts) : Image(), textures(txts) {}
 
+bool texture_loader::caching_image::loadFromFile(const string & filename) {
+	const bool result = Image::loadFromFile(filename);
 
-const AudioDevicePtr audio_device(OpenDevice());
+	Texture txt;
+	txt.loadFromImage(*this);
+	textures.insert({filename, make_pair(txt, *this)});
+
+	return result;
+}
