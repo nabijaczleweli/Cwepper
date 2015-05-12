@@ -27,11 +27,14 @@
 
 #include "../util/configurable.hpp"
 #include <SFML/Graphics.hpp>
+#include <thread>
+#include <chrono>
 
 
 class application : configurable {
 	private:
 		sf::RenderWindow window;
+		volatile bool force_redraw;
 
 		int loop();
 		int draw();
@@ -40,6 +43,7 @@ class application : configurable {
 
 	public:
 		int run();
+		void schedule_redraw();
 
 		application();
 		virtual ~application();

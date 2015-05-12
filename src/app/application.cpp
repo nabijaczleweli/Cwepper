@@ -24,7 +24,6 @@
 #include "../util/broken_gcc.hpp"
 #include "../util/configurable.hpp"
 #include "../util/file.hpp"
-#include <type_traits>
 #include <chrono>
 
 
@@ -35,7 +34,7 @@ using namespace std::chrono_literals;
 using namespace cpponfig;
 
 
-application::application() {}
+application::application() : force_redraw(true) {}
 
 application::~application() {}
 
@@ -47,15 +46,33 @@ int application::run() {
 
 	return loop();
 }
-bool forcedraw = true;
-time_point<high_resolution_clock> lastdraw;
-int application::loop() {
-	while(window.isOpen()) {
-		if(const int i = draw())
-			return i;
 
+int application::loop() {
+	thread([&]() {
+		while(window.isOpen()) {
+			const bool wasforced = force_redraw;
+			const auto start = high_resolution_clock::now();
+
+			// Handle it somehow? Draw big text on screen? Turn into future and read every event poll?
+			if(const int i = draw())
+				throw i;
+
+			const auto end = high_resolution_clock::now();
+			const auto stepped_sleep_duration = chrono::milliseconds(duration_cast<chrono::milliseconds>(1s - (end - start)).count() / 10);
+
+			for(unsigned int i = 0; !force_redraw && i < 10; ++i)
+				this_thread::sleep_for(stepped_sleep_duration);
+			if(wasforced)
+				force_redraw = false;
+		}
+
+		return 0;
+	}).detach();
+
+	window.setActive(false);
+	while(window.isOpen()) {
 		Event event;
-		while(window.pollEvent(event))
+		while(window.waitEvent(event))
 			switch(event.type) {
 				case Event::KeyPressed :
 					if(event.key.code != Keyboard::Escape)
@@ -66,7 +83,10 @@ int application::loop() {
 					break;
 				case Event::MouseButtonPressed :
 					window.requestFocus();
-					forcedraw = true;
+					break;
+				case Event::GainedFocus :
+				case Event::LostFocus :
+					schedule_redraw();
 					break;
 				case Event::Count :
 					throw Event::Count;
@@ -78,18 +98,16 @@ int application::loop() {
 }
 
 int application::draw() {
-	if(!forcedraw && (high_resolution_clock::now() - lastdraw) < 1000ms)
-		return 0;
-
 	window.clear(Color::Black);
 
 	// Draw stuff here!
 
 	window.display();
-
-	forcedraw = false;
-	lastdraw = high_resolution_clock::now();
 	return 0;
+}
+
+void application::schedule_redraw() {
+	force_redraw = true;
 }
 
 void application::config(configuration &) {}
