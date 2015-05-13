@@ -21,39 +21,28 @@
 
 
 #include "texture_loader.hpp"
+#include "image_loader.hpp"
 
 
 using namespace sf;
 using namespace std;
 
 
-void texture_loader::load(const string & filename) {
-	auto itr = cache.find(filename);
-	if(itr == cache.end()) {
-		caching_image img(cache);
-		img.loadFromFile(filename);
-	}
-}
+texture_loader::texture_loader(image_loader & ldr) : image_cache(ldr) {}
 
 Texture & texture_loader::operator[](const string & filename) {
-	load(filename);
-	return cache.find(filename)->second.first;
+	auto itr = cache.find(filename);
+	if(itr == cache.end()) {
+		auto txt = make_unique<image_caching_texture>(*this);
+		txt->loadFromFile(filename);
+		itr = cache.emplace(filename, move(txt)).first;
+	}
+	return *itr->second;
 }
 
-Image & texture_loader::operator()(const string & filename) {
-	load(filename);
-	return cache.find(filename)->second.second;
-}
 
+texture_loader::image_caching_texture::image_caching_texture(texture_loader & ldr) : Texture(), loader(ldr) {}
 
-texture_loader::caching_image::caching_image(cache_t & txts) : Image(), textures(txts) {}
-
-bool texture_loader::caching_image::loadFromFile(const string & filename) {
-	const bool result = Image::loadFromFile(filename);
-
-	Texture txt;
-	txt.loadFromImage(*this);
-	textures.insert({filename, make_pair(txt, *this)});
-
-	return result;
+bool texture_loader::image_caching_texture::loadFromFile(const string & filename, const IntRect & area) {
+	return loadFromImage(loader.image_cache[filename], area);
 }

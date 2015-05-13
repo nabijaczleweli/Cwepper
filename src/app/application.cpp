@@ -41,7 +41,7 @@ application::~application() {}
 int application::run() {
 	window.create(VideoMode::getDesktopMode(), app_name, Style::Fullscreen);
 
-	const Image & icon = main_texture_loader(textures_root + "/gui/general/window_main.png");
+	const Image & icon = main_image_loader[textures_root + "/gui/general/window_main.png"];
 	window.setIcon(icon.getSize().x, icon.getSize().x, icon.getPixelsPtr());
 
 	return loop();

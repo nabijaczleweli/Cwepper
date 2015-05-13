@@ -21,8 +21,8 @@
 
 
 #pragma once
-#ifndef TEXTURE_LOADER_HPP
-#define TEXTURE_LOADER_HPP
+#ifndef IMAGE_LOADER_HPP
+#define IMAGE_LOADER_HPP
 
 
 #include <SFML/Graphics.hpp>
@@ -31,34 +31,13 @@
 #include <string>
 
 
-class image_loader;
-
-
-class texture_loader {
+class image_loader {
 	private:
-		class image_caching_texture : public virtual sf::Texture {
-			private:
-				texture_loader & loader;
-
-			public:
-				explicit image_caching_texture(texture_loader & ldr);
-				image_caching_texture(const image_caching_texture &) = default;
-				image_caching_texture(image_caching_texture &&) = default;
-
-				virtual bool loadFromFile(const std::string & filename, const sf::IntRect & area = sf::IntRect()) /*override*/;
-		};
-
-
-		std::unordered_map<std::string, std::unique_ptr<image_caching_texture>> cache;
-		image_loader & image_cache;
+		std::unordered_map<std::string, std::unique_ptr<sf::Image>> cache;
 
 	public:
-		explicit texture_loader(image_loader & ldr);
-		texture_loader(const texture_loader &) = default;
-		texture_loader(texture_loader &&) = default;
-
-		sf::Texture & operator[](const std::string & filename);
+		sf::Image & operator[](const std::string & filename);
 };
 
 
-#endif // TEXTURE_LOADER_HPP
+#endif // IMAGE_LOADER_HPP

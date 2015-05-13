@@ -35,7 +35,9 @@ const string sound_root("./assets/sound");
 
 const string app_name("Cwepper");
       configurables_configuration app_configuration("./" + app_name + ".cfg");
-      texture_loader main_texture_loader;
+
+      texture_loader main_texture_loader(main_image_loader);
+      image_loader   main_image_loader;
 
 
 const Font font_standard([&]() {
