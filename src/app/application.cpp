@@ -48,7 +48,12 @@ int application::run() {
 }
 
 int application::loop() {
+	window.setActive(false);
+
 	thread([&]() {
+		const auto idle_delay = 1000000us / idle_fps;
+
+		window.setActive(true);
 		while(window.isOpen()) {
 			const bool wasforced = force_redraw;
 			const auto start = high_resolution_clock::now();
@@ -58,9 +63,9 @@ int application::loop() {
 				throw i;
 
 			const auto end = high_resolution_clock::now();
-			const auto stepped_sleep_duration = chrono::milliseconds(duration_cast<chrono::milliseconds>(1s - (end - start)).count() / 10);
+			const auto stepped_sleep_duration = duration_cast<chrono::microseconds>(idle_delay - (end - start)) / idle_fps_chunks;
 
-			for(unsigned int i = 0; !force_redraw && i < 10; ++i)
+			for(unsigned int i = 0; !force_redraw && i < idle_fps_chunks; ++i)
 				this_thread::sleep_for(stepped_sleep_duration);
 			if(wasforced)
 				force_redraw = false;
@@ -69,7 +74,6 @@ int application::loop() {
 		return 0;
 	}).detach();
 
-	window.setActive(false);
 	while(window.isOpen()) {
 		Event event;
 		while(window.waitEvent(event))
@@ -110,4 +114,8 @@ void application::schedule_redraw() {
 	force_redraw = true;
 }
 
-void application::config(configuration &) {}
+void application::config(configuration & cfg) {
+	idle_fps = cfg.get("application:idle_FPS", property("1", "FPS when nothing is happenning on-screen")).floating();
+	idle_fps_chunks = cfg.get("application:idle_FPS_chunks", property("10", "Denuminator for individual delay; up this, if you're "
+	                                                                        "experiencing non-responiveness when switching to game window")).unsigned_integer();
+}

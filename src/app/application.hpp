@@ -34,6 +34,8 @@
 class application : configurable {
 	private:
 		sf::RenderWindow window;
+		float idle_fps;
+		unsigned int idle_fps_chunks;
 		volatile bool force_redraw;
 
 		int loop();
