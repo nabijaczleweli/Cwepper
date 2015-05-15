@@ -25,6 +25,7 @@
 #include "../util/configurable.hpp"
 #include "../util/file.hpp"
 #include <chrono>
+#include <thread>
 
 
 using namespace sf;
@@ -48,6 +49,8 @@ int application::run() {
 }
 
 int application::loop() {
+	volatile int drawing_result = 0;
+
 	window.setActive(false);
 
 	thread([&]() {
@@ -58,9 +61,10 @@ int application::loop() {
 			const bool wasforced = force_redraw;
 			const auto start = high_resolution_clock::now();
 
-			// Handle it somehow? Draw big text on screen? Turn into future and read every event poll?
-			if(const int i = draw())
-				throw i;
+			if(const int i = draw()) {
+				drawing_result = i;
+				break;
+			}
 
 			const auto end = high_resolution_clock::now();
 			const auto stepped_sleep_duration = duration_cast<chrono::microseconds>(idle_delay - (end - start)) / idle_fps_chunks;
@@ -70,35 +74,34 @@ int application::loop() {
 			if(wasforced)
 				force_redraw = false;
 		}
-
-		return 0;
 	}).detach();
 
-	while(window.isOpen()) {
-		Event event;
-		while(window.waitEvent(event))
-			switch(event.type) {
-				case Event::KeyPressed :
-					if(event.key.code != Keyboard::Escape)
-						break;
-					// Fallthrough (if Escape presed)
-				case Event::Closed :
-					window.close();
+	Event event;
+	while(!drawing_result && window.waitEvent(event)) {
+		switch(event.type) {
+			case Event::KeyPressed :
+				if(event.key.code != Keyboard::Escape)
 					break;
-				case Event::MouseButtonPressed :
-					window.requestFocus();
-					break;
-				case Event::GainedFocus :
-				case Event::LostFocus :
-					schedule_redraw();
-					break;
-				case Event::Count :
-					throw Event::Count;
-				default:
-					break;
-			}
+				// Fallthrough (if Escape presed)
+			case Event::Closed :
+				window.close();
+				break;
+			case Event::MouseButtonPressed :
+				window.requestFocus();
+				break;
+			case Event::GainedFocus :
+			case Event::LostFocus :
+				schedule_redraw();
+				break;
+			case Event::Count :
+				throw Event::Count;
+			default:
+				break;
+		}
 	}
-	return 0;
+
+	schedule_redraw();
+	return drawing_result;
 }
 
 int application::draw() {

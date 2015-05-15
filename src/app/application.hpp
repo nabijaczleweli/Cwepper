@@ -27,8 +27,6 @@
 
 #include "../util/configurable.hpp"
 #include <SFML/Graphics.hpp>
-#include <thread>
-#include <chrono>
 
 
 class application : configurable {
