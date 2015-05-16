@@ -35,6 +35,24 @@ using namespace std::chrono_literals;
 using namespace cpponfig;
 
 
+class test_screen : public screen {
+		Text txt;
+		unsigned int counter;
+
+		virtual int draw() override {
+			txt.setString(to_string(counter++));
+			window.draw(txt);
+			return 0;
+		}
+
+		public:
+			test_screen(application & theapp) : screen(theapp), txt("", font_standard), counter(0) {}
+			test_screen(const test_screen & other) : screen(other), txt(other.txt), counter(other.counter) {}
+			test_screen(test_screen && other) : screen(move(other)), txt(move(other.txt)), counter(move(other.counter)) {}
+			virtual ~test_screen() {}
+};
+
+
 application::application() : force_redraw(true) {}
 
 application::~application() {}
@@ -45,11 +63,12 @@ int application::run() {
 	const Image & icon = main_image_loader[textures_root + "/gui/general/window_main.png"];
 	window.setIcon(icon.getSize().x, icon.getSize().x, icon.getPixelsPtr());
 
+	schedule_screen<test_screen>();
 	return loop();
 }
 
 int application::loop() {
-	volatile int drawing_result = 0;
+	volatile int result = 0;
 
 	window.setActive(false);
 
@@ -62,7 +81,7 @@ int application::loop() {
 			const auto start = high_resolution_clock::now();
 
 			if(const int i = draw()) {
-				drawing_result = i;
+				result = i;
 				break;
 			}
 
@@ -77,37 +96,27 @@ int application::loop() {
 	}).detach();
 
 	Event event;
-	while(!drawing_result && window.waitEvent(event)) {
-		switch(event.type) {
-			case Event::KeyPressed :
-				if(event.key.code != Keyboard::Escape)
-					break;
-				// Fallthrough (if Escape presed)
-			case Event::Closed :
-				window.close();
-				break;
-			case Event::MouseButtonPressed :
-				window.requestFocus();
-				break;
-			case Event::GainedFocus :
-			case Event::LostFocus :
-				schedule_redraw();
-				break;
-			case Event::Count :
-				throw Event::Count;
-			default:
-				break;
+	while(!result && window.waitEvent(event)) {
+		while(scheduled_screen) {
+			active_screen = move(scheduled_screen);
+			active_screen->setup();
+			schedule_redraw();
 		}
+
+		if(active_screen)
+			if(const int i = active_screen->handle_event(event))
+				result = i;
 	}
 
 	schedule_redraw();
-	return drawing_result;
+	return result;
 }
 
 int application::draw() {
 	window.clear(Color::Black);
 
-	// Draw stuff here!
+	if(active_screen)
+		active_screen->draw();
 
 	window.display();
 	return 0;

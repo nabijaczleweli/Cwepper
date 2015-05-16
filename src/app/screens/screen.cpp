@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 
-// Copyright (c) 2014 nabijaczleweli
+// Copyright (c) 2015 nabijaczleweli
 
 // Permission is hereby granted, free of charge, to any person obtaining a copy of
 // this software and associated documentation files (the "Software"), to deal in
@@ -20,46 +20,34 @@
 // CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-#pragma once
-#ifndef APPLICATION_HPP
-#define APPLICATION_HPP
+#include "screen.hpp"
+#include "../../reference/container.hpp"
+#include "../application.hpp"
 
 
-#include "../util/configurable.hpp"
-#include "screens/screen.hpp"
-#include <SFML/Graphics.hpp>
-#include <memory>
+using namespace sf;
 
 
-class application : configurable {
-	friend class screen;
+void screen::setup() {
+	app_configuration.configure();
+}
 
-	private:
-		sf::RenderWindow window;
-		float idle_fps;
-		unsigned int idle_fps_chunks;
-		volatile bool force_redraw;
+int screen::handle_event(const Event & event) {
+	if(event.type == Event::Closed ||
+	   (event.type == Event::KeyPressed && event.key.code == Keyboard::Escape))
+		window.close();
+	else if(event.type == Event::MouseButtonPressed)
+		window.requestFocus();
+	else if(event.type == Event::LostFocus || event.type == Event::GainedFocus)
+		app.schedule_redraw();
+	else if(event.type == Event::Count)
+		throw Event::Count;
 
-		std::unique_ptr<screen> active_screen;
-		std::unique_ptr<screen> scheduled_screen;
+	return 0;
+}
 
-		int loop();
-		int draw();
+screen::screen(application & theapp) : app(theapp), window(app.window) {}
+screen::screen(const screen & other) : app(other.app), window(other.window) {}
+screen::screen(screen && other) : app(other.app), window(other.window) {}
 
-		virtual void config(cpponfig::configuration & cfg) override;
-
-	public:
-		int run();
-		void schedule_redraw();
-
-		template<class T, class... A>
-		void schedule_screen(const A &... args) {
-			scheduled_screen = std::make_unique<T>(*this, std::forward<A>(args)...);
-		}
-
-		application();
-		virtual ~application();
-};
-
-
-#endif  // APPLICATION_HPP
+screen::~screen() {}

@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 
-// Copyright (c) 2014 nabijaczleweli
+// Copyright (c) 2015 nabijaczleweli
 
 // Permission is hereby granted, free of charge, to any person obtaining a copy of
 // this software and associated documentation files (the "Software"), to deal in
@@ -21,45 +21,31 @@
 
 
 #pragma once
-#ifndef APPLICATION_HPP
-#define APPLICATION_HPP
+#ifndef SCREEN_HPP
+#define SCREEN_HPP
 
 
-#include "../util/configurable.hpp"
-#include "screens/screen.hpp"
 #include <SFML/Graphics.hpp>
-#include <memory>
 
 
-class application : configurable {
-	friend class screen;
+class application;
 
-	private:
-		sf::RenderWindow window;
-		float idle_fps;
-		unsigned int idle_fps_chunks;
-		volatile bool force_redraw;
 
-		std::unique_ptr<screen> active_screen;
-		std::unique_ptr<screen> scheduled_screen;
-
-		int loop();
-		int draw();
-
-		virtual void config(cpponfig::configuration & cfg) override;
+class screen {
+	protected:
+		application & app;
+		sf::RenderWindow & window;
 
 	public:
-		int run();
-		void schedule_redraw();
+		virtual void setup();
+		virtual int draw() = 0;
+		virtual int handle_event(const sf::Event & event);
 
-		template<class T, class... A>
-		void schedule_screen(const A &... args) {
-			scheduled_screen = std::make_unique<T>(*this, std::forward<A>(args)...);
-		}
-
-		application();
-		virtual ~application();
+		screen(application & theapp);
+		screen(const screen & other);
+		screen(screen && other);
+		virtual ~screen();
 };
 
 
-#endif  // APPLICATION_HPP
+#endif  // SCREEN_HPP

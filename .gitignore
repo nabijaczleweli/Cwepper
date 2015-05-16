@@ -29,7 +29,7 @@
 
 # Miscellaneous
 .DS_Store
-out/
-ext/
+out/*
+ext/*
 *.s*-toks
 *.s*-workspace
