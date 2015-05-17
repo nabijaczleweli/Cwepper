@@ -26,6 +26,7 @@
 #include "../util/file.hpp"
 #include <chrono>
 #include <thread>
+#include "screens/application/splash_screen.hpp"
 
 
 using namespace sf;
@@ -63,7 +64,7 @@ int application::run() {
 	const Image & icon = main_image_loader[textures_root + "/gui/general/window_main.png"];
 	window.setIcon(icon.getSize().x, icon.getSize().x, icon.getPixelsPtr());
 
-	schedule_screen<test_screen>();
+	schedule_screen<splash_screen>();
 	return loop();
 }
 

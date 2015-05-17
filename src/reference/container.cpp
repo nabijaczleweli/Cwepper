@@ -28,6 +28,13 @@ using namespace std;
 using namespace audiere;
 
 
+auto load_font(const char * name) {
+	Font tmp;
+	tmp.loadFromFile(font_root + '/' + name);
+	return move(tmp);
+}
+
+
 const string assets_root("./assets");
 const string textures_root("./assets/textures");
 const string font_root("./assets/fonts");
@@ -40,11 +47,8 @@ const string app_name("Cwepper");
       image_loader   main_image_loader;
 
 
-const Font font_standard([&]() {
-	Font tmp;
-	tmp.loadFromFile(font_root + "/2-Questa_Grande_Regular.otf");
-	return move(tmp);
-}());
+const Font font_standard(load_font("2-Questa_Grande_Regular.otf"));
+const Font font_pixelish(load_font("digital-7 (mono).ttf"));
 
 
 const AudioDevicePtr audio_device(OpenDevice());

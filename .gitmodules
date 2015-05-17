@@ -1,3 +1,3 @@
 [submodule "cpponfiguration"]
-	path = ext/Cpponfiguration
+	path = ext/cpponfiguration
 	url = https://github.com/nabijaczleweli/Cpponfiguration.git

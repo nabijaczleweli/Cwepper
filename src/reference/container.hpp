@@ -46,6 +46,7 @@ extern       image_loader   main_image_loader;
 
 
 extern const sf::Font font_standard;
+extern const sf::Font font_pixelish;
 
 
 extern const audiere::AudioDevicePtr audio_device;
