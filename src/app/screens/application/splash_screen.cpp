@@ -47,17 +47,6 @@ class test_main_screen : public screen {
 			virtual ~test_main_screen() {}
 };
 
-struct timer {
-	void operator()(unsigned int ticks, reference_wrapper<volatile bool> & dead, const function<void()> & callback) {
-		volatile bool killed = false;
-		dead = ref(killed);
-
-		this_thread::sleep_for(chrono::milliseconds(ticks));
-		if(!killed)
-			callback();
-	}
-};
-
 
 static volatile bool dummy_bool;
 
@@ -70,10 +59,18 @@ void splash_screen::end() {
 	schedule(app);
 }
 
-#include <iostream>
+
 void splash_screen::setup() {
 	screen::setup();
-	thread(timer(), showing_time, ended, bind(schedule, app)).detach();
+	thread thr([&](unsigned int ticks, reference_wrapper<reference_wrapper<volatile bool>> ended, auto callback) {
+		volatile bool killed = false;
+		ended.get() = ref(killed);
+
+		this_thread::sleep_for(chrono::milliseconds(ticks));
+		if(!killed)
+			callback();
+	}, showing_time, reference_wrapper<decltype(ended)>(ended), bind(schedule, ref(app)));
+	thr.detach();
 
 	const float scale = static_cast<float>(window.getSize().y - text.getGlobalBounds().height * 1.5f) / background.getLocalBounds().height;
 	background.setScale(scale, scale);
@@ -81,7 +78,6 @@ void splash_screen::setup() {
 
 	//text.setPosition(window.getSize().x / 2 - text.getGlobalBounds().width / 2, window.getSize().y - text.getGlobalBounds().height * 1.25);
 	text.setPosition(0, 0);
-	cerr << text.getPosition().x << ' ' << text.getPosition().y << " \"" << text.getString().toAnsiString() << "\"\n";
 }
 
 int splash_screen::draw() {
@@ -99,13 +95,11 @@ int splash_screen::handle_event(const Event & event) {
 }
 
 void splash_screen::config(configuration & cfg) {
-	cerr << "Configuring...\n";
 	showing_time = cfg.get("splash_screen:showing_time", "2000").unsigned_integer();
-	cerr << "Configured to: " << showing_time << "!\n";
 }
 
 splash_screen::splash_screen(application & theapp) : screen(theapp), configurable(), background(main_texture_loader[textures_root + "/gui/main/splash.png"]),
-                                                     text(app_name, font_pixelish), ref(dummy_bool) {
+                                                     text(app_name, font_pixelish), ended(ref(dummy_bool)) {
 	text.setColor(Color::Green);
 }
 splash_screen::splash_screen(const splash_screen & other) : screen(other), configurable(other), background(other.background), text(other.text),
