@@ -37,8 +37,8 @@
  * rather than passing the ref to splash_screen's `ended`, which'll be destroyed.
  *
  * So, rough draft:
- *   thread spawned              -> give it ref to `ended` -- now guaranteed to be valid;
- *   interrupted by key or mouse -> tell it to thread, will simply abort upon sleeping for long enough;
+ *   thread spawned              -> give it ref to `ended`, make it point to thread's local -- now guaranteed to be valid;
+ *   interrupted by key or mouse -> tell it to thread, will simply not force new screen after sleeping for long enough;
  *   not interrupted             -> thread enforces new screen.
  */
 class splash_screen : public screen, configurable {

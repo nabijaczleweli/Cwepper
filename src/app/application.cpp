@@ -20,13 +20,13 @@
 // CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "application.hpp"
+#include "screens/application/splash_screen.hpp"
 #include "../reference/container.hpp"
 #include "../util/broken_gcc.hpp"
 #include "../util/configurable.hpp"
 #include "../util/file.hpp"
 #include <chrono>
 #include <thread>
-#include "screens/application/splash_screen.hpp"
 
 
 using namespace sf;
@@ -89,8 +89,18 @@ int application::loop() {
 			const auto end = high_resolution_clock::now();
 			const auto stepped_sleep_duration = duration_cast<chrono::microseconds>(idle_delay - (end - start)) / idle_fps_chunks;
 
-			for(unsigned int i = 0; !force_redraw && i < idle_fps_chunks; ++i)
+			for(unsigned int i = 0; !force_redraw && i < idle_fps_chunks; ++i) {
 				this_thread::sleep_for(stepped_sleep_duration);
+
+				if(scheduled_screen && active_screen_mutex.try_lock()) {
+					while(scheduled_screen) {
+						active_screen = move(scheduled_screen);
+						active_screen->setup();
+					}
+					active_screen_mutex.unlock();
+					schedule_redraw();
+				}
+			}
 			if(wasforced)
 				force_redraw = false;
 		}
@@ -98,15 +108,11 @@ int application::loop() {
 
 	Event event;
 	while(!result && window.waitEvent(event)) {
-		while(scheduled_screen) {
-			active_screen = move(scheduled_screen);
-			active_screen->setup();
-			schedule_redraw();
-		}
-
-		if(active_screen)
+		if(active_screen) {
+			lock_guard<mutex> locker(active_screen_mutex);
 			if(const int i = active_screen->handle_event(event))
 				result = i;
+		}
 	}
 
 	schedule_redraw();
@@ -116,8 +122,10 @@ int application::loop() {
 int application::draw() {
 	window.clear(Color::Black);
 
-	if(active_screen)
+	if(active_screen) {
+		lock_guard<mutex> locker(active_screen_mutex);
 		active_screen->draw();
+	}
 
 	window.display();
 	return 0;

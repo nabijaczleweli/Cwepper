@@ -95,7 +95,7 @@ int splash_screen::handle_event(const Event & event) {
 }
 
 void splash_screen::config(configuration & cfg) {
-	showing_time = cfg.get("splash_screen:showing_time", "2000").unsigned_integer();
+	showing_time = cfg.get("splash_screen:showing_time", property("2000", "[ms]")).unsigned_integer();
 }
 
 splash_screen::splash_screen(application & theapp) : screen(theapp), configurable(), background(main_texture_loader[textures_root + "/gui/main/splash.png"]),

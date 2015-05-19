@@ -29,6 +29,7 @@
 #include "screens/screen.hpp"
 #include <SFML/Graphics.hpp>
 #include <memory>
+#include <mutex>
 
 
 class application : configurable {
@@ -40,6 +41,7 @@ class application : configurable {
 		unsigned int idle_fps_chunks;
 		volatile bool force_redraw;
 
+		std::mutex active_screen_mutex;
 		std::unique_ptr<screen> active_screen;
 		std::unique_ptr<screen> scheduled_screen;
 
