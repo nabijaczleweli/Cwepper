@@ -22,7 +22,6 @@
 #include "application.hpp"
 #include "screens/application/splash_screen.hpp"
 #include "../reference/container.hpp"
-#include "../util/broken_gcc.hpp"
 #include "../util/configurable.hpp"
 #include "../util/file.hpp"
 #include <chrono>
@@ -34,24 +33,6 @@ using namespace std;
 using namespace std::chrono;
 using namespace std::chrono_literals;
 using namespace cpponfig;
-
-
-class test_screen : public screen {
-		Text txt;
-		unsigned int counter;
-
-		virtual int draw() override {
-			txt.setString(to_string(counter++));
-			window.draw(txt);
-			return 0;
-		}
-
-		public:
-			test_screen(application & theapp) : screen(theapp), txt("", font_standard), counter(0) {}
-			test_screen(const test_screen & other) : screen(other), txt(other.txt), counter(other.counter) {}
-			test_screen(test_screen && other) : screen(move(other)), txt(move(other.txt)), counter(move(other.counter)) {}
-			virtual ~test_screen() {}
-};
 
 
 application::application() : force_redraw(true) {}

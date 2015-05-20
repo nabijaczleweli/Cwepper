@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 
-// Copyright (c) 2014 nabijaczleweli
+// Copyright (c) 2015 nabijaczleweli
 
 // Permission is hereby granted, free of charge, to any person obtaining a copy of
 // this software and associated documentation files (the "Software"), to deal in
@@ -20,35 +20,39 @@
 // CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-#include "container.hpp"
+#pragma once
+#ifndef MAIN_MENU_SCREEN_HPP
+#define MAIN_MENU_SCREEN_HPP
 
 
-using namespace sf;
-using namespace std;
-using namespace audiere;
+#include "../screen.hpp"
+#include <functional>
+#include <utility>
+#include <list>
 
 
-auto load_font(const char * name) {
-	Font tmp;
-	tmp.loadFromFile(font_root + '/' + name);
-	return move(tmp);
-}
+class main_menu_screen : public screen {
+	public:
+		enum class direction : unsigned char {up, down};
+		typedef std::pair<sf::Text, std::function<void(sf::Text &)>> button_clickable;
+
+	private:
+		std::list<button_clickable> main_buttons;
+		decltype(main_buttons.begin()) selected;
+
+		void move_selection(direction dir);
+		void press_button();
+
+	public:
+		virtual void setup() override;
+		virtual int draw() override;
+		virtual int handle_event(const sf::Event & event) override;
+
+		main_menu_screen(application & theapp);
+		main_menu_screen(const main_menu_screen & other);
+		main_menu_screen(main_menu_screen && other);
+		virtual ~main_menu_screen();
+};
 
 
-const string assets_root("./assets");
-const string textures_root("./assets/textures");
-const string font_root("./assets/fonts");
-const string sound_root("./assets/sound");
-
-const string app_name("Cwepper");
-      configurables_configuration app_configuration("./" + app_name + ".cfg");
-
-      texture_loader main_texture_loader(main_image_loader);
-      image_loader   main_image_loader;
-
-
-const Font font_standard(load_font("2-Questa_Grande_Regular.otf"));
-const Font font_7segment(load_font("digital-7 (mono).ttf"));
-
-
-const AudioDevicePtr audio_device(OpenDevice());
+#endif  // MAIN_MENU_SCREEN_HPP

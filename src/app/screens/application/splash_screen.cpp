@@ -23,6 +23,7 @@
 #include "splash_screen.hpp"
 #include "../../../reference/container.hpp"
 #include "../../application.hpp"
+#include "main_menu_screen.hpp"
 #include <thread>
 
 
@@ -31,34 +32,17 @@ using namespace std;
 using namespace cpponfig;
 
 
-class test_main_screen : public screen {
-		Text txt;
-
-		virtual int draw() override {
-			txt.setString(txt.getString() + "_");
-			window.draw(txt);
-			return 0;
-		}
-
-		public:
-			test_main_screen(application & theapp) : screen(theapp), txt("HUEHU", font_standard) {}
-			test_main_screen(const test_main_screen & other) : screen(other), txt(other.txt) {}
-			test_main_screen(test_main_screen && other) : screen(move(other)), txt(move(other.txt)) {}
-			virtual ~test_main_screen() {}
-};
-
-
 static volatile bool dummy_bool;
 
 static void schedule(application & app) {
-	app.schedule_screen<test_main_screen>();
+	app.schedule_screen<main_menu_screen>();
 }
+
 
 void splash_screen::end() {
 	ended.get() = true;
 	schedule(app);
 }
-
 
 void splash_screen::setup() {
 	screen::setup();
@@ -99,7 +83,7 @@ void splash_screen::config(configuration & cfg) {
 }
 
 splash_screen::splash_screen(application & theapp) : screen(theapp), configurable(), background(main_texture_loader[textures_root + "/gui/main/splash.png"]),
-                                                     text(app_name, font_pixelish), ended(ref(dummy_bool)) {
+                                                     text(app_name, font_7segment), ended(ref(dummy_bool)) {
 	text.setColor(Color::Green);
 }
 splash_screen::splash_screen(const splash_screen & other) : screen(other), configurable(other), background(other.background), text(other.text),
