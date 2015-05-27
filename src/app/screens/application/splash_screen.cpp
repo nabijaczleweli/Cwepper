@@ -46,15 +46,14 @@ void splash_screen::end() {
 
 void splash_screen::setup() {
 	screen::setup();
-	thread thr([&](unsigned int ticks, reference_wrapper<reference_wrapper<volatile bool>> ended, auto callback) {
+	thread([&](unsigned int ticks, reference_wrapper<reference_wrapper<volatile bool>> ended, auto callback) {
 		volatile bool killed = false;
 		ended.get() = ref(killed);
 
 		this_thread::sleep_for(chrono::milliseconds(ticks));
 		if(!killed)
 			callback();
-	}, showing_time, reference_wrapper<decltype(ended)>(ended), bind(schedule, ref(app)));
-	thr.detach();
+	}, showing_time, reference_wrapper<decltype(ended)>(ended), bind(schedule, ref(app))).detach();
 
 	const float scale = static_cast<float>(window.getSize().y - text.getGlobalBounds().height * 1.5f) / background.getLocalBounds().height;
 	background.setScale(scale, scale);

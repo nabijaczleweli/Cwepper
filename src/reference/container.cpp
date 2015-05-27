@@ -39,8 +39,10 @@ const string assets_root("./assets");
 const string textures_root("./assets/textures");
 const string font_root("./assets/fonts");
 const string sound_root("./assets/sound");
+const string localization_root("./assets/lang");
 
 const string app_name("Cwepper");
+      string app_language("en_US");
       configurables_configuration app_configuration("./" + app_name + ".cfg");
 
       texture_loader main_texture_loader(main_image_loader);

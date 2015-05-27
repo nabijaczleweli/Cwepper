@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 
-// Copyright (c) 2014 nabijaczleweli
+// Copyright (c) 2015 nabijaczleweli
 
 // Permission is hereby granted, free of charge, to any person obtaining a copy of
 // this software and associated documentation files (the "Software"), to deal in
@@ -21,37 +21,51 @@
 
 
 #pragma once
-#ifndef CONTAINER_HPP
-#define CONTAINER_HPP
+#ifndef STRINGS_HPP
+#define STRINGS_HPP
 
 
-#include "../resource/configurables_configuration.hpp"
-#include "../resource/texture_loader.hpp"
-#include "../resource/image_loader.hpp"
-#include <audiere.h>
-#include <SFML/Graphics.hpp>
-#include <string>
+#include <functional>
+#include <algorithm>
+#include <sstream>
+#include <cctype>
+#include <locale>
 
 
-extern const std::string assets_root;
-extern const std::string textures_root;
-extern const std::string font_root;
-extern const std::string sound_root;
-extern const std::string localization_root;
+namespace {
+	const constexpr static auto whitespace_selector = [&](auto c) {
+		return !std::isspace(c);
+	};
+}
 
-extern const std::string app_name;
-extern       std::string app_language;
-extern       configurables_configuration app_configuration;
+// Stolen from http://stackoverflow.com/a/217605/2851815
+static inline std::string & ltrim(std::string & s) {
+	s.erase(s.begin(), std::find_if(s.begin(), s.end(), whitespace_selector));
+	return s;
+}
 
-extern       texture_loader main_texture_loader;
-extern       image_loader   main_image_loader;
+// Stolen from http://stackoverflow.com/a/217605/2851815
+static inline std::string & rtrim(std::string & s) {
+	s.erase(std::find_if(s.rbegin(), s.rend(), whitespace_selector).base(), s.end());
+	return s;
+}
+
+// Stolen from http://stackoverflow.com/a/217605/2851815
+static inline std::string & trim(std::string & s) {
+	return ltrim(rtrim(s));
+}
+
+static inline std::string & ltrim(std::string && s) {
+	return ltrim(s);
+}
+
+static inline std::string & rtrim(std::string && s) {
+	return rtrim(s);
+}
+
+static inline std::string & trim(std::string && s) {
+	return trim(s);
+}
 
 
-extern const sf::Font font_standard;
-extern const sf::Font font_7segment;
-
-
-extern const audiere::AudioDevicePtr audio_device;
-
-
-#endif  // CONTAINER_HPP
+#endif  // STRINGS_HPP

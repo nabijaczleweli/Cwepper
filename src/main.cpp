@@ -22,8 +22,10 @@
 
 #include "app/application.hpp"
 #include "reference/container.hpp"
-#include "util/broken_gcc.hpp"
+#include "resource/localizer.hpp"
 #include "util/configurable.hpp"
+#include "util/broken_gcc.hpp"
+#include "util/file.hpp"
 #include <cpponfiguration/cpponfig_version.hpp>
 #include <audiere.h>
 #include <ctime>
@@ -56,6 +58,10 @@ int main(int argc, char * argv[]) {
 
 
 void init_app(int, char *[]) {
+	fallback_izer.open();
+	local_izer.open(app_language);
+	global_izer.merge(local_izer).merge(fallback_izer);
+
 	if(!app)
 		app = new application;
 	else
@@ -72,11 +78,24 @@ void deinit_app() {
 void init_deps() {
 	class deps_configable : public configurable {
 		private:
-			/** Would actually configure libraries and app components. */
-			virtual void config(configuration &) override {
+			virtual void config(configuration & cfg) override {
 				cout << "GCC version " << __GNUC__ << '.' << __GNUC_MINOR__ << '.' << __GNUC_PATCHLEVEL__ << " doesn\'t need initialization.\n"
 				        "SFML version " << SFML_VERSION_MAJOR << '.' << SFML_VERSION_MINOR << " doesn\'t need initialization.\n"
 				        "audiere version " << audiere::GetVersion() << " doesn\'t need initialization.\n";
+
+				if(cfg.contains("system:language"))
+					app_language = cfg.get("system:language").textual();
+				else {
+					// TODO: Might be too strict
+					property files(app_language, "Available languages: ");
+
+					for(const auto & name : list_files(localization_root))
+						if(name[0] != '.' && name.size() == 10 && name.find(".lang") == 5)
+							files.comment += name.substr(0, name.find(".lang")) + ", ";
+
+					files.comment = files.comment.substr(0, files.comment.size() - 2);
+					cfg.get("system:language", files);
+				}
 			}
 
 		public:
@@ -112,6 +131,7 @@ void init_deps() {
 	app_configuration.load();
 	app_configuration.add(dependencies_config);
 	app_configuration.configure();
-	app_configuration.sof_comments = {"This is " + app_name + "\'s configuration file.", "Properties\' order will NOT persist."};
+	app_configuration.sof_comments = {"This is " + app_name + "\'s configuration file.",
+	                                  "Modify those values at will, but if", "you break anything, it's your fault."};
 	cout << "\nAll dependencies initialized.\n\n";
 }

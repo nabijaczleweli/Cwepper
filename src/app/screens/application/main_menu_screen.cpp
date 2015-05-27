@@ -22,6 +22,7 @@
 
 #include "main_menu_screen.hpp"
 #include "../../../reference/container.hpp"
+#include "../../../resource/localizer.hpp"
 #include "../../../util/broken_gcc.hpp"
 #include "../../application.hpp"
 
@@ -152,10 +153,10 @@ class test_screen : public screen {
 };
 
 main_menu_screen::main_menu_screen(application & theapp) : screen(theapp) {
-	main_buttons.emplace_back(Text(/*global_izer.translate_key("gui.application.text.start")*/"gui.application.text.start", font_standard/*swirly*/), [&](Text &) {
+	main_buttons.emplace_back(Text(global_izer.translate_key("gui.application.text.start"), font_standard/*swirly*/), [&](Text &) {
 		app.schedule_screen<test_screen>();
 	});
-	main_buttons.emplace_back(Text(/*global_izer.translate_key("gui.application.text.quit")*/"gui.application.text.quit", font_standard/*swirly*/), [&](Text &) {
+	main_buttons.emplace_back(Text(global_izer.translate_key("gui.application.text.quit"), font_standard/*swirly*/), [&](Text &) {
 		window.close();
 	});
 

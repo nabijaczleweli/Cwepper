@@ -22,25 +22,29 @@
 
 #include "file.hpp"
 #include <cstdio>
-#include <dirent.h>
+#include <dirent.h>  // GCC includes a <dirent.h> for Windows, too
+
 
 using namespace std;
 
 
 // http://stackoverflow.com/questions/612097/how-can-i-get-a-list-of-files-in-a-directory-using-c-or-c
-vector<string> list_files(string directory) {
+vector<string> list_files(const string & directory) {
 	DIR * dir = nullptr;
 	dirent * ent = nullptr;
 	vector<string> result;
+
 	if((dir = opendir(directory.c_str())) != nullptr) {
 		/* print all the files and directories within directory */
 		while((ent = readdir(dir)) != nullptr)
 			result.emplace_back(ent->d_name);
+
 		closedir(dir);
 		dir = nullptr;
 		ent = nullptr;
 		result.shrink_to_fit();
 	}
+
 	return result;
 }
 
