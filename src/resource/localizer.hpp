@@ -25,28 +25,33 @@
 #define LOCALIZER_HPP
 
 
+#include "../util/strings.hpp"
 #include <iosfwd>
 #include <string>
 #include <unordered_map>
 
 
 class localizer {
-	private:
-		std::unordered_map<std::string, std::string> language;
+	public:
+		using string_t = std::wstring;
+		using stream_t = std::wistream;
 
-		void init(std::istream & from);
+	private:
+		std::unordered_map<string_t, string_t> language;
+
+		void init(stream_t & from);
 
 	public:
-		static std::string default_locale;
-		static std::string file_extension;
-		static char        assignment_character;
-		static char        comment_character;
+		static std::string          default_locale;
+		static std::string          file_extension;
+		static string_t::value_type assignment_character;
+		static string_t::value_type comment_character;
 
 
 		localizer();
 		/** Used to disambugate the opening and non-opening constructors */
-		explicit localizer(std::nothrow_t);
-		explicit localizer(std::istream & from);
+		explicit localizer(nullptr_t);
+		explicit localizer(stream_t & from);
 		explicit localizer(const std::string & locale);
 		localizer(localizer && loc);
 		localizer(const localizer & loc);
@@ -59,14 +64,20 @@ class localizer {
 
 		bool empty() const;
 
-		bool can_translate_key(const std::string & key) const;
-		const std::string & translate_key(const std::string & key) const;
+		template<class StringT>
+		inline bool can_translate_key(const StringT & key) const {
+			return can_translate_key(to_wstring(key));
+		}
+
+		bool can_translate_key(const string_t & key) const;
+
+		template<class StringT>
+		inline const string_t & translate_key(const StringT & key) const {
+			return translate_key(to_wstring(key));
+		}
+
+		const string_t & translate_key(const string_t & key) const;
 };
-
-
-extern localizer fallback_izer;
-extern localizer local_izer;
-extern localizer global_izer;
 
 
 #endif  // LOCALIZER_HPP

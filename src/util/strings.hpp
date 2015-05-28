@@ -39,32 +39,45 @@ namespace {
 }
 
 // Stolen from http://stackoverflow.com/a/217605/2851815
-static inline std::string & ltrim(std::string & s) {
+template<class CharT, class Traits, class Alloc>
+static inline std::basic_string<CharT, Traits, Alloc> & ltrim(std::basic_string<CharT, Traits, Alloc> & s) {
 	s.erase(s.begin(), std::find_if(s.begin(), s.end(), whitespace_selector));
 	return s;
 }
 
 // Stolen from http://stackoverflow.com/a/217605/2851815
-static inline std::string & rtrim(std::string & s) {
+template<class CharT, class Traits, class Alloc>
+static inline std::basic_string<CharT, Traits, Alloc> & rtrim(std::basic_string<CharT, Traits, Alloc> & s) {
 	s.erase(std::find_if(s.rbegin(), s.rend(), whitespace_selector).base(), s.end());
 	return s;
 }
 
 // Stolen from http://stackoverflow.com/a/217605/2851815
-static inline std::string & trim(std::string & s) {
+template<class CharT, class Traits, class Alloc>
+static inline std::basic_string<CharT, Traits, Alloc> & trim(std::basic_string<CharT, Traits, Alloc> & s) {
 	return ltrim(rtrim(s));
 }
 
-static inline std::string & ltrim(std::string && s) {
+template<class CharT, class Traits, class Alloc>
+static inline std::basic_string<CharT, Traits, Alloc> & ltrim(std::basic_string<CharT, Traits, Alloc> && s) {
 	return ltrim(s);
 }
 
-static inline std::string & rtrim(std::string && s) {
+template<class CharT, class Traits, class Alloc>
+static inline std::basic_string<CharT, Traits, Alloc> & rtrim(std::basic_string<CharT, Traits, Alloc> && s) {
 	return rtrim(s);
 }
 
-static inline std::string & trim(std::string && s) {
+template<class CharT, class Traits, class Alloc>
+static inline std::basic_string<CharT, Traits, Alloc> & trim(std::basic_string<CharT, Traits, Alloc> && s) {
 	return trim(s);
+}
+
+
+template<class StringT, class T>
+inline constexpr StringT to_wstring(const T & from) {
+	using stream_t = std::basic_ostringstream<StringT::value_type, StringT::traits_type, StringT::allocator_type>;
+	return static_cast<stream_t &>(stream_t() << from).str();
 }
 
 

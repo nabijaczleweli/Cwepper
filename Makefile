@@ -54,9 +54,7 @@ git :
 	git submodule -q foreach --recursive "make --silent --no-print-directory dll"
 	@rm -rf "ext/all/*"
 	@mkdir "ext/all" || :
-#	`cp` instead of `ln -s` here, because, apparently, "Permission denied"
-#	git submodule -q foreach             "ln -s $(subst \,/,$(shell pwd))/$$path/src $(subst \,/,$(shell pwd))/ext/all/$$name"
-	git submodule -q foreach             "cp -rl $(subst \,/,$(shell pwd))/$$path/src $(subst \,/,$(shell pwd))/ext/all/$$name"
+	git submodule -q foreach             "cp -r $(subst \,/,$(shell pwd))/$$path/src $(subst \,/,$(shell pwd))/ext/all/$$name"
 
 
 $(OBJDIR)%$(OBJ) : $(SRCDIR)%.cpp

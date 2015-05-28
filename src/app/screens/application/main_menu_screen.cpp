@@ -22,7 +22,6 @@
 
 #include "main_menu_screen.hpp"
 #include "../../../reference/container.hpp"
-#include "../../../resource/localizer.hpp"
 #include "../../../util/broken_gcc.hpp"
 #include "../../application.hpp"
 
@@ -141,7 +140,10 @@ class test_screen : public screen {
 
 		virtual int draw() override {
 			txt.setString(to_string(counter++));
+			txt.setPosition(window.getSize().x - txt.getGlobalBounds().width, window.getSize().y - txt.getGlobalBounds().height * 2);
 			window.draw(txt);
+			for(float i = 0; i < 10; i += .001)
+				window.draw(&static_cast<const Vertex &>(move(Vertex({100 + 100 * cos(i), 100 + 100 * sin(i)}, Color::White))), 1, PrimitiveType::Points);
 			return 0;
 		}
 

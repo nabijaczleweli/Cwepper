@@ -28,6 +28,7 @@
 #include "../resource/configurables_configuration.hpp"
 #include "../resource/texture_loader.hpp"
 #include "../resource/image_loader.hpp"
+#include "../resource/localizer.hpp"
 #include <audiere.h>
 #include <SFML/Graphics.hpp>
 #include <string>
@@ -46,6 +47,9 @@ extern       configurables_configuration app_configuration;
 extern       texture_loader main_texture_loader;
 extern       image_loader   main_image_loader;
 
+extern localizer fallback_izer;
+extern localizer local_izer;
+extern localizer global_izer;
 
 extern const sf::Font font_standard;
 extern const sf::Font font_7segment;

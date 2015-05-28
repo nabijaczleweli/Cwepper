@@ -48,6 +48,10 @@ const string app_name("Cwepper");
       texture_loader main_texture_loader(main_image_loader);
       image_loader   main_image_loader;
 
+      localizer fallback_izer(nullptr);
+      localizer local_izer(nullptr);
+      localizer global_izer(nullptr);
+
 
 const Font font_standard(load_font("2-Questa_Grande_Regular.otf"));
 const Font font_7segment(load_font("digital-7 (mono).ttf"));
