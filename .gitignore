@@ -30,6 +30,7 @@
 # Miscellaneous
 .DS_Store
 out/*
+release/*
 ext/all
 *.s*-toks
 *.s*-workspace

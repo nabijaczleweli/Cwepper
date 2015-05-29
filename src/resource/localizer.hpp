@@ -66,14 +66,14 @@ class localizer {
 
 		template<class StringT>
 		inline bool can_translate_key(const StringT & key) const {
-			return can_translate_key(to_wstring(key));
+			return can_translate_key(to_wstring<string_t>(key));
 		}
 
 		bool can_translate_key(const string_t & key) const;
 
 		template<class StringT>
 		inline const string_t & translate_key(const StringT & key) const {
-			return translate_key(to_wstring(key));
+			return translate_key(to_wstring<string_t>(key));
 		}
 
 		const string_t & translate_key(const string_t & key) const;

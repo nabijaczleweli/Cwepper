@@ -76,7 +76,7 @@ static inline std::basic_string<CharT, Traits, Alloc> & trim(std::basic_string<C
 
 template<class StringT, class T>
 inline constexpr StringT to_wstring(const T & from) {
-	using stream_t = std::basic_ostringstream<StringT::value_type, StringT::traits_type, StringT::allocator_type>;
+	using stream_t = std::basic_ostringstream<typename StringT::value_type, typename StringT::traits_type, typename StringT::allocator_type>;
 	return static_cast<stream_t &>(stream_t() << from).str();
 }
 

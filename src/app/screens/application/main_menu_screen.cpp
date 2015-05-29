@@ -24,6 +24,7 @@
 #include "../../../reference/container.hpp"
 #include "../../../util/broken_gcc.hpp"
 #include "../../application.hpp"
+#include "../game/main_game_screen.hpp"
 
 
 using namespace std;
@@ -133,30 +134,9 @@ int main_menu_screen::handle_event(const Event & event) {
 	return 0;
 }
 
-
-class test_screen : public screen {
-		Text txt;
-		unsigned int counter;
-
-		virtual int draw() override {
-			txt.setString(to_string(counter++));
-			txt.setPosition(window.getSize().x - txt.getGlobalBounds().width, window.getSize().y - txt.getGlobalBounds().height * 2);
-			window.draw(txt);
-			for(float i = 0; i < 10; i += .001)
-				window.draw(&static_cast<const Vertex &>(move(Vertex({100 + 100 * cos(i), 100 + 100 * sin(i)}, Color::White))), 1, PrimitiveType::Points);
-			return 0;
-		}
-
-		public:
-			test_screen(application & theapp) : screen(theapp), txt("", font_standard), counter(0) {}
-			test_screen(const test_screen & other) : screen(other), txt(other.txt), counter(other.counter) {}
-			test_screen(test_screen && other) : screen(move(other)), txt(move(other.txt)), counter(move(other.counter)) {}
-			virtual ~test_screen() {}
-};
-
 main_menu_screen::main_menu_screen(application & theapp) : screen(theapp) {
 	main_buttons.emplace_back(Text(global_izer.translate_key("gui.application.text.start"), font_standard/*swirly*/), [&](Text &) {
-		app.schedule_screen<test_screen>();
+		app.schedule_screen<main_game_screen>();
 	});
 	main_buttons.emplace_back(Text(global_izer.translate_key("gui.application.text.quit"), font_standard/*swirly*/), [&](Text &) {
 		window.close();
