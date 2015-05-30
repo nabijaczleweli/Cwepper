@@ -22,7 +22,9 @@
 
 #include "localizer.hpp"
 #include "../reference/container.hpp"
+#include "../util/file.hpp"
 #include <fstream>
+#include <algorithm>
 
 
 using namespace std;
@@ -30,6 +32,26 @@ using namespace std;
 
 using string_t = localizer::string_t;
 using stream_t = localizer::stream_t;
+
+
+vector<string> available_languages(const string & root) {
+	auto files(list_files(root));
+
+	files.erase(remove_if(files.begin(), files.end(), [&](const auto & name) {
+		static const auto extension_index = localizer::default_locale.size() + 1;
+		static const auto name_length     = localizer::default_locale.size() + 1 + localizer::file_extension.size();
+
+		return name.size() != name_length || name.find(localizer::file_extension) != extension_index;
+	}), files.end());
+
+	transform(files.begin(), files.end(), files.begin(), [&](const auto & name) {
+		static const auto whole_extension_index = localizer::default_locale.size();
+
+		return name.substr(0, whole_extension_index);
+	});
+
+	return files;
+}
 
 
 string               localizer::default_locale       = "en_US";

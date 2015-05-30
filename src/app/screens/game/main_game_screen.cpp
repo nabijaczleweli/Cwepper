@@ -69,8 +69,9 @@ int main_game_screen::handle_event(const Event & event) {
 		pos = Vector2f(event.mouseMove.x, event.mouseMove.y);
 		app.schedule_redraw();
 	} else if(event.type == Event::MouseButtonPressed) {
-		unsigned int radius = sqrt(event.mouseButton.x * event.mouseButton.x + event.mouseButton.y * event.mouseButton.y);
-		points.create((2 * radius) ?: 1, (2 * radius) ?: 1);
+		const unsigned int radius = sqrt(event.mouseButton.x * event.mouseButton.x + event.mouseButton.y * event.mouseButton.y);
+		const unsigned int diameter = 2 * radius;
+		points.create(diameter ? diameter : 1, diameter ? diameter : 1);
 		points.setSmooth(true);
 		points.clear(Color::Transparent);
 		array<Vertex, 62832> vertices;  // Magic number here = (tau / .0001) rounded up

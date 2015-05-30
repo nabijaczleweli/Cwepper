@@ -28,7 +28,14 @@
 #include "../util/strings.hpp"
 #include <iosfwd>
 #include <string>
+#include <vector>
 #include <unordered_map>
+
+
+extern const std::string localization_root;
+
+
+std::vector<std::string> available_languages(const std::string & root = localization_root);
 
 
 class localizer {

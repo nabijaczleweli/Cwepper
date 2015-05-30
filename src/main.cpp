@@ -86,12 +86,10 @@ void init_deps() {
 				if(cfg.contains("system:language"))
 					app_language = cfg.get("system:language").textual();
 				else {
-					// TODO: Might be too strict
 					property files(app_language, "Available languages: ");
 
-					for(const auto & name : list_files(localization_root))
-						if(name[0] != '.' && name.size() == 10 && name.find(".lang") == 5)
-							files.comment += name.substr(0, name.find(".lang")) + ", ";
+					for(const auto & name : available_languages())
+						files.comment += name.substr(0, name.find(".lang")) + ", ";
 
 					files.comment = files.comment.substr(0, files.comment.size() - 2);
 					cfg.get("system:language", files);

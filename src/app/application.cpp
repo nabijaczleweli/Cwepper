@@ -118,6 +118,6 @@ void application::schedule_redraw() {
 
 void application::config(configuration & cfg) {
 	idle_fps = cfg.get("application:idle_FPS", property("1", "FPS when nothing is happenning on-screen")).floating();
-	idle_fps_chunks = cfg.get("application:idle_FPS_chunks", property("10", "Denuminator for individual delay; up this, if you're "
+	idle_fps_chunks = cfg.get("application:idle_FPS_chunks", property("10", "Denominator for individual delay; up this, if you're "
 	                                                                        "experiencing non-responiveness when switching to game window")).unsigned_integer();
 }
