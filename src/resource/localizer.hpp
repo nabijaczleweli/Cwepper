@@ -40,8 +40,8 @@ std::vector<std::string> available_languages(const std::string & root = localiza
 
 class localizer {
 	public:
-		using string_t = std::wstring;
-		using stream_t = std::wistream;
+		using string_t = std::string;
+		using stream_t = std::istream;
 
 	private:
 		std::unordered_map<string_t, string_t> language;
@@ -72,18 +72,18 @@ class localizer {
 		bool empty() const;
 
 		template<class StringT>
-		inline bool can_translate_key(const StringT & key) const {
-			return can_translate_key(to_wstring<string_t>(key));
+		inline bool can_translate(const StringT & key) const {
+			return can_translate(to_wstring<string_t>(key));
 		}
 
-		bool can_translate_key(const string_t & key) const;
+		bool can_translate(const string_t & key) const;
 
 		template<class StringT>
-		inline const string_t & translate_key(const StringT & key) const {
-			return translate_key(to_wstring<string_t>(key));
+		inline const string_t & translate(const StringT & key) const {
+			return translate(to_wstring<string_t>(key));
 		}
 
-		const string_t & translate_key(const string_t & key) const;
+		const string_t & translate(const string_t & key) const;
 };
 
 

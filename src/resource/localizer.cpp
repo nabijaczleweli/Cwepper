@@ -111,11 +111,11 @@ bool localizer::empty() const {
 	return language.empty();
 }
 
-bool localizer::can_translate_key(const string_t & key) const {
+bool localizer::can_translate(const string_t & key) const {
 	return !language.empty() && language.find(key) != language.end();
 }
 
-const string_t & localizer::translate_key(const string_t & key) const {
+const string_t & localizer::translate(const string_t & key) const {
 	const auto & itr = language.find(key);
 	if(itr == language.end())
 		return key;

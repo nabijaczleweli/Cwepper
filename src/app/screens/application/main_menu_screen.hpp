@@ -34,14 +34,14 @@
 class main_menu_screen : public screen {
 	public:
 		enum class direction : unsigned char {up, down};
-		typedef std::pair<sf::Text, std::function<void(sf::Text &)>> button_clickable;
+		typedef std::tuple<sf::Text, std::string, std::function<void(const sf::Event &)>> button_clickable;
 
 	private:
 		std::list<button_clickable> main_buttons;
 		decltype(main_buttons.begin()) selected;
 
 		void move_selection(direction dir);
-		void press_button();
+		void select(const sf::Event & event);
 
 	public:
 		virtual void setup() override;

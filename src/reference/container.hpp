@@ -53,6 +53,7 @@ extern localizer global_izer;
 
 extern const sf::Font font_standard;
 extern const sf::Font font_7segment;
+extern const sf::Font font_swirly;
 
 
 extern const audiere::AudioDevicePtr audio_device;

@@ -35,12 +35,19 @@ typedef main_menu_screen::direction direction;
 
 
 const constexpr static auto interlap_checker = [&](const auto & button, const auto & xpos, const auto & ypos) {
-	return button.first.getGlobalBounds().contains(xpos, ypos);
+	return get<0>(button).getGlobalBounds().contains(xpos, ypos);
+};
+
+const constexpr static auto on_select = [&](const Event & event, const auto & callback) {
+	if((event.type == Event::KeyPressed && (event.key.code == Keyboard::Key::Return || event.key.code == Keyboard::Key::Space)) ||
+	   (event.type == Event::MouseButtonPressed && event.mouseButton.button == Mouse::Left))
+		callback();
 };
 
 
 void main_menu_screen::move_selection(direction dir) {
 	auto pre = selected;
+
 	switch(dir) {
 		case direction::up :
 			if(selected != main_buttons.begin())
@@ -56,32 +63,36 @@ void main_menu_screen::move_selection(direction dir) {
 		app.schedule_redraw();
 }
 
-void main_menu_screen::press_button() {
-	(selected->second)(selected->first);
+void main_menu_screen::select(const Event & event) {
+	get<2>(*selected)(event);
 }
 
 void main_menu_screen::setup() {
 	screen::setup();
-
-	const auto & winsize(window.getSize());
-
-	for(auto cur = main_buttons.rbegin(), end = main_buttons.rend(); cur != end; ++cur) {
-		auto & button = *cur;
-		const auto buttidx = distance(main_buttons.rbegin(), cur);
-
-		button.first.setPosition((winsize.x * (59.f / 60.f)) - button.first.getGlobalBounds().width,
-		                         (winsize.y * (7.f / 8.f)) - (buttidx + 1) * button.first.getGlobalBounds().height - (winsize.y * (buttidx / 90.f)));
-	}
 }
 
 int main_menu_screen::draw() {
-	for(auto & button : main_buttons) {
-		// Force all buttons except for selected to White, and force selected to Red
-		button.first.setColor(Color::White);
-		selected->first.setColor(Color::Red);
+	const auto & winsize = window.getSize();
 
-		window.draw(button.first);
-	}
+	const unsigned int selected_ridx = distance(selected, main_buttons.end());
+	unsigned int buttidx = 0;
+	unsigned int texty = winsize.y * (7.f / 8.f);
+
+	for_each(main_buttons.rbegin(), main_buttons.rend(), [&](auto & button) {
+		static const auto line_spacing = winsize.y / 90.f;
+
+
+		auto & txt = get<0>(button);
+
+		txt.setString(global_izer.translate(get<1>(button)));
+		++buttidx;
+
+		texty -= txt.getGlobalBounds().height + line_spacing;
+		txt.setPosition((winsize.x * (59.f / 60.f)) - txt.getGlobalBounds().width, texty);
+		txt.setColor(buttidx == selected_ridx ? Color::Red : Color::White);
+
+		window.draw(txt);
+	});
 
 	return 0;
 }
@@ -103,14 +114,14 @@ int main_menu_screen::handle_event(const Event & event) {
 			break;
 
 		case Event::MouseButtonPressed :
-			if(event.mouseButton.button == Mouse::Left && find_if(main_buttons.begin(), main_buttons.end(), bind(interlap_checker, _1, event.mouseButton.x,
-			                                                                                                     event.mouseButton.y)) != main_buttons.end())
-				press_button();
+			if(find_if(main_buttons.begin(), main_buttons.end(), bind(interlap_checker, _1, event.mouseButton.x, event.mouseButton.y)) != main_buttons.end())
+				select(event);
 			break;
 
 		case Event::MouseWheelMoved :
 			move_selection((event.mouseWheel.delta > 0) ? direction::up : direction::down);
 			break;
+
 		case Event::KeyPressed :
 			switch(event.key.code) {
 				case Keyboard::Key::Up :
@@ -119,11 +130,8 @@ int main_menu_screen::handle_event(const Event & event) {
 				case Keyboard::Key::Down :
 					move_selection(direction::down);
 					break;
-				case Keyboard::Key::Return :
-				case Keyboard::Key::Space :
-					press_button();
-					break;
 				default:
+					select(event);
 					break;
 			}
 			break;
@@ -135,12 +143,14 @@ int main_menu_screen::handle_event(const Event & event) {
 }
 
 main_menu_screen::main_menu_screen(application & theapp) : screen(theapp) {
-	main_buttons.emplace_back(Text(global_izer.translate_key("gui.application.text.start"), font_standard/*swirly*/), [&](Text &) {
+	using placeholders::_1;
+
+	main_buttons.emplace_back(Text("", font_swirly), "gui.application.text.start"s, bind(on_select, _1, [&]() {
 		app.schedule_screen<main_game_screen>();
-	});
-	main_buttons.emplace_back(Text(global_izer.translate_key("gui.application.text.quit"), font_standard/*swirly*/), [&](Text &) {
+	}));
+	main_buttons.emplace_back(Text("", font_swirly), "gui.application.text.quit"s, bind(on_select, _1, [&]() {
 		window.close();
-	});
+	}));
 
 	selected = main_buttons.begin();
 }

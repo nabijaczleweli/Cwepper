@@ -55,6 +55,7 @@ const string app_name("Cwepper");
 
 const Font font_standard(load_font("2-Questa_Grande_Regular.otf"));
 const Font font_7segment(load_font("digital-7 (mono).ttf"));
+const Font font_swirly(load_font("MACABRA_.ttf"));
 
 
 const AudioDevicePtr audio_device(OpenDevice());
