@@ -69,6 +69,9 @@ class localizer {
 		localizer & merge(const localizer & loc);
 		localizer & open(const std::string & locale = default_locale);
 
+		localizer & operator=(const localizer & loc);
+		localizer & operator=(localizer && loc);
+
 		bool empty() const;
 
 		template<class StringT>

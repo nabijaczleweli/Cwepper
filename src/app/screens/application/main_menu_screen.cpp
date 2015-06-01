@@ -25,6 +25,7 @@
 #include "../../../util/broken_gcc.hpp"
 #include "../../application.hpp"
 #include "../game/main_game_screen.hpp"
+#include <memory>
 
 
 using namespace std;
@@ -44,9 +45,63 @@ const constexpr static auto on_select = [&](const Event & event, const auto & ca
 		callback();
 };
 
+const constexpr static auto simple_translate = [&](const auto & from) {
+	return global_izer.translate(from);
+};
+
+
+struct locale_changer {
+	application & app;
+	decltype(present_languages.cbegin()) lang = find(present_languages.cbegin(), present_languages.cend(), app_language);
+
+	locale_changer(application & theapp) : app(theapp) {}
+
+	string operator()(const string & from) {
+		auto trans = simple_translate(from);
+		// TODO: maybe use cppformat for this? CMake sucks, though...
+		const auto paren_idx = trans.find("{}");
+
+		if(paren_idx != string::npos) {
+			trans.replace(paren_idx, 2, *lang);
+
+			if(lang != present_languages.cbegin())
+				trans.insert(0, "< ");
+			if(lang != --present_languages.cend())
+				trans += " >";
+
+			return trans;
+		} else
+			return from;
+	}
+
+	void operator()(const Event & event) {
+		const auto pre = lang;
+
+		if(event.type == Event::KeyPressed)
+			switch(event.key.code) {
+				case Keyboard::Key::Left :
+					if(lang != present_languages.cbegin())
+						--lang;
+					break;
+				case Keyboard::Key::Right :
+					if(lang != --present_languages.cend())
+						++lang;
+					break;
+				default:
+					break;
+			}
+
+		if(pre != lang) {
+			local_izer = localizer(*lang);
+			global_izer = localizer(local_izer, fallback_izer);
+			app.schedule_redraw();
+		}
+	}
+};
+
 
 void main_menu_screen::move_selection(direction dir) {
-	auto pre = selected;
+	const auto pre = selected;
 
 	switch(dir) {
 		case direction::up :
@@ -84,7 +139,7 @@ int main_menu_screen::draw() {
 
 		auto & txt = get<0>(button);
 
-		txt.setString(global_izer.translate(get<1>(button)));
+		txt.setString(get<3>(button)(get<1>(button)));
 		++buttidx;
 
 		texty -= txt.getGlobalBounds().height + line_spacing;
@@ -147,10 +202,17 @@ main_menu_screen::main_menu_screen(application & theapp) : screen(theapp) {
 
 	main_buttons.emplace_back(Text("", font_swirly), "gui.application.text.start"s, bind(on_select, _1, [&]() {
 		app.schedule_screen<main_game_screen>();
-	}));
+	}), simple_translate);
 	main_buttons.emplace_back(Text("", font_swirly), "gui.application.text.quit"s, bind(on_select, _1, [&]() {
 		window.close();
-	}));
+	}), simple_translate);
+
+	const auto switcher = make_shared<locale_changer>(app);
+	main_buttons.emplace_back(Text("", font_swirly), "gui.application.text.switch_locale"s, [=](const Event & event) {
+		(*switcher)(event);
+	}, [=](const string & from) {
+		return (*switcher)(from);
+	});
 
 	selected = main_buttons.begin();
 }

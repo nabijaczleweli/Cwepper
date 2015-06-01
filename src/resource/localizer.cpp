@@ -90,6 +90,16 @@ localizer & localizer::open(const string & loc) {
 	return merge(localizer(loc));
 }
 
+localizer & localizer::operator=(const localizer & loc) {
+	language = loc.language;
+	return *this;
+}
+
+localizer & localizer::operator=(localizer && loc) {
+	language = move(loc.language);
+	return *this;
+}
+
 void localizer::init(stream_t & in) {
 	for(string_t line; getline(in, line);) {
 		if(!line.size())

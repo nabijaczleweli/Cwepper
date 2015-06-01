@@ -83,13 +83,14 @@ void init_deps() {
 				        "SFML version " << SFML_VERSION_MAJOR << '.' << SFML_VERSION_MINOR << " doesn\'t need initialization.\n"
 				        "audiere version " << audiere::GetVersion() << " doesn\'t need initialization.\n";
 
+				present_languages = available_languages();
 				if(cfg.contains("system:language"))
 					app_language = cfg.get("system:language").textual();
 				else {
 					property files(app_language, "Available languages: ");
 
-					for(const auto & name : available_languages())
-						files.comment += name.substr(0, name.find(".lang")) + ", ";
+					for(const auto & name : present_languages)
+						files.comment += name + ", ";
 
 					files.comment = files.comment.substr(0, files.comment.size() - 2);
 					cfg.get("system:language", files);

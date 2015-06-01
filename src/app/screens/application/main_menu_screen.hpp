@@ -34,7 +34,7 @@
 class main_menu_screen : public screen {
 	public:
 		enum class direction : unsigned char {up, down};
-		typedef std::tuple<sf::Text, std::string, std::function<void(const sf::Event &)>> button_clickable;
+		using button_clickable = std::tuple<sf::Text, std::string, std::function<void(const sf::Event &)>, std::function<std::string(const std::string &)>>;
 
 	private:
 		std::list<button_clickable> main_buttons;
