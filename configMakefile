@@ -25,6 +25,7 @@ ifeq "$(OS)" "Windows_NT"
 	devnull := nul
 	nop := echo > $(devnull)
 	DLL := .dll
+	MKDIR := busybox mkdir
 else
 	EXE := .out
 	devnull := /dev/null
@@ -34,6 +35,7 @@ else
 	else
 		DLL := .so
 	endif
+	MKDIR := mkdir
 endif
 
 OBJ := .o

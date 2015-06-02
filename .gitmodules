@@ -1,3 +1,6 @@
 [submodule "cpponfiguration"]
 	path = ext/cpponfiguration
 	url = https://github.com/nabijaczleweli/Cpponfiguration.git
+[submodule "armadillo"]
+	path = ext/armadillo
+	url = https://github.com/nabijaczleweli/Armadillo.git

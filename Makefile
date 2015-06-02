@@ -23,7 +23,7 @@
 include configMakefile
 
 
-SUBMODULES_GIT := $(shell git submodule status --recursive | sed "s/ [0-9a-f]* //g" | sed "s/ .*//g")
+SUBMODULES_GIT := $(shell git submodule status --recursive | sed "s/[ +-][0-9a-f]* //g" | sed "s/ .*//g")
 SUBSYSTEMS_SFML := system window graphics
 CUSTOM_DLLS := $(foreach submod,$(SUBMODULES_GIT),$(wildcard $(submod)/$(OUTDIR)*$(DLL)))
 LDDLLS := audiere $(foreach subsystem,$(SUBSYSTEMS_SFML),sfml-$(subsystem)-2) $(foreach custdll,$(CUSTOM_DLLS),$(basename $(notdir $(custdll))))
@@ -42,7 +42,7 @@ clean :
 	rm -rf $(OUTDIR) $(RELEASEDIR)
 
 release : clean all
-	@mkdir $(RELEASEDIR)
+	@$(MKDIR) $(RELEASEDIR)
 	cp $(OUTDIR)Cwepper$(EXE) $(RELEASEDIR)
 	cp --target-directory=$(RELEASEDIR) $(foreach lib,$(filter-out $(foreach custdll,$(CUSTOM_DLLS),$(basename $(notdir $(custdll)))), \
 	                                              $(LDDLLS) libgcc_s_dw2-1 libstdc++-6), $(DLLDIR)$(lib)$(DLL)) $(CUSTOM_DLLS)
@@ -50,13 +50,13 @@ release : clean all
 	7z a -r -y $(RELEASEDIR)/release.zip $(RELEASEDIR)/*
 
 git :
-	git submodule    update  --recursive --init
+	git submodule    update  --recursive --init --remote
 	git submodule -q foreach --recursive "make --silent --no-print-directory dll"
 	@rm -rf "ext/all/*"
-	@mkdir "ext/all" || :
+	@$(MKDIR) "ext/all" 1>$(devnull) 2>$(devnull) || :
 	git submodule -q foreach             "cp -r $(subst \,/,$(shell pwd))/$$path/src $(subst \,/,$(shell pwd))/ext/all/$$name"
 
 
 $(OBJDIR)%$(OBJ) : $(SRCDIR)%.cpp
-	@mkdir -p $(dir $@) || :
+	@$(MKDIR) -p $(dir $@) || :
 	$(CPP) $(CPPAR) -c -o$@ $^
