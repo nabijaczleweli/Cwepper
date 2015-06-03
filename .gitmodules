@@ -1,6 +1,6 @@
 [submodule "cpponfiguration"]
 	path = ext/cpponfiguration
 	url = https://github.com/nabijaczleweli/Cpponfiguration.git
-[submodule "armadillo"]
-	path = ext/armadillo
-	url = https://github.com/nabijaczleweli/Armadillo.git
+[submodule "Eigen"]
+	path = ext/Eigen
+	url = https://github.com/nabijaczleweli/eigen_wrapper.git

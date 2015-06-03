@@ -54,7 +54,8 @@ git :
 	git submodule -q foreach --recursive "make --silent --no-print-directory dll"
 	@rm -rf "ext/all/*"
 	@$(MKDIR) "ext/all" 1>$(devnull) 2>$(devnull) || :
-	git submodule -q foreach             "cp -r $(subst \,/,$(shell pwd))/$$path/src $(subst \,/,$(shell pwd))/ext/all/$$name"
+	git submodule -q foreach             "$(MKDIR) \"$(subst \,/,$(shell pwd))/ext/all/$$name\" 1>$(devnull) 2>$(devnull) || :"
+	git submodule -q foreach             "cp -r $(subst \,/,$(shell pwd))/$$path/src/* $(subst \,/,$(shell pwd))/ext/all/$$name"
 
 
 $(OBJDIR)%$(OBJ) : $(SRCDIR)%.cpp
