@@ -13,44 +13,37 @@
 // copies or substantial portions of the Software.
 
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNE
 // FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
 // COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 // IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 // CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-#pragma once
-#ifndef MAIN_GAME_SCREEN_HPP
-#define MAIN_GAME_SCREEN_HPP
+#include "cell.hpp"
 
 
-#include "../screen.hpp"
-#include "../../../util/configurable.hpp"
-#include "../../../game/game_map.hpp"
+using namespace sf;
+using namespace std;
 
 
-class main_game_screen : public screen, configurable {
-	private:
-		sf::RenderTexture points;
-		sf::Vector2f pos;
+cell::cell() : mine_inside(true), uncovered(false) {}
 
-		sf::RenderTexture map_texture;
-		sf::Sprite map_sprite;
-		game_map map;
-
-		virtual void config(cpponfig::configuration & cfg) override;
-
-	public:
-		virtual void setup() override;
-		virtual int draw() override;
-		virtual int handle_event(const sf::Event & event) override;
-
-		main_game_screen(application & theapp);
-		main_game_screen(const main_game_screen & other);
-		main_game_screen(main_game_screen && other);
-		virtual ~main_game_screen();
-};
-
-
-#endif  // MAIN_GAME_SCREEN_HPP
+void cell::draw(const Vector2f & pos, const Vector2f & size, RenderTarget & target, RenderStates states) const {
+	if(mine_inside) {
+		VertexArray var(PrimitiveType::LinesStrip, 4);
+		var[0].position = {pos.x + size.x / 2, pos.y};
+		var[1].position = {pos.x + size.x, pos.y + size.y};
+		var[2].position = {pos.x, pos.y + size.y};
+		var[3] = var[0];
+		target.draw(var, states);
+	}
+	if(uncovered) {
+		VertexArray var(PrimitiveType::LinesStrip, 4);
+		var[0].position = {pos.x + size.x / 2, pos.y + size.y};
+		var[1].position = {pos.x + size.x, pos.y};
+		var[2].position = {pos.x, pos.y};
+		var[3] = var[0];
+		target.draw(var, states);
+	}
+}

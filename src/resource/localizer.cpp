@@ -100,6 +100,14 @@ localizer & localizer::operator=(localizer && loc) {
 	return *this;
 }
 
+bool localizer::operator==(const localizer & loc) {
+	return language == loc.language;
+}
+
+bool localizer::operator!=(const localizer & loc) {
+	return language != loc.language;
+}
+
 void localizer::init(stream_t & in) {
 	for(string_t line; getline(in, line);) {
 		if(!line.size())

@@ -65,12 +65,17 @@ class localizer {
 		/** Equivalent to `localizer(loc0).merge(loc1)` */
 		explicit localizer(const localizer & loc0, const localizer & loc1);
 
+		virtual ~localizer() = default;
+
 		/** Adds keys from `loc` for which there are no elements in `this` */
 		localizer & merge(const localizer & loc);
 		localizer & open(const std::string & locale = default_locale);
 
 		localizer & operator=(const localizer & loc);
 		localizer & operator=(localizer && loc);
+
+		bool operator==(const localizer & loc);
+		bool operator!=(const localizer & loc);
 
 		bool empty() const;
 

@@ -24,8 +24,6 @@
 #include "../../../reference/container.hpp"
 #include "../../../resource/localizer.hpp"
 #include "../../application.hpp"
-#include <array>
-#include <iostream>
 
 
 using namespace std;
@@ -58,6 +56,16 @@ int main_game_screen::draw() {
 	Sprite circle(points.getTexture());
 	circle.setPosition(pos);
 	window.draw(circle);
+
+	if(!map_sprite.getTexture()) {
+		map_texture.create(window.getSize().x * .6f, window.getSize().y * 99.f / 100.f);
+		map_sprite.setPosition(static_cast<Vector2f>(window.getSize()) / 200.f);
+		map_sprite.setTexture(map_texture.getTexture());
+	}
+
+	map_texture.draw(map);
+	map_texture.display();
+	window.draw(map_sprite);
 	return 0;
 }
 
@@ -68,23 +76,27 @@ int main_game_screen::handle_event(const Event & event) {
 	if(event.type == Event::MouseMoved) {
 		pos = Vector2f(event.mouseMove.x, event.mouseMove.y);
 		app.schedule_redraw();
+
+		const auto interpolated = pos - map_sprite.getPosition();
+		if(map_sprite.getGlobalBounds().contains(interpolated))
+			map.at(interpolated.x, interpolated.y).uncovered = true;
 	} else if(event.type == Event::MouseButtonPressed) {
 		const unsigned int radius = sqrt(event.mouseButton.x * event.mouseButton.x + event.mouseButton.y * event.mouseButton.y);
 		const unsigned int diameter = 2 * radius;
 		points.create(diameter ? diameter : 1, diameter ? diameter : 1);
 		points.setSmooth(true);
 		points.clear(Color::Transparent);
-		array<Vertex, 62832> vertices;  // Magic number here = (tau / .0001) rounded up
-		generate(vertices.begin(), vertices.end(), generator(radius, .0001));
-		points.draw(vertices.data(), vertices.size(), PrimitiveType::LinesStrip);
+		VertexArray vertices(PrimitiveType::LinesStrip, 62832);  // Magic number here = (tau / .0001) rounded up
+		generate(&vertices[0], &vertices[0] + vertices.getVertexCount(), generator(radius, .0001));
+		points.draw(vertices);
 		points.display();
 	}
 
 	return 0;
 }
 
-main_game_screen::main_game_screen(application & theapp) : screen(theapp), configurable() {}
-main_game_screen::main_game_screen(const main_game_screen & other) : screen(other), configurable(other) {}
-main_game_screen::main_game_screen(main_game_screen && other) : screen(move(other)), configurable(move(other)) {}
+main_game_screen::main_game_screen(application & theapp) : screen(theapp), configurable(), map(30, 20) {}
+main_game_screen::main_game_screen(const main_game_screen & other) : screen(other), configurable(other), map(other.map) {}
+main_game_screen::main_game_screen(main_game_screen && other) : screen(move(other)), configurable(move(other)), map(move(other.map)) {}
 
 main_game_screen::~main_game_screen() {}

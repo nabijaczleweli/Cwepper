@@ -13,44 +13,27 @@
 // copies or substantial portions of the Software.
 
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNE
 // FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
 // COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 // IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 // CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-#pragma once
-#ifndef MAIN_GAME_SCREEN_HPP
-#define MAIN_GAME_SCREEN_HPP
+#include <SFML/Graphics.hpp>
 
 
-#include "../screen.hpp"
-#include "../../../util/configurable.hpp"
-#include "../../../game/game_map.hpp"
-
-
-class main_game_screen : public screen, configurable {
-	private:
-		sf::RenderTexture points;
-		sf::Vector2f pos;
-
-		sf::RenderTexture map_texture;
-		sf::Sprite map_sprite;
-		game_map map;
-
-		virtual void config(cpponfig::configuration & cfg) override;
-
+class cell {
 	public:
-		virtual void setup() override;
-		virtual int draw() override;
-		virtual int handle_event(const sf::Event & event) override;
+		bool mine_inside;
+		bool uncovered;
 
-		main_game_screen(application & theapp);
-		main_game_screen(const main_game_screen & other);
-		main_game_screen(main_game_screen && other);
-		virtual ~main_game_screen();
+		cell();
+		cell(const cell &) = default;
+		cell(cell &&) = default;
+
+		cell & operator=(const cell &) = default;
+		cell & operator=(cell &&) = default;
+
+		void draw(const sf::Vector2f & pos, const sf::Vector2f & size, sf::RenderTarget & target, sf::RenderStates states) const;
 };
-
-
-#endif  // MAIN_GAME_SCREEN_HPP

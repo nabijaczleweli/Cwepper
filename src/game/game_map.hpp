@@ -13,44 +13,32 @@
 // copies or substantial portions of the Software.
 
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNE
 // FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
 // COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 // IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 // CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-#pragma once
-#ifndef MAIN_GAME_SCREEN_HPP
-#define MAIN_GAME_SCREEN_HPP
+#include "cell.hpp"
+#include "Eigen/Dense"
+#include <SFML/Graphics.hpp>
 
 
-#include "../screen.hpp"
-#include "../../../util/configurable.hpp"
-#include "../../../game/game_map.hpp"
-
-
-class main_game_screen : public screen, configurable {
+class game_map : public sf::Drawable {
 	private:
-		sf::RenderTexture points;
-		sf::Vector2f pos;
+		Eigen::Matrix<cell, Eigen::Dynamic, Eigen::Dynamic> map;
+		sf::Vector2f cell_size;
 
-		sf::RenderTexture map_texture;
-		sf::Sprite map_sprite;
-		game_map map;
-
-		virtual void config(cpponfig::configuration & cfg) override;
+		virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
 
 	public:
-		virtual void setup() override;
-		virtual int draw() override;
-		virtual int handle_event(const sf::Event & event) override;
+		game_map(unsigned int w, unsigned int h);
+		game_map(const game_map & other);
+		game_map(game_map && other);
 
-		main_game_screen(application & theapp);
-		main_game_screen(const main_game_screen & other);
-		main_game_screen(main_game_screen && other);
-		virtual ~main_game_screen();
+		virtual ~game_map() = default;
+
+		cell & at(int x, int y);
+		const cell & at(int x, int y) const;
 };
-
-
-#endif  // MAIN_GAME_SCREEN_HPP
