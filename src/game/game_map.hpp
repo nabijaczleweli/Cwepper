@@ -33,7 +33,7 @@ class game_map : public sf::Drawable {
 		virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
 
 	public:
-		game_map(unsigned int w, unsigned int h);
+		game_map(unsigned int w, unsigned int h, const sf::Vector2u & destsize);
 		game_map(const game_map & other);
 		game_map(game_map && other);
 

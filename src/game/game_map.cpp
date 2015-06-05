@@ -36,15 +36,25 @@ static cell placeholder_cell;
 void game_map::draw(RenderTarget & target, RenderStates states) const {
 	target.clear(Color::Transparent);
 
-	const_cast<Vector2f &>(cell_size).x = min(static_cast<float>(target.getSize().x) / map.cols(), static_cast<float>(target.getSize().y) / map.rows());
-	const_cast<Vector2f &>(cell_size).y = cell_size.x;
+	RectangleShape shape(static_cast<Vector2f>(target.getSize()));
+	shape.setOutlineThickness(-2);
+	shape.setOutlineColor(Color::Magenta);
+	shape.setFillColor(Color::Transparent);
+	target.draw(shape, states);
 
 	for(int y = 0; y < map.rows(); ++y)
 		for(int x = 0; x < map.cols(); ++x)
-			map(y, x).draw({x * cell_size.x, y * cell_size.y}, cell_size, target, states);
+			target.draw(map(y, x), states);
 }
 
-game_map::game_map(unsigned int width, unsigned int height) : map(height, width) {}
+game_map::game_map(unsigned int width, unsigned int height, const Vector2u & destsize) : map(height, width) {
+	cell_size.x = min(destsize.x / map.cols(), destsize.y / map.rows());
+	cell_size.y = cell_size.x;
+
+	for(int y = 0; y < map.rows(); ++y)
+		for(int x = 0; x < map.cols(); ++x)
+			map(y, x) = cell(Vector2u(x, y), cell_size);
+}
 game_map::game_map(const game_map & other) : map(other.map) {}
 game_map::game_map(game_map && other) : map(move(other.map)) {}
 
@@ -58,8 +68,6 @@ const cell & game_map::at(int x, int y) const {
 
 	x = floor(x / cell_size.x);
 	y = floor(y / cell_size.y);
-	if(y >= map.rows() || x >= map.cols())
-		return placeholder_cell;
-	else
-		return map(y, x);
+
+	return (y >= map.rows() || x >= map.cols()) ? placeholder_cell : map(y, x);
 }

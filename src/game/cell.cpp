@@ -27,23 +27,28 @@ using namespace sf;
 using namespace std;
 
 
-cell::cell() : mine_inside(true), uncovered(false) {}
+void cell::draw(RenderTarget & target, RenderStates states) const {
+	const Vector2f pos(indices.x * size.x, indices.y * size.y);
 
-void cell::draw(const Vector2f & pos, const Vector2f & size, RenderTarget & target, RenderStates states) const {
-	if(mine_inside) {
-		VertexArray var(PrimitiveType::LinesStrip, 4);
-		var[0].position = {pos.x + size.x / 2, pos.y};
-		var[1].position = {pos.x + size.x, pos.y + size.y};
-		var[2].position = {pos.x, pos.y + size.y};
-		var[3] = var[0];
-		target.draw(var, states);
-	}
-	if(uncovered) {
-		VertexArray var(PrimitiveType::LinesStrip, 4);
-		var[0].position = {pos.x + size.x / 2, pos.y + size.y};
-		var[1].position = {pos.x + size.x, pos.y};
-		var[2].position = {pos.x, pos.y};
-		var[3] = var[0];
-		target.draw(var, states);
+	if(size.x != 0 && size.y != 0) {
+		if(mine_inside) {
+			VertexArray var(PrimitiveType::LinesStrip, 4);
+			var[0].position = {pos.x + size.x / 2, pos.y};
+			var[1].position = {pos.x + size.x, pos.y + size.y};
+			var[2].position = {pos.x, pos.y + size.y};
+			var[3] = var[0];
+			target.draw(var, states);
+		}
+		if(uncovered) {
+			VertexArray var(PrimitiveType::LinesStrip, 4);
+			var[0].position = {pos.x + size.x / 2, pos.y + size.y};
+			var[1].position = {pos.x + size.x, pos.y};
+			var[2].position = {pos.x, pos.y};
+			var[3] = var[0];
+			target.draw(var, states);
+		}
 	}
 }
+
+cell::cell() : mine_inside(true), uncovered(false) {}
+cell::cell(const sf::Vector2u & theindices, const sf::Vector2f & thesize) : indices(theindices), size(thesize), mine_inside(true), uncovered(false) {}

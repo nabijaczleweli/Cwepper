@@ -23,17 +23,22 @@
 #include <SFML/Graphics.hpp>
 
 
-class cell {
+class cell : public sf::Drawable {
+	private:
+		sf::Vector2u indices;
+
+		void draw(sf::RenderTarget & target, sf::RenderStates states) const;
+
 	public:
+		sf::Vector2f size;
 		bool mine_inside;
 		bool uncovered;
 
 		cell();
+		cell(const sf::Vector2u & theindices, const sf::Vector2f & thesize);
 		cell(const cell &) = default;
 		cell(cell &&) = default;
 
 		cell & operator=(const cell &) = default;
 		cell & operator=(cell &&) = default;
-
-		void draw(const sf::Vector2f & pos, const sf::Vector2f & size, sf::RenderTarget & target, sf::RenderStates states) const;
 };
