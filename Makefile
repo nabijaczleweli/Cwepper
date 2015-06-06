@@ -31,13 +31,8 @@ LDAR := -fpic $(foreach custdll,$(CUSTOM_DLLS),-L"$(dir $(custdll))") $(foreach 
 SOURCES := $(sort $(filter-out ./ext/%,$(shell find src -name *.cpp)))
 
 
-.PHONY : clean all release git travis-ext-check
+.PHONY : clean all release git
 
-
-travis-ext-check :
-	ls || :
-	ls ext  || :
-	ls ext/all || :
 
 all : $(subst $(SRCDIR),$(OBJDIR),$(subst .cpp,$(OBJ),$(SOURCES)))
 	$(CXX) $(CPPAR) -o$(OUTDIR)Cwepper$(EXE) $(subst $(SRCDIR),$(OBJDIR),$^) $(LDAR)
@@ -46,7 +41,7 @@ all : $(subst $(SRCDIR),$(OBJDIR),$(subst .cpp,$(OBJ),$(SOURCES)))
 clean :
 	rm -rf $(OUTDIR) $(RELEASEDIR)
 
-release : clean git travis-ext-check all
+release : clean git all
 	@$(MKDIR) $(RELEASEDIR)
 	cp $(OUTDIR)Cwepper$(EXE) $(RELEASEDIR)
 	cp --target-directory=$(RELEASEDIR) $(foreach lib,$(filter-out $(foreach custdll,$(CUSTOM_DLLS),$(basename $(notdir $(custdll)))), \
