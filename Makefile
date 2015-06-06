@@ -35,7 +35,7 @@ SOURCES := $(sort $(filter-out ./ext/%,$(shell find src -name *.cpp)))
 
 
 all : $(subst $(SRCDIR),$(OBJDIR),$(subst .cpp,$(OBJ),$(SOURCES)))
-	$(CPP) $(CPPAR) -o$(OUTDIR)Cwepper$(EXE) $(subst $(SRCDIR),$(OBJDIR),$^) $(LDAR)
+	$(CXX) $(CPPAR) -o$(OUTDIR)Cwepper$(EXE) $(subst $(SRCDIR),$(OBJDIR),$^) $(LDAR)
 	@cp -ur $(ASSETDIR) $(OUTDIR)
 
 clean :
@@ -60,4 +60,4 @@ git :
 
 $(OBJDIR)%$(OBJ) : $(SRCDIR)%.cpp
 	@$(MKDIR) -p $(dir $@) || :
-	$(CPP) $(CPPAR) -c -o$@ $^
+	$(CXX) $(CPPAR) -c -o$@ $^

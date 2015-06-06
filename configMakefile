@@ -41,7 +41,6 @@ endif
 OBJ := .o
 ARCH := .a
 AR := ar
-CPP := c++
 CPPAR := -Os -std=c++14 -pedantic -Wall -Wextra -pipe -fomit-frame-pointer -shared-libstdc++ -Iext/all
 STRIP := strip
 STRIPAR := --strip-all --remove-section=.comment --remove-section=.note
