@@ -3,4 +3,4 @@ language: cpp
 compiler:
   - clang
 
-script: make -j release
+script: make release
