@@ -7,11 +7,13 @@ before_install:
   # We need this line to have g++4.9 available in apt
   - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
   - sudo apt-get update -qq
-  - apt-cache search sfml
 
 install:
   - sudo apt-get install -qq gcc-4.9 g++-4.9
   - sudo apt-get install -qq libsfml-dev
+  - ls /usr/include
+  - ls /usr/local/include
+  - ls /usr
   # We want to compile with g++ 4.9 when rather than the default g++
   - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.9 90
 
