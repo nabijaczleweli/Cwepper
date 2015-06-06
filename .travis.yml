@@ -3,4 +3,7 @@ language: cpp
 compiler:
   - gcc
 
+env:
+  - CXX=g++
+
 script: make -j release
