@@ -25,7 +25,7 @@
 
 using namespace sf;
 using namespace std;
-using namespace audiere;
+//using namespace audiere;
 
 
 auto load_font(const char * name) {
@@ -60,4 +60,4 @@ const Font font_7segment(load_font("digital-7 (mono).ttf"));
 const Font font_swirly(load_font("MACABRA_.ttf"));
 
 
-const AudioDevicePtr audio_device(OpenDevice());
+//const AudioDevicePtr audio_device(OpenDevice());
