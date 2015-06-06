@@ -26,7 +26,7 @@
 
 
 #include "../util/configurable.hpp"
-#include <cpponfiguration/configuration.hpp>
+#include "cpponfiguration/configuration.hpp"
 #include <unordered_set>
 
 
