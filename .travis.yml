@@ -1,9 +1,6 @@
 language: cpp
 
 compiler:
-  - gcc
-
-env:
-  - CXX=g++
+  - clang
 
 script: make -j release
