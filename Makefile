@@ -34,6 +34,10 @@ SOURCES := $(sort $(filter-out ./ext/%,$(shell find src -name *.cpp)))
 .PHONY : clean all release git
 
 
+travis-check :
+	$(CXX) --help
+	$(CXX) --help | grep std
+
 all : $(subst $(SRCDIR),$(OBJDIR),$(subst .cpp,$(OBJ),$(SOURCES)))
 	$(CXX) $(CPPAR) -o$(OUTDIR)Cwepper$(EXE) $(subst $(SRCDIR),$(OBJDIR),$^) $(LDAR)
 	@cp -ur $(ASSETDIR) $(OUTDIR)
@@ -41,7 +45,7 @@ all : $(subst $(SRCDIR),$(OBJDIR),$(subst .cpp,$(OBJ),$(SOURCES)))
 clean :
 	rm -rf $(OUTDIR) $(RELEASEDIR)
 
-release : clean git all
+release : travis-check clean git all
 	@$(MKDIR) $(RELEASEDIR)
 	cp $(OUTDIR)Cwepper$(EXE) $(RELEASEDIR)
 	cp --target-directory=$(RELEASEDIR) $(foreach lib,$(filter-out $(foreach custdll,$(CUSTOM_DLLS),$(basename $(notdir $(custdll)))), \

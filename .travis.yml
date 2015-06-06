@@ -1,6 +1,6 @@
 language: cpp
 
 compiler:
-  - gcc
+  - clang
 
-script: make -j release
+script: make release
