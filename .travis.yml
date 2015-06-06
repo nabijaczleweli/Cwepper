@@ -4,9 +4,14 @@ compiler:
   - gcc
 
 before_install:
+  # Install SFML 2.2
+  - wget http://www.sfml-dev.org/files/SFML-2.2-linux-gcc-32-bit.tar.gz
+  - tar xf SFML-2.2-linux-gcc-32-bit.tar.gz
+  - sudo cp -r SFML-2.2/lib/* /usr/local/lib/.
   # We need this line to have g++4.9 available in apt
   - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
   - sudo apt-get update -qq
+  - apt-cache search sfml
 
 install:
   - sudo apt-get install -qq gcc-4.9 g++-4.9
