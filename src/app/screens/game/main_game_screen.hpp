@@ -32,9 +32,6 @@
 
 class main_game_screen : public screen, configurable {
 	private:
-		sf::RenderTexture points;
-		sf::Vector2f pos;
-
 		sf::RenderTexture map_texture;
 		sf::Sprite map_sprite;
 		game_map map;

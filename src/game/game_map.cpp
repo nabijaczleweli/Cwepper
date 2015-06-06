@@ -28,9 +28,17 @@
 
 using namespace sf;
 using namespace std;
+using namespace cpponfig;
 
 
 static cell placeholder_cell;
+
+static const auto with_bounds = [&](auto & map, int x, int y) -> auto & {
+	if(x < 0 || y < 0 || x >= map.cols() || y >= map.rows())
+		throw out_of_range(to_string(x) + " < 0 || " + to_string(y) + " < 0 || " +
+		                   to_string(x) + " >= " + to_string(map.cols()) + " || " + to_string(y) + " >= " + to_string(map.rows()));
+	return map(y, x);
+};
 
 
 void game_map::draw(RenderTarget & target, RenderStates states) const {
@@ -47,27 +55,31 @@ void game_map::draw(RenderTarget & target, RenderStates states) const {
 			target.draw(map(y, x), states);
 }
 
-game_map::game_map(unsigned int width, unsigned int height, const Vector2u & destsize) : map(height, width) {
-	cell_size.x = min(destsize.x / map.cols(), destsize.y / map.rows());
-	cell_size.y = cell_size.x;
+void game_map::config(configuration & cfg) {
+	const auto p = cfg.get("game_map:mines", property("0.3", "How much of the field is contains with mines.")).floating();
+	bernoulli_distribution dist(p);
+	mt19937 random(random_device{}());
 
 	for(int y = 0; y < map.rows(); ++y)
 		for(int x = 0; x < map.cols(); ++x)
-			map(y, x) = cell(Vector2u(x, y), cell_size);
-}
-game_map::game_map(const game_map & other) : map(other.map) {}
-game_map::game_map(game_map && other) : map(move(other.map)) {}
-
-cell & game_map::at(int x, int y) {
-	return const_cast<cell &>(const_cast<const game_map *>(this)->at(x, y));  // Well-defined or UB?
+			map(y, x) = cell(Vector2u(x, y), cell_size, bind(ref(dist), ref(random)));
 }
 
-const cell & game_map::at(int x, int y) const {
+game_map::game_map(unsigned int width, unsigned int height, const Vector2u & destsize) : map(height, width) {
+	cell_size.x = min(destsize.x / map.cols(), destsize.y / map.rows());
+	cell_size.y = cell_size.x;
+}
+
+void game_map::click(int x, int y) {
+	using placeholders::_1;
+	using placeholders::_2;
+
 	if(cell_size.x == 0 || cell_size.y == 0)
-		return placeholder_cell;
+		return;
 
 	x = floor(x / cell_size.x);
 	y = floor(y / cell_size.y);
 
-	return (y >= map.rows() || x >= map.cols()) ? placeholder_cell : map(y, x);
+	if(y < map.rows() && x < map.cols())
+		map(y, x).click(bind(with_bounds, ref(map), _1, _2));
 }

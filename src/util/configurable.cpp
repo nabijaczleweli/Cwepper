@@ -33,5 +33,3 @@ configurable::configurable(bool do_load) : load(do_load) {
 }
 configurable::configurable() : configurable(true) {}
 configurable::configurable(nothrow_t) : configurable(false) {}
-configurable::configurable(const configurable & other) : configurable(other.load) {}
-configurable::configurable(configurable && other) : configurable(other.load) {}

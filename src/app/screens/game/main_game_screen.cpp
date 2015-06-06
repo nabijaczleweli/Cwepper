@@ -53,10 +53,6 @@ void main_game_screen::setup() {
 }
 
 int main_game_screen::draw() {
-	Sprite circle(points.getTexture());
-	circle.setPosition(pos);
-	window.draw(circle);
-
 	if(!map_sprite.getTexture()) {
 		map_texture.create(window.getSize().x * .6f, window.getSize().y * 99.f / 100.f);
 		map_sprite.setPosition(static_cast<Vector2f>(window.getSize()) / 200.f);
@@ -73,23 +69,13 @@ int main_game_screen::handle_event(const Event & event) {
 	if(int i = screen::handle_event(event))
 		return i;
 
-	if(event.type == Event::MouseMoved) {
-		pos = Vector2f(event.mouseMove.x, event.mouseMove.y);
-		app.schedule_redraw();
+	if(event.type == Event::MouseButtonPressed) {
+		const auto interpolated = Vector2f(event.mouseButton.x, event.mouseButton.y) - map_sprite.getPosition();
+		if(map_sprite.getGlobalBounds().contains(interpolated)) {
+			map.click(interpolated.x, interpolated.y);
 
-		const auto interpolated = pos - map_sprite.getPosition();
-		if(map_sprite.getGlobalBounds().contains(interpolated))
-			map.at(interpolated.x, interpolated.y).uncovered = true;
-	} else if(event.type == Event::MouseButtonPressed) {
-		const unsigned int radius = sqrt(event.mouseButton.x * event.mouseButton.x + event.mouseButton.y * event.mouseButton.y);
-		const unsigned int diameter = 2 * radius;
-		points.create(diameter ? diameter : 1, diameter ? diameter : 1);
-		points.setSmooth(true);
-		points.clear(Color::Transparent);
-		VertexArray vertices(PrimitiveType::LinesStrip, 62832);  // Magic number here = (tau / .0001) rounded up
-		generate(&vertices[0], &vertices[0] + vertices.getVertexCount(), generator(radius, .0001));
-		points.draw(vertices);
-		points.display();
+			app.schedule_redraw();
+		}
 	}
 
 	return 0;

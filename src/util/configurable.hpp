@@ -36,13 +36,18 @@ class configurable {
 	private:
 		configurable(bool do_load);
 
-		bool load = true;
+		bool load;
 
 	protected:
 		configurable();
-		configurable(std::nothrow_t);
-		configurable(const configurable & other);
-		configurable(configurable && other);
+		explicit configurable(std::nothrow_t);
+		configurable(const configurable &) = default;
+		configurable(configurable &&) = default;
+
+		virtual ~configurable() = default;
+
+		configurable & operator=(const configurable &) = default;
+		configurable & operator=(configurable &&) = default;
 };
 
 

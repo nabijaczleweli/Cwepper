@@ -21,10 +21,12 @@
 
 
 #include <SFML/Graphics.hpp>
+#include <functional>
 
 
 class cell : public sf::Drawable {
 	private:
+		int mines_around;
 		sf::Vector2u indices;
 
 		void draw(sf::RenderTarget & target, sf::RenderStates states) const;
@@ -35,10 +37,12 @@ class cell : public sf::Drawable {
 		bool uncovered;
 
 		cell();
-		cell(const sf::Vector2u & theindices, const sf::Vector2f & thesize);
+		cell(const sf::Vector2u & theindices, const sf::Vector2f & thesize, const std::function<bool()> & gen);
 		cell(const cell &) = default;
 		cell(cell &&) = default;
 
 		cell & operator=(const cell &) = default;
 		cell & operator=(cell &&) = default;
+
+		void click(const std::function<cell &(int, int)> & getter);
 };
