@@ -26,7 +26,7 @@
 #include "util/configurable.hpp"
 #include "util/broken_gcc.hpp"
 #include "util/file.hpp"
-#include <cpponfiguration/cpponfig_version.hpp>
+#include "cpponfiguration/cpponfig_version.hpp"
 #include <audiere.h>
 #include <ctime>
 #include <iostream>

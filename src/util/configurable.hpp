@@ -25,7 +25,7 @@
 #define CONFIGURABLE_HPP
 
 
-#include <cpponfiguration/configuration.hpp>
+#include "cpponfiguration/configuration.hpp"
 #include <new>
 
 
