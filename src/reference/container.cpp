@@ -25,7 +25,7 @@
 
 using namespace sf;
 using namespace std;
-using namespace audiere;
+//using namespace audiere;
 
 
 auto load_font(const char * name) {
