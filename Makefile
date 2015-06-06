@@ -60,12 +60,9 @@ git :
 	@rm -rf "ext/all/*"
 	@$(MKDIR) "ext/all" 1>$(devnull) 2>$(devnull) || :
 	@echo $(SUBMODULES_GIT)
-	git submodule -q foreach             "echo '$$name'"
-	git submodule -q foreach             "echo '$$path'"
-	git submodule -q foreach             "echo $(MKDIR) \"$(subst \,/,$(shell pwd))/ext/all/$$name\""
-	git submodule -q foreach             "echo cp -r $(subst \,/,$(shell pwd))/$$path/src/* $(subst \,/,$(shell pwd))/ext/all/$$name"
-	git submodule -q foreach             "$(MKDIR) \"$(subst \,/,$(shell pwd))/ext/all/$$name\" 1>$(devnull) 2>$(devnull) || :"
-	git submodule -q foreach             "cp -r $(subst \,/,$(shell pwd))/$$path/src/* $(subst \,/,$(shell pwd))/ext/all/$$name"
+	@echo $(foreach submod,$(SUBMODULES_GIT),$(notdir $(submod)))
+	$(foreach submod,$(SUBMODULES_GIT),ln -s "$(subst \,/,$(shell pwd))/$(submod)/src" "$(subst \,/,$(shell pwd))/ext/all/$(notdir $(submod))" 1>$(devnull) \
+	                                                                                                                                           2>$(devnull) &) :
 
 
 $(OBJDIR)%$(OBJ) : $(SRCDIR)%.cpp
