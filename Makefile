@@ -35,6 +35,8 @@ SOURCES := $(sort $(filter-out ./ext/%,$(shell find src -name *.cpp)))
 
 
 all : $(subst $(SRCDIR),$(OBJDIR),$(subst .cpp,$(OBJ),$(SOURCES)))
+	$(CXX) --help
+	$(CXX) --help | grep std
 	$(CXX) $(CPPAR) -o$(OUTDIR)Cwepper$(EXE) $(subst $(SRCDIR),$(OBJDIR),$^) $(LDAR)
 	@cp -ur $(ASSETDIR) $(OUTDIR)
 
