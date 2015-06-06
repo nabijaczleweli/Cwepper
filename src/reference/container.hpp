@@ -29,7 +29,7 @@
 #include "../resource/texture_loader.hpp"
 #include "../resource/image_loader.hpp"
 #include "../resource/localizer.hpp"
-#include <audiere.h>
+//#include <audiere.h>
 #include <SFML/Graphics.hpp>
 #include <string>
 #include <vector>
@@ -59,7 +59,7 @@ extern const sf::Font font_7segment;
 extern const sf::Font font_swirly;
 
 
-extern const audiere::AudioDevicePtr audio_device;
+//extern const audiere::AudioDevicePtr audio_device;
 
 
 #endif  // CONTAINER_HPP
