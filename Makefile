@@ -31,12 +31,8 @@ LDAR := -fpic $(foreach custdll,$(CUSTOM_DLLS),-L"$(dir $(custdll))") $(foreach 
 SOURCES := $(sort $(filter-out ./ext/%,$(shell find src -name *.cpp)))
 
 
-.PHONY : clean all release git travis-compiler-check travis-ext-check
+.PHONY : clean all release git travis-ext-check
 
-
-travis-compiler-check :
-	$(CXX) --help
-	$(CXX) --help | grep std
 
 travis-ext-check :
 	ls || :
@@ -50,7 +46,7 @@ all : $(subst $(SRCDIR),$(OBJDIR),$(subst .cpp,$(OBJ),$(SOURCES)))
 clean :
 	rm -rf $(OUTDIR) $(RELEASEDIR)
 
-release : travis-compiler-check clean git travis-ext-check all
+release : clean git travis-ext-check all
 	@$(MKDIR) $(RELEASEDIR)
 	cp $(OUTDIR)Cwepper$(EXE) $(RELEASEDIR)
 	cp --target-directory=$(RELEASEDIR) $(foreach lib,$(filter-out $(foreach custdll,$(CUSTOM_DLLS),$(basename $(notdir $(custdll)))), \
@@ -63,6 +59,10 @@ git :
 	git submodule -q foreach --recursive "make --silent --no-print-directory dll"
 	@rm -rf "ext/all/*"
 	@$(MKDIR) "ext/all" 1>$(devnull) 2>$(devnull) || :
+	git submodule -q foreach             "echo \\$$name"
+	git submodule -q foreach             "echo \\$$path"
+	git submodule -q foreach             "echo $(MKDIR) \"$(subst \,/,$(shell pwd))/ext/all/$$name\""
+	git submodule -q foreach             "echo cp -r $(subst \,/,$(shell pwd))/$$path/src/* $(subst \,/,$(shell pwd))/ext/all/$$name"
 	git submodule -q foreach             "$(MKDIR) \"$(subst \,/,$(shell pwd))/ext/all/$$name\" 1>$(devnull) 2>$(devnull) || :"
 	git submodule -q foreach             "cp -r $(subst \,/,$(shell pwd))/$$path/src/* $(subst \,/,$(shell pwd))/ext/all/$$name"
 
