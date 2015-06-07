@@ -26,6 +26,8 @@ ifeq "$(OS)" "Windows_NT"
 	nop := echo > $(devnull)
 	DLL := .dll
 	MKDIR := busybox mkdir
+	PIC :=
+	SFML_DLL_SUFFIX = -2
 else
 	EXE := .out
 	devnull := /dev/null
@@ -36,12 +38,14 @@ else
 		DLL := .so
 	endif
 	MKDIR := mkdir
+	PIC := -fPIC
+	SFML_DLL_SUFFIX =
 endif
 
 OBJ := .o
 ARCH := .a
 AR := ar
-CPPAR := -Os -std=c++14 -pedantic -Wall -Wextra -pipe -fomit-frame-pointer -Iext/all -fPIC
+CPPAR := -Os -std=c++14 -pedantic -Wall -Wextra -pipe -fomit-frame-pointer -Iext/all $(PIC)
 STRIP := strip
 STRIPAR := --strip-all --remove-section=.comment --remove-section=.note
 
