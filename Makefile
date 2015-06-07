@@ -37,6 +37,12 @@ SOURCES := $(sort $(filter-out ./ext/%,$(shell find src -name *.cpp)))
 
 
 all : $(subst $(SRCDIR),$(OBJDIR),$(subst .cpp,$(OBJ),$(SOURCES)))
+	@echo "ALL:"
+	@echo $(SUBMODULES_GIT)
+	@echo $(foreach submod,$(SUBMODULES_GIT),$(notdir $(submod)))
+	@echo $(CUSTOM_DLLS)
+	$(foreach submod,$(SUBMODULES_GIT),ls $(submod) &) :
+	$(foreach submod,$(SUBMODULES_GIT),ls $(submod)/$(OUTDIR) &) :
 	$(CXX) $(CPPAR) -o$(OUTDIR)Cwepper$(EXE) $(subst $(SRCDIR),$(OBJDIR),$^) $(LDAR)
 	@cp -ur $(ASSETDIR) $(OUTDIR)
 
@@ -56,6 +62,7 @@ git :
 	git submodule -q foreach --recursive "make --silent --no-print-directory dll"
 	@rm -rf "ext/all/*"
 	@$(MKDIR) "ext/all" 1>$(devnull) 2>$(devnull) || :
+	@echo "GIT:"
 	@echo $(SUBMODULES_GIT)
 	@echo $(foreach submod,$(SUBMODULES_GIT),$(notdir $(submod)))
 	@echo $(CUSTOM_DLLS)
