@@ -57,7 +57,7 @@ class localizer {
 
 		localizer();
 		/** Used to disambugate the opening and non-opening constructors */
-		explicit localizer(nullptr_t);
+		explicit localizer(std::nothrow_t);
 		explicit localizer(stream_t & from);
 		explicit localizer(const std::string & locale);
 		localizer(localizer && loc);
