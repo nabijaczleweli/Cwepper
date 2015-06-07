@@ -58,12 +58,8 @@ git :
 	@echo $(SUBMODULES_GIT)
 	@echo $(foreach submod,$(SUBMODULES_GIT),$(notdir $(submod)))
 	@echo $(CUSTOM_DLLS)
-	@ls ext
-	@ls ext/cpponfiguration
-	@ls ext/cpponfiguration/out
-	$(foreach submod,$(SUBMODULES_GIT),echo $(submod)/$(OUTDIR) &) :
-	$(foreach submod,$(SUBMODULES_GIT),echo $(submod)/$(OUTDIR)*$(DLL) &) :
-	$(foreach submod,$(SUBMODULES_GIT),ls $(submod)/$(OUTDIR) &) :
+	echo $(foreach submod,$(SUBMODULES_GIT),$(shell ls $(submod)))
+	echo $(foreach submod,$(SUBMODULES_GIT),$(shell ls $(submod)/$(OUTDIR)))
 	$(foreach submod,$(SUBMODULES_GIT),ln -s "$(subst \,/,$(shell pwd))/$(submod)/src" "$(subst \,/,$(shell pwd))/ext/all/$(notdir $(submod))" 1>$(devnull) \
 	                                                                                                                                           2>$(devnull) &) :
 
