@@ -1,5 +1,8 @@
 language: cpp
 
+git:
+    submodules: false
+
 compiler:
   - gcc
 
@@ -15,21 +18,23 @@ install:
   - sudo apt-get install -qq libopenal-dev libudev-dev libx11-xcb-dev libxcb-image0-dev libxcb-randr0-dev
   # get the latest sfml version
   - cd ../..
-  - git clone https://github.com/LaurentGomila/SFML.git
+  - git clone https://github.com/SFML/SFML.git
   - cd SFML
   # build and install it
-  - cmake . && make && sudo make install
+  - cmake .
+  - cat Makefile
+  - cat CMakeFiles/Makefile2
+  - cat cmake_install.cmake
+  - make
+  - sudo make install
   # copy FindSFML.cmake
   - sudo cp cmake/Modules/FindSFML.cmake /usr/share/cmake-2.8/Modules
   - cd $TRAVIS_BUILD_DIR
   #############################################
-  - ls /usr/include
-  - ls /usr/local/include
-  - ls /usr
   # We want to compile with g++ 4.9 when rather than the default g++
   - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.9 90
 
-git:
-    submodules: false
+before-script:
+  - export CILDAR=-L/usr/local/lib
 
 script: make release
