@@ -56,8 +56,8 @@ ASSETDIR = assets/
 RELEASEDIR := release
 ifeq "$(OS)" "Windows_NT"
 	SHELL := cmd
-	DLLDIR := $(dir $(shell c:\WINDOWS\system32\cmd.exe /s /c call win/which.bat $(CPP) | c:\WINDOWS\system32\find.exe "$(CPP)"))
+	DLLDIR := $(dir $(shell c:\WINDOWS\system32\cmd.exe /s /c call win/which.bat $(CXX) | c:\WINDOWS\system32\find.exe "$(CXX)"))
 	SHELL := /bin/sh
 else
-	DLLDIR := $(dir $(shell type -p $(CPP)))
+	DLLDIR := $(dir $(shell type -p $(CXX)))
 endif
