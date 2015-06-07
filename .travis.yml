@@ -12,9 +12,11 @@ install:
   - sudo apt-get install -qq gcc-4.9 g++-4.9
   #############################################
   - sudo apt-get install -qq libpthread-stubs0-dev libgl1-mesa-dev libx11-dev libxrandr-dev libfreetype6-dev libglew1.5-dev libjpeg8-dev libsndfile1-dev
-  - sudo apt-get install -qq libopenal-dev libudev-dev libx11-xcb-dev
+  - sudo apt-get install -qq libopenal-dev libudev-dev libx11-xcb-dev libxcb-image0-dev
   # get the latest sfml version
+  - pwd
   - cd ../..
+  - pwd
   - git clone https://github.com/LaurentGomila/SFML.git
   - cd SFML
   # build and install it
