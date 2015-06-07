@@ -48,9 +48,9 @@ const string app_name("Cwepper");
       texture_loader main_texture_loader(main_image_loader);
       image_loader   main_image_loader;
 
-      localizer fallback_izer(nullptr);
-      localizer local_izer(nullptr);
-      localizer global_izer(nullptr);
+      localizer fallback_izer(nothrow);
+      localizer local_izer(nothrow);
+      localizer global_izer(nothrow);
 
       vector<string> present_languages;
 

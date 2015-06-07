@@ -40,7 +40,7 @@ class configurable {
 
 	protected:
 		configurable();
-		inline explicit configurable(std::nothrow_t) : configurable(false) {}
+		explicit configurable(std::nothrow_t);
 		configurable(const configurable &) = default;
 		configurable(configurable &&) = default;
 
