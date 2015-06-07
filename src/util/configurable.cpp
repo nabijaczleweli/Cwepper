@@ -32,4 +32,3 @@ configurable::configurable(bool do_load) : load(do_load) {
 		app_configuration.add(this);
 }
 configurable::configurable() : configurable(true) {}
-configurable::configurable(nothrow_t) : configurable(false) {}
