@@ -1,5 +1,8 @@
 language: cpp
 
+git:
+    submodules: false
+
 compiler:
   - gcc
 
@@ -28,14 +31,10 @@ install:
   - sudo cp cmake/Modules/FindSFML.cmake /usr/share/cmake-2.8/Modules
   - cd $TRAVIS_BUILD_DIR
   #############################################
-  - ls /usr/include
-  - ls /usr/local/include
-  - ls /usr/local
-  - ls /usr
   # We want to compile with g++ 4.9 when rather than the default g++
   - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.9 90
 
-git:
-    submodules: false
+before-script:
+  - export CILDAR=-L/usr/local/lib
 
 script: make release
