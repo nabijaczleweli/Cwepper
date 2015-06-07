@@ -23,7 +23,8 @@
 include configMakefile
 
 
-SUBMODULES_GIT := $(shell git submodule status --recursive | sed "s/[ +-][0-9a-f]* //g" | sed "s/ .*//g")
+SUBMODULES_GIT := ext/Eigen ext/cpponfiguration
+#                 ^ $(shell git submodule status --recursive | sed "s/[ +-][0-9a-f]* //g" | sed "s/ .*//g")
 SUBSYSTEMS_SFML := system window graphics
 CUSTOM_DLLS := $(foreach submod,$(SUBMODULES_GIT),$(wildcard $(submod)/$(OUTDIR)*$(DLL)))
 LDDLLS := $(foreach subsystem,$(SUBSYSTEMS_SFML),sfml-$(subsystem)$(SFML_DLL_SUFFIX)) $(foreach custdll,$(CUSTOM_DLLS),$(basename $(notdir $(custdll))))
@@ -36,13 +37,19 @@ SOURCES := $(sort $(filter-out ./ext/%,$(shell find src -name *.cpp)))
 
 
 all : $(subst $(SRCDIR),$(OBJDIR),$(subst .cpp,$(OBJ),$(SOURCES)))
+	@echo "ALL:"
+	@echo $(SUBMODULES_GIT)
+	@echo $(foreach submod,$(SUBMODULES_GIT),$(notdir $(submod)))
+	@echo $(CUSTOM_DLLS)
+	$(foreach submod,$(SUBMODULES_GIT),ls $(submod) &) :
+	$(foreach submod,$(SUBMODULES_GIT),ls $(submod)/$(OUTDIR) &) :
 	$(CXX) $(CPPAR) -o$(OUTDIR)Cwepper$(EXE) $(subst $(SRCDIR),$(OBJDIR),$^) $(LDAR)
 	@cp -ur $(ASSETDIR) $(OUTDIR)
 
 clean :
 	rm -rf $(OUTDIR) $(RELEASEDIR)
 
-release : clean git all
+release : clean all
 	@$(MKDIR) $(RELEASEDIR)
 	cp $(OUTDIR)Cwepper$(EXE) $(RELEASEDIR)
 	cp --target-directory=$(RELEASEDIR) $(foreach lib,$(filter-out $(foreach custdll,$(CUSTOM_DLLS),$(basename $(notdir $(custdll)))), \
@@ -55,11 +62,12 @@ git :
 	git submodule -q foreach --recursive "make --silent --no-print-directory dll"
 	@rm -rf "ext/all/*"
 	@$(MKDIR) "ext/all" 1>$(devnull) 2>$(devnull) || :
+	@echo "GIT:"
 	@echo $(SUBMODULES_GIT)
 	@echo $(foreach submod,$(SUBMODULES_GIT),$(notdir $(submod)))
 	@echo $(CUSTOM_DLLS)
-	echo $(foreach submod,$(SUBMODULES_GIT),$(shell ls $(submod)))
-	echo $(foreach submod,$(SUBMODULES_GIT),$(shell ls $(submod)/$(OUTDIR)))
+	$(foreach submod,$(SUBMODULES_GIT),ls $(submod) &) :
+	$(foreach submod,$(SUBMODULES_GIT),ls $(submod)/$(OUTDIR) &) :
 	$(foreach submod,$(SUBMODULES_GIT),ln -s "$(subst \,/,$(shell pwd))/$(submod)/src" "$(subst \,/,$(shell pwd))/ext/all/$(notdir $(submod))" 1>$(devnull) \
 	                                                                                                                                           2>$(devnull) &) :
 

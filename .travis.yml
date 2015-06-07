@@ -22,9 +22,6 @@ install:
   - cd SFML
   # build and install it
   - cmake .
-  - cat Makefile
-  - cat CMakeFiles/Makefile2
-  - cat cmake_install.cmake
   - make
   - sudo make install
   # copy FindSFML.cmake
@@ -34,4 +31,4 @@ install:
   # We want to compile with g++ 4.9 when rather than the default g++
   - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.9 90
 
-script: make release
+script: make git release
