@@ -22,9 +22,6 @@ install:
   - cd SFML
   # build and install it
   - cmake .
-  - cat Makefile
-  - cat CMakeFiles/Makefile2
-  - cat cmake_install.cmake
   - make
   - sudo make install
   # copy FindSFML.cmake

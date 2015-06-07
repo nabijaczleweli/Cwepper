@@ -26,7 +26,7 @@ include configMakefile
 SUBMODULES_GIT := ext/Eigen ext/cpponfiguration
 #                 ^ $(shell git submodule status --recursive | sed "s/[ +-][0-9a-f]* //g" | sed "s/ .*//g")
 SUBSYSTEMS_SFML := system window graphics
-CUSTOM_DLLS := $(foreach submod,$(SUBMODULES_GIT),$(wildcard $(submod)/$(OUTDIR)*$(DLL)))
+CUSTOM_DLLS = $(foreach submod,$(SUBMODULES_GIT),$(wildcard $(submod)/$(OUTDIR)*$(DLL)))
 LDDLLS := $(foreach subsystem,$(SUBSYSTEMS_SFML),sfml-$(subsystem)$(SFML_DLL_SUFFIX)) $(foreach custdll,$(CUSTOM_DLLS),$(basename $(notdir $(custdll))))
 #        ^ audiere
 LDAR := -fPIC $(foreach custdll,$(CUSTOM_DLLS),-L"$(dir $(custdll))") $(foreach dll,$(LDDLLS),-l$(dll))
@@ -60,7 +60,7 @@ git :
 	@echo $(foreach submod,$(SUBMODULES_GIT),$(notdir $(submod)))
 	@echo $(CUSTOM_DLLS)
 	$(foreach submod,$(SUBMODULES_GIT),ls $(submod) &) :
-	$(foreach submod,$(SUBMODULES_GIT),ls $(submod)$(OUTDIR) &) :
+	$(foreach submod,$(SUBMODULES_GIT),ls $(submod)/$(OUTDIR) &) :
 	$(foreach submod,$(SUBMODULES_GIT),ln -s "$(subst \,/,$(shell pwd))/$(submod)/src" "$(subst \,/,$(shell pwd))/ext/all/$(notdir $(submod))" 1>$(devnull) \
 	                                                                                                                                           2>$(devnull) &) :
 
