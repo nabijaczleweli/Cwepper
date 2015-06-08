@@ -28,6 +28,7 @@ ifeq "$(OS)" "Windows_NT"
 	MKDIR := busybox mkdir
 	PIC :=
 	SFML_DLL_SUFFIX = -2
+	PREDLL =
 else
 	EXE := .out
 	devnull := /dev/null
@@ -40,6 +41,7 @@ else
 	MKDIR := mkdir
 	PIC := -fPIC
 	SFML_DLL_SUFFIX =
+	PREDLL = lib
 endif
 
 OBJ := .o
