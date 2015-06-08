@@ -33,4 +33,8 @@ install:
   - ls /usr/local/lib
   - ls /usr/lib
 
+cache:
+  directories:
+    - release
+
 script: make git && make release

@@ -29,6 +29,7 @@ ifeq "$(OS)" "Windows_NT"
 	PIC :=
 	SFML_DLL_SUFFIX = -2
 	PREDLL =
+	OSDLL = libgcc_s_dw2-1 libstdc++-6
 else
 	EXE := .out
 	devnull := /dev/null
@@ -42,6 +43,7 @@ else
 	PIC := -fPIC
 	SFML_DLL_SUFFIX =
 	PREDLL = lib
+	OSDLL =
 endif
 
 OBJ := .o
