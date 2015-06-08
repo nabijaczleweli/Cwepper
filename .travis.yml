@@ -30,11 +30,14 @@ install:
   #############################################
   # We want to compile with g++ 4.9 when rather than the default g++
   - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.9 90
-  - ls /usr/local/lib
-  - ls /usr/lib
 
-cache:
-  directories:
-    - release
+deploy:
+  provider: releases
+  api_key: "266fa9d33b6575681e43950ec14e861d0fbedb56"
+  file: "release.tar.bz2"
+  skip_cleanup: true
+  on:
+    tags: true
+
 
 script: make git && make release
