@@ -55,7 +55,7 @@ release : clean all
 	cp --target-directory=$(RELEASEDIR) $(foreach lib,$(filter-out $(foreach custdll,$(CUSTOM_DLLS),$(basename $(notdir $(custdll)))), \
 	                                              $(foreach dll,$(LDDLLS) $(OSDLL),$(PREDLL)$(subst $(PREDLL),,$(dll)))), $(DLLDIR)$(lib)$(DLL)) $(CUSTOM_DLLS)
 	$(STRIP) $(STRIPAR) $(RELEASEDIR)/*$(EXE) $(RELEASEDIR)/*$(DLL)
-	7z a -r -y $(RELEASEDIR)/release.zip $(RELEASEDIR)/*
+	tar -cj $(RELEASEDIR)/* > release.tar.bz2
 
 git :
 	git submodule    update  --recursive --init --remote
