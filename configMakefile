@@ -28,6 +28,7 @@ ifeq "$(OS)" "Windows_NT"
 	MKDIR := busybox mkdir
 	PIC :=
 	SFML_DLL_SUFFIX = -2
+	PREDLL =
 else
 	EXE := .out
 	devnull := /dev/null
@@ -40,6 +41,7 @@ else
 	MKDIR := mkdir
 	PIC := -fPIC
 	SFML_DLL_SUFFIX =
+	PREDLL = lib
 endif
 
 OBJ := .o
@@ -59,5 +61,5 @@ ifeq "$(OS)" "Windows_NT"
 	DLLDIR := $(dir $(shell c:\WINDOWS\system32\cmd.exe /s /c call win/which.bat $(CXX) | c:\WINDOWS\system32\find.exe "$(CXX)"))
 	SHELL := /bin/sh
 else
-	DLLDIR := $(dir $(shell type -p $(CXX)))
+	DLLDIR := /usr/local/lib/
 endif

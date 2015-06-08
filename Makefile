@@ -29,7 +29,7 @@ SUBSYSTEMS_SFML := system window graphics
 CUSTOM_DLLS := $(foreach submod,$(SUBMODULES_GIT),$(wildcard $(submod)/$(OUTDIR)*$(DLL)))
 LDDLLS := $(foreach subsystem,$(SUBSYSTEMS_SFML),sfml-$(subsystem)$(SFML_DLL_SUFFIX)) $(foreach custdll,$(CUSTOM_DLLS),$(basename $(notdir $(custdll))))
 #        ^ audiere
-LDAR := -fPIC $(foreach custdll,$(CUSTOM_DLLS),-L"$(dir $(custdll))") $(foreach dll,$(LDDLLS),-l$(dll))
+LDAR := -fPIC $(foreach custdll,$(CUSTOM_DLLS),-L"$(dir $(custdll))") $(foreach dll,$(LDDLLS),-l$(subst $(PREDLL),,$(dll)))
 SOURCES := $(sort $(filter-out ./ext/%,$(shell find src -name *.cpp)))
 
 
@@ -53,7 +53,7 @@ release : clean all
 	@$(MKDIR) $(RELEASEDIR)
 	cp $(OUTDIR)Cwepper$(EXE) $(RELEASEDIR)
 	cp --target-directory=$(RELEASEDIR) $(foreach lib,$(filter-out $(foreach custdll,$(CUSTOM_DLLS),$(basename $(notdir $(custdll)))), \
-	                                              $(LDDLLS) libgcc_s_dw2-1 libstdc++-6), $(DLLDIR)$(lib)$(DLL)) $(CUSTOM_DLLS)
+	                                              $(foreach dll,$(LDDLLS) $(OSDLL),$(PREDLL)$(subst $(PREDLL),,$(dll)))), $(DLLDIR)$(lib)$(DLL)) $(CUSTOM_DLLS)
 	$(STRIP) $(STRIPAR) $(RELEASEDIR)/*$(EXE) $(RELEASEDIR)/*$(DLL)
 	7z a -r -y $(RELEASEDIR)/release.zip $(RELEASEDIR)/*
 
