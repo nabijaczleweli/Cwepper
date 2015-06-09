@@ -36,8 +36,6 @@ deploy:
   api-key: "6a8f1fad16115d4fbfaeb8df906928aa59709c14"
   file: "release.tar.bz2"
   skip_cleanup: true
-  on:
-    tags: true
 
 
 script: make git && make release
