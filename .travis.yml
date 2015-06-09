@@ -33,7 +33,7 @@ install:
 
 deploy:
   provider: releases
-  secure: gDKmsGJkWInCDnz7VpwkbXlkfYnqH/2zyvMog4wVwsfp8FXV16lQ5O5IW6Y0RvyDdJwL4vIFt7SPQ+udb6O7Y2V7lwNIKlG3RIJZqot2hiB9+reBCUdLHoGh0IAFF0/n/jXyJ54CwPRbk/jt5C7x7gh98z3ErCHPwWuzZcBjQII=
+  api-key: "6a8f1fad16115d4fbfaeb8df906928aa59709c14"
   file: "release.tar.bz2"
   skip_cleanup: true
   on:
