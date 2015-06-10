@@ -26,8 +26,8 @@
 #include "util/configurable.hpp"
 #include "util/broken_gcc.hpp"
 #include "util/file.hpp"
-#include <cpponfiguration/cpponfig_version.hpp>
-#include <audiere.h>
+#include "cpponfiguration/cpponfig_version.hpp"
+//#include <audiere.h>
 #include <ctime>
 #include <iostream>
 #include <random>
@@ -81,7 +81,7 @@ void init_deps() {
 			virtual void config(configuration & cfg) override {
 				cout << "GCC version " << __GNUC__ << '.' << __GNUC_MINOR__ << '.' << __GNUC_PATCHLEVEL__ << " doesn\'t need initialization.\n"
 				        "SFML version " << SFML_VERSION_MAJOR << '.' << SFML_VERSION_MINOR << " doesn\'t need initialization.\n"
-				        "audiere version " << audiere::GetVersion() << " doesn\'t need initialization.\n";
+				        /*"audiere version " << audiere::GetVersion() << " doesn\'t need initialization.\n"*/;
 
 				present_languages = available_languages();
 				if(cfg.contains("system:language"))

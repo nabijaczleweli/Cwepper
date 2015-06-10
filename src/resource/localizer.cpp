@@ -62,7 +62,7 @@ string_t::value_type localizer::comment_character    = L'#';
 
 localizer::localizer() : localizer(default_locale) {}
 
-localizer::localizer(nullptr_t) {}
+localizer::localizer(nothrow_t) {}
 
 localizer::localizer(stream_t & in) {
 	init(in);

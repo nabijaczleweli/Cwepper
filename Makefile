@@ -23,11 +23,13 @@
 include configMakefile
 
 
-SUBMODULES_GIT := $(shell git submodule status --recursive | sed "s/[ +-][0-9a-f]* //g" | sed "s/ .*//g")
+SUBMODULES_GIT := ext/Eigen ext/cpponfiguration
+#                 ^ $(shell git submodule status --recursive | sed "s/[ +-][0-9a-f]* //g" | sed "s/ .*//g")
 SUBSYSTEMS_SFML := system window graphics
 CUSTOM_DLLS := $(foreach submod,$(SUBMODULES_GIT),$(wildcard $(submod)/$(OUTDIR)*$(DLL)))
-LDDLLS := audiere $(foreach subsystem,$(SUBSYSTEMS_SFML),sfml-$(subsystem)-2) $(foreach custdll,$(CUSTOM_DLLS),$(basename $(notdir $(custdll))))
-LDAR := -fpic $(foreach custdll,$(CUSTOM_DLLS),-L"$(dir $(custdll))") $(foreach dll,$(LDDLLS),-l$(dll))
+LDDLLS := $(foreach subsystem,$(SUBSYSTEMS_SFML),sfml-$(subsystem)$(SFML_DLL_SUFFIX)) $(foreach custdll,$(CUSTOM_DLLS),$(basename $(notdir $(custdll))))
+#        ^ audiere
+LDAR := -fPIC $(foreach custdll,$(CUSTOM_DLLS),-L"$(dir $(custdll))") $(foreach dll,$(LDDLLS),-l$(subst $(PREDLL),,$(dll)))
 SOURCES := $(sort $(filter-out ./ext/%,$(shell find src -name *.cpp)))
 
 
@@ -35,7 +37,7 @@ SOURCES := $(sort $(filter-out ./ext/%,$(shell find src -name *.cpp)))
 
 
 all : $(subst $(SRCDIR),$(OBJDIR),$(subst .cpp,$(OBJ),$(SOURCES)))
-	$(CPP) $(CPPAR) -o$(OUTDIR)Cwepper$(EXE) $(subst $(SRCDIR),$(OBJDIR),$^) $(LDAR)
+	$(CXX) $(CPPAR) -o$(OUTDIR)Cwepper$(EXE) $(subst $(SRCDIR),$(OBJDIR),$^) $(LDAR)
 	@cp -ur $(ASSETDIR) $(OUTDIR)
 
 clean :
@@ -45,19 +47,19 @@ release : clean all
 	@$(MKDIR) $(RELEASEDIR)
 	cp $(OUTDIR)Cwepper$(EXE) $(RELEASEDIR)
 	cp --target-directory=$(RELEASEDIR) $(foreach lib,$(filter-out $(foreach custdll,$(CUSTOM_DLLS),$(basename $(notdir $(custdll)))), \
-	                                              $(LDDLLS) libgcc_s_dw2-1 libstdc++-6), $(DLLDIR)$(lib)$(DLL)) $(CUSTOM_DLLS)
+	                                              $(foreach dll,$(LDDLLS) $(OSDLL),$(PREDLL)$(subst $(PREDLL),,$(dll)))), $(DLLDIR)$(lib)$(DLL)) $(CUSTOM_DLLS)
 	$(STRIP) $(STRIPAR) $(RELEASEDIR)/*$(EXE) $(RELEASEDIR)/*$(DLL)
-	7z a -r -y $(RELEASEDIR)/release.zip $(RELEASEDIR)/*
+	tar -cj $(RELEASEDIR)/* > release.tar.bz2
 
 git :
 	git submodule    update  --recursive --init --remote
 	git submodule -q foreach --recursive "make --silent --no-print-directory dll"
 	@rm -rf "ext/all/*"
 	@$(MKDIR) "ext/all" 1>$(devnull) 2>$(devnull) || :
-	git submodule -q foreach             "$(MKDIR) \"$(subst \,/,$(shell pwd))/ext/all/$$name\" 1>$(devnull) 2>$(devnull) || :"
-	git submodule -q foreach             "cp -r $(subst \,/,$(shell pwd))/$$path/src/* $(subst \,/,$(shell pwd))/ext/all/$$name"
+	$(foreach submod,$(SUBMODULES_GIT),ln -s "$(subst \,/,$(shell pwd))/$(submod)/src" "$(subst \,/,$(shell pwd))/ext/all/$(notdir $(submod))" 1>$(devnull) \
+	                                                                                                                                           2>$(devnull) &) :
 
 
 $(OBJDIR)%$(OBJ) : $(SRCDIR)%.cpp
 	@$(MKDIR) -p $(dir $@) || :
-	$(CPP) $(CPPAR) -c -o$@ $^
+	$(CXX) $(CPPAR) -c -o$@ $^

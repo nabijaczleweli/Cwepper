@@ -25,7 +25,7 @@
 
 using namespace sf;
 using namespace std;
-using namespace audiere;
+//using namespace audiere;
 
 
 auto load_font(const char * name) {
@@ -48,9 +48,9 @@ const string app_name("Cwepper");
       texture_loader main_texture_loader(main_image_loader);
       image_loader   main_image_loader;
 
-      localizer fallback_izer(nullptr);
-      localizer local_izer(nullptr);
-      localizer global_izer(nullptr);
+      localizer fallback_izer(nothrow);
+      localizer local_izer(nothrow);
+      localizer global_izer(nothrow);
 
       vector<string> present_languages;
 
@@ -60,4 +60,4 @@ const Font font_7segment(load_font("digital-7 (mono).ttf"));
 const Font font_swirly(load_font("MACABRA_.ttf"));
 
 
-const AudioDevicePtr audio_device(OpenDevice());
+//const AudioDevicePtr audio_device(OpenDevice());

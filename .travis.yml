@@ -1,0 +1,41 @@
+language: cpp
+
+git:
+  submodules: false
+
+compiler:
+  - gcc
+
+before_install:
+  # We need this line to have g++4.9 available in apt
+  - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
+  - sudo apt-get update -qq
+
+install:
+  - sudo apt-get install -qq gcc-4.9 g++-4.9
+  #############################################
+  - sudo apt-get install -qq libpthread-stubs0-dev libgl1-mesa-dev libx11-dev libxrandr-dev libfreetype6-dev libglew1.5-dev libjpeg8-dev libsndfile1-dev
+  - sudo apt-get install -qq libopenal-dev libudev-dev libx11-xcb-dev libxcb-image0-dev libxcb-randr0-dev
+  # get the latest sfml version
+  - cd ../..
+  - git clone https://github.com/SFML/SFML.git
+  - cd SFML
+  # build and install it
+  - cmake .
+  - make
+  - sudo make install
+  # copy FindSFML.cmake
+  - sudo cp cmake/Modules/FindSFML.cmake /usr/share/cmake-2.8/Modules
+  - cd $TRAVIS_BUILD_DIR
+  #############################################
+  # We want to compile with g++ 4.9 when rather than the default g++
+  - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.9 90
+
+deploy:
+  provider: releases
+  api-key: "6a8f1fad16115d4fbfaeb8df906928aa59709c14"
+  file: "release.tar.bz2"
+  skip_cleanup: true
+
+
+script: make git && make release
