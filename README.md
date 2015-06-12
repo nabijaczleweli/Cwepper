@@ -1,6 +1,6 @@
-Cwepper
+Cwepper [![Build Status](https://img.shields.io/travis/nabijaczleweli/Cwepper.svg?style=plastic)](https://travis-ci.org/nabijaczleweli/Cwepper) [![Licence](https://img.shields.io/badge/license-MIT-blue.svg?style=plastic)](LICENSE)
 =======
-A Minesweeper implementation in C++ using SFML 2.1
+A Minesweeper implementation in C++ using SFML 2.3
 
 
 ###Name
