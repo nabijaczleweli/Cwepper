@@ -8,8 +8,8 @@ A Minesweeper implementation in C++ using SFML 2.3
 The name can be interpreted as:
 ```
 Sweeper
-^ ^
-C p
+^  ^
+C  p
 ```
 It's a simple transformation ensuring incorporation of `Cpp` into the structure of original `Sweeper`
 

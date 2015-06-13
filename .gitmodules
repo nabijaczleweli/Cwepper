@@ -4,3 +4,6 @@
 [submodule "Eigen"]
 	path = ext/Eigen
 	url = https://github.com/nabijaczleweli/eigen_wrapper.git
+[submodule "cppformat"]
+	path = ext/cppformat
+	url = https://github.com/nabijaczleweli/cppformat_wrapper.git

@@ -23,7 +23,7 @@
 include configMakefile
 
 
-SUBMODULES_GIT := ext/Eigen ext/cpponfiguration
+SUBMODULES_GIT := ext/Eigen ext/cpponfiguration ext/cppformat
 #                 ^ $(shell git submodule status --recursive | sed "s/[ +-][0-9a-f]* //g" | sed "s/ .*//g")
 SUBSYSTEMS_SFML := system window graphics
 CUSTOM_DLLS := $(foreach submod,$(SUBMODULES_GIT),$(wildcard $(submod)/$(OUTDIR)*$(DLL)))

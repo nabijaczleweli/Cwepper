@@ -25,11 +25,14 @@
 #include "../../../util/broken_gcc.hpp"
 #include "../../application.hpp"
 #include "../game/main_game_screen.hpp"
+#include "cppformat/format.h"
 #include <memory>
 
 
 using namespace std;
 using namespace sf;
+
+using fmt::format;
 
 
 typedef main_menu_screen::direction direction;
@@ -57,21 +60,14 @@ struct locale_changer {
 	locale_changer(application & theapp) : app(theapp) {}
 
 	string operator()(const string & from) {
-		auto trans = simple_translate(from);
-		// TODO: maybe use cppformat for this? CMake sucks, though...
-		const auto paren_idx = trans.find("{}");
+		auto trans = format(simple_translate(from), *lang);
 
-		if(paren_idx != string::npos) {
-			trans.replace(paren_idx, 2, *lang);
+		if(lang != present_languages.cbegin())
+			trans.insert(0, "<");
+		if(lang != --present_languages.cend())
+			trans += ">";
 
-			if(lang != present_languages.cbegin())
-				trans.insert(0, "< ");
-			if(lang != --present_languages.cend())
-				trans += " >";
-
-			return trans;
-		} else
-			return from;
+		return trans;
 	}
 
 	void operator()(const Event & event) {
