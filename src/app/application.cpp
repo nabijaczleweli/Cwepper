@@ -24,6 +24,7 @@
 #include "../reference/container.hpp"
 #include "../util/configurable.hpp"
 #include "../util/file.hpp"
+#include <iostream>
 #include <chrono>
 #include <thread>
 
@@ -54,7 +55,7 @@ int application::loop() {
 
 	window.setActive(false);
 
-	thread([&]() {
+	thread draw_thread([&]() {
 		const auto idle_delay = 1000000us / idle_fps;
 
 		window.setActive(true);
@@ -85,7 +86,7 @@ int application::loop() {
 			if(wasforced)
 				force_redraw = false;
 		}
-	}).detach();
+	});
 
 	Event event;
 	while(!result && window.waitEvent(event)) {
@@ -97,6 +98,12 @@ int application::loop() {
 	}
 
 	schedule_redraw();
+	if(draw_thread.joinable()) {
+		cout << "Waiting for the draw thread to finish...\n";
+		draw_thread.join();
+	}
+	cout << "The draw thread finished!\n";
+
 	return result;
 }
 
