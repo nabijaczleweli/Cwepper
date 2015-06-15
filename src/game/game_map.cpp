@@ -22,6 +22,7 @@
 
 #include "game_map.hpp"
 #include "../util/broken_gcc.hpp"
+#include "cppformat/format.h"
 #include <stdexcept>
 #include <string>
 
@@ -30,13 +31,14 @@ using namespace sf;
 using namespace std;
 using namespace cpponfig;
 
+using fmt::format;
+
 
 static cell placeholder_cell;
 
-static const auto with_bounds = [&](auto & map, int x, int y) -> auto & {
+static const auto with_bounds = [](auto & map, int x, int y) -> auto & {
 	if(x < 0 || y < 0 || x >= map.cols() || y >= map.rows())
-		throw out_of_range(to_string(x) + " < 0 || " + to_string(y) + " < 0 || " +
-		                   to_string(x) + " >= " + to_string(map.cols()) + " || " + to_string(y) + " >= " + to_string(map.rows()));
+		throw out_of_range(format("Bound check: {} < 0 || {} < 0 || {} >= {} || {} >= {}", x, y, x, map.cols(), y, map.rows()));
 	return map(y, x);
 };
 
