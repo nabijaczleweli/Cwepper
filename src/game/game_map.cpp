@@ -36,10 +36,8 @@ using fmt::format;
 
 static cell placeholder_cell;
 
-static const auto with_bounds = [](auto & map, int x, int y) -> auto & {
-	if(x < 0 || y < 0 || x >= map.cols() || y >= map.rows())
-		throw out_of_range(format("Bound check: {} < 0 || {} < 0 || {} >= {} || {} >= {}", x, y, x, map.cols(), y, map.rows()));
-	return map(y, x);
+static const constexpr auto with_bounds = [&](auto & map, int x, int y) {
+	return (x < 0 || y < 0 || x >= map.cols() || y >= map.rows()) ? nullptr : addressof(map(y, x));
 };
 
 
@@ -58,9 +56,10 @@ void game_map::draw(RenderTarget & target, RenderStates states) const {
 }
 
 void game_map::config(configuration & cfg) {
+	static mt19937 random(random_device{}());
+
 	const auto p = cfg.get("game_map:mines", property("0.3", "How much of the field is contains with mines.")).floating();
 	bernoulli_distribution dist(p);
-	mt19937 random(random_device{}());
 
 	for(int y = 0; y < map.rows(); ++y)
 		for(int x = 0; x < map.cols(); ++x)

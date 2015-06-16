@@ -44,5 +44,5 @@ class cell : public sf::Drawable {
 		cell & operator=(const cell &) = default;
 		cell & operator=(cell &&) = default;
 
-		void click(const std::function<cell &(int, int)> & getter);
+		void click(const std::function<const cell *(int, int)> & getter);
 };

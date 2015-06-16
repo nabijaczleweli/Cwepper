@@ -21,10 +21,74 @@
 
 
 #include "cell.hpp"
+#include <vector>
+#include <map>
 
 
 using namespace sf;
 using namespace std;
+
+
+template<class T1, class T2>
+inline static auto operator*(const Vector2<T1> & lhs, const Vector2<T2> & rhs) -> Vector2<decltype(lhs.x * rhs.x)> {
+	return {lhs.x * rhs.x, lhs.y * rhs.y};
+}
+
+
+static map<int, vector<Vector2f>> points({
+	{1, {
+		{.5, .5}
+	}},
+	{2, {
+		{.3, .3},
+		{.7, .7}
+	}},
+	{3, {
+		{.3, .3},
+		{.5, .5},
+		{.7, .7}
+	}},
+	{4, {
+		{.3, .3},
+		{.7, .3},
+		{.7, .7},
+		{.3, .7}
+	}},
+	{5, {
+		{.3, .3},
+		{.7, .3},
+		{.5, .5},
+		{.7, .7},
+		{.3, .7}
+	}},
+	{6, {
+		{.3, .3},
+		{.7, .3},
+		{.7, .5},
+		{.7, .7},
+		{.3, .7},
+		{.3, .5}
+	}},
+	{7, {
+		{.3, .3},
+		{.7, .3},
+		{.7, .5},
+		{.5, .5},
+		{.7, .7},
+		{.3, .7},
+		{.3, .5}
+	}},
+	{8, {
+		{.3, .3},
+		{.5, .3},
+		{.7, .3},
+		{.7, .5},
+		{.7, .7},
+		{.3, .7},
+		{.3, .5},
+		{.5, .7}
+	}}
+});
 
 
 static Color half_cyan([&]() {
@@ -46,16 +110,11 @@ void cell::draw(RenderTarget & target, RenderStates states) const {
 			target.draw(circle, states);
 		}
 
-		if(uncovered) {
-			if(mines_around) {
-
-			} else {
-				RectangleShape rect(size);
-				rect.setPosition(pos);
-				rect.setFillColor(Color::Red);
-				target.draw(rect, states);
+		if(uncovered)
+			for(const auto & pointpos : points[mines_around]) {
+				const Vertex vtx(pos + pointpos * size, Color::White);
+				target.draw(addressof(vtx), 1, PrimitiveType::Points, states);
 			}
-		}
 	}
 }
 
@@ -63,16 +122,15 @@ cell::cell() : mines_around(-1), mine_inside(false), uncovered(false) {}
 cell::cell(const Vector2u & theindices, const Vector2f & thesize, const function<bool()> & gen) : mines_around(-1), indices(theindices), size(thesize),
                                                                                                   mine_inside(gen()), uncovered(false) {}
 
-void cell::click(const function<cell &(int, int)> & getter) {
+void cell::click(const std::function<const cell *(int, int)> & getter) {
 	uncovered = true;
 
 	if(mines_around < 0) {
 		mines_around = -mine_inside;  // Loops count everything (including self), so remove our mines
 
-		for(int x = indices.x - 1; x <= static_cast<int>(indices.x) + 1; ++x)
-			for(int y = indices.y - 1; y <= static_cast<int>(indices.y) + 1; ++y)
-				try {
-					mines_around += getter(x, y).mine_inside;
-				} catch(const out_of_range & err) {}
+		for(int x = indices.x - 1; x <= floor(indices.x + 1); ++x)
+			for(int y = indices.y - 1; y <= floor(indices.y + 1); ++y)
+				if(const cell * c = getter(x, y))
+					mines_around += c->mine_inside;
 	}
 }
