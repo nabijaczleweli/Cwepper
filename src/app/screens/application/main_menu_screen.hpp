@@ -26,6 +26,7 @@
 
 
 #include "../screen.hpp"
+#include "../../../resource/localizer.hpp"
 #include <functional>
 #include <utility>
 #include <list>
@@ -34,7 +35,8 @@
 class main_menu_screen : public screen {
 	public:
 		enum class direction : unsigned char {up, down};
-		using button_clickable = std::tuple<sf::Text, std::string, std::function<void(const sf::Event &)>, std::function<std::string(const std::string &)>>;
+		using button_clickable = std::tuple<sf::Text, localizer::string_t, std::function<void(const sf::Event &)>,
+		                                    std::function<localizer::string_t(const localizer::string_t &)>>;
 
 	private:
 		std::list<button_clickable> main_buttons;

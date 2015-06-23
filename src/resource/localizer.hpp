@@ -40,7 +40,7 @@ std::vector<std::string> available_languages(const std::string & root = localiza
 
 class localizer {
 	public:
-		using string_t = std::string;
+		using string_t = std::wstring;
 		using stream_t = std::istream;
 
 	private:

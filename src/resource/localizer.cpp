@@ -23,11 +23,13 @@
 #include "localizer.hpp"
 #include "../reference/container.hpp"
 #include "../util/file.hpp"
+#include <SFML/System.hpp>
 #include <fstream>
 #include <algorithm>
 
 
 using namespace std;
+using namespace sf;
 
 
 using string_t = localizer::string_t;
@@ -109,7 +111,7 @@ bool localizer::operator!=(const localizer & loc) {
 }
 
 void localizer::init(stream_t & in) {
-	for(string_t line; getline(in, line);) {
+	for(string line; getline(in, line);) {
 		if(!line.size())
 			continue;
 
@@ -121,7 +123,14 @@ void localizer::init(stream_t & in) {
 		if(idx == string_t::npos)
 			continue;
 
-		language.emplace(rtrim(line.substr(0, idx)), trim(line.substr(idx + 1)));
+		string_t localized;
+		Uint32 local_char;
+		for(auto itr = line.begin(); itr != line.end();) {
+			itr = Utf8::decode(itr, line.end(), local_char);
+			localized += local_char;
+		}
+
+		language.emplace(rtrim(localized.substr(0, idx)), trim(localized.substr(idx + 1)));
 	}
 }
 

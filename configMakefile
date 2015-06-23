@@ -27,9 +27,9 @@ ifeq "$(OS)" "Windows_NT"
 	DLL := .dll
 	MKDIR := busybox mkdir
 	PIC :=
-	SFML_DLL_SUFFIX = -2
 	PREDLL =
 	OSDLL = libgcc_s_dw2-1 libstdc++-6
+	FIND = busybox find
 else
 	EXE := .out
 	devnull := /dev/null
@@ -41,15 +41,15 @@ else
 	endif
 	MKDIR := mkdir
 	PIC := -fPIC
-	SFML_DLL_SUFFIX =
 	PREDLL = lib
 	OSDLL =
+	FIND = find
 endif
 
 OBJ := .o
 ARCH := .a
 AR := ar
-CPPAR := -Os -std=c++14 -pedantic -Wall -Wextra -pipe -fomit-frame-pointer -Iext/all $(PIC)
+CPPAR := -Os -std=c++14 -pedantic -Wall -Wextra -Wno-deprecated-declarations -pipe -fomit-frame-pointer -Iext/all $(PIC)
 STRIP := strip
 STRIPAR := --strip-all --remove-section=.comment --remove-section=.note
 

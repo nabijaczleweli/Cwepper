@@ -2,3 +2,5 @@
 gui.application.text.start=Start game
 gui.application.text.quit=Quit game
 gui.application.text.switch_locale=Current language: {}
+gui.application.arrow.left=<
+gui.application.arrow.right=>

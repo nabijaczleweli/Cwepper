@@ -1,4 +1,6 @@
+## Lang files with multibyte characters must be saved as UTF-8 w/o BOM
+
 # Main menu
-gui.application.text.start=Rozpocznij gre
-gui.application.text.quit=Wyjdz z gry
+gui.application.text.start=Rozpocznij grę
+gui.application.text.quit=Wyjdź z gry
 gui.application.text.switch_locale=Obecny jezyk: {}

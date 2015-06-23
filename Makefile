@@ -27,10 +27,10 @@ SUBMODULES_GIT := ext/Eigen ext/cpponfiguration ext/cppformat
 #                 ^ $(shell git submodule status --recursive | sed "s/[ +-][0-9a-f]* //g" | sed "s/ .*//g")
 SUBSYSTEMS_SFML := system window graphics
 CUSTOM_DLLS := $(foreach submod,$(SUBMODULES_GIT),$(wildcard $(submod)/$(OUTDIR)*$(DLL)))
-LDDLLS := $(foreach subsystem,$(SUBSYSTEMS_SFML),sfml-$(subsystem)$(SFML_DLL_SUFFIX)) $(foreach custdll,$(CUSTOM_DLLS),$(basename $(notdir $(custdll))))
+LDDLLS := $(foreach subsystem,$(SUBSYSTEMS_SFML),sfml-$(subsystem)) $(foreach custdll,$(CUSTOM_DLLS),$(basename $(notdir $(custdll))))
 #        ^ audiere
-LDAR := -fPIC $(foreach custdll,$(CUSTOM_DLLS),-L"$(dir $(custdll))") $(foreach dll,$(LDDLLS),-l$(subst $(PREDLL),,$(dll)))
-SOURCES := $(sort $(filter-out ./ext/%,$(shell find src -name *.cpp)))
+LDAR := -Wl,--leading-underscore $(PIC) $(foreach custdll,$(CUSTOM_DLLS),-L"$(dir $(custdll))") $(foreach dll,$(LDDLLS),-l$(subst $(PREDLL),,$(dll)))
+SOURCES := $(sort $(filter-out ./ext/%,$(shell $(FIND) src -name *.cpp)))
 
 
 .PHONY : clean all release git

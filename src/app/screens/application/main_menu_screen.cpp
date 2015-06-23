@@ -59,13 +59,13 @@ struct locale_changer {
 
 	locale_changer(application & theapp) : app(theapp) {}
 
-	string operator()(const string & from) {
+	localizer::string_t operator()(const localizer::string_t & from) {
 		auto trans = format(simple_translate(from), *lang);
 
 		if(lang != present_languages.cbegin())
-			trans.insert(0, "<");
+			trans.insert(0, simple_translate("gui.application.arrow.left"));
 		if(lang != --present_languages.cend())
-			trans += ">";
+			trans += simple_translate("gui.application.arrow.right");
 
 		return trans;
 	}
@@ -196,17 +196,17 @@ int main_menu_screen::handle_event(const Event & event) {
 main_menu_screen::main_menu_screen(application & theapp) : screen(theapp) {
 	using placeholders::_1;
 
-	main_buttons.emplace_back(Text("", font_swirly), "gui.application.text.start"s, bind(on_select, _1, [&]() {
+	main_buttons.emplace_back(Text("", font_swirly), L"gui.application.text.start"s, bind(on_select, _1, [&]() {
 		app.schedule_screen<main_game_screen>();
 	}), simple_translate);
-	main_buttons.emplace_back(Text("", font_swirly), "gui.application.text.quit"s, bind(on_select, _1, [&]() {
+	main_buttons.emplace_back(Text("", font_swirly), L"gui.application.text.quit"s, bind(on_select, _1, [&]() {
 		window.close();
 	}), simple_translate);
 
 	const auto switcher = make_shared<locale_changer>(app);
-	main_buttons.emplace_back(Text("", font_swirly), "gui.application.text.switch_locale"s, [=](const Event & event) {
+	main_buttons.emplace_back(Text("", font_swirly), L"gui.application.text.switch_locale"s, [=](const Event & event) {
 		(*switcher)(event);
-	}, [=](const string & from) {
+	}, [=](const localizer::string_t & from) {
 		return (*switcher)(from);
 	});
 
