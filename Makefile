@@ -29,7 +29,7 @@ SUBSYSTEMS_SFML := system window graphics
 CUSTOM_DLLS := $(foreach submod,$(SUBMODULES_GIT),$(wildcard $(submod)/$(OUTDIR)*$(DLL)))
 LDDLLS := $(foreach subsystem,$(SUBSYSTEMS_SFML),sfml-$(subsystem)) $(foreach custdll,$(CUSTOM_DLLS),$(basename $(notdir $(custdll))))
 #        ^ audiere
-LDAR := -Wl,--leading-underscore $(PIC) $(foreach custdll,$(CUSTOM_DLLS),-L"$(dir $(custdll))") $(foreach dll,$(LDDLLS),-l$(subst $(PREDLL),,$(dll)))
+LDAR := $(OSLDAR) $(PIC) $(foreach custdll,$(CUSTOM_DLLS),-L"$(dir $(custdll))") $(foreach dll,$(LDDLLS),-l$(subst $(PREDLL),,$(dll)))
 SOURCES := $(sort $(filter-out ./ext/%,$(shell $(FIND) src -name *.cpp)))
 
 

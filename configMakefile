@@ -30,6 +30,7 @@ ifeq "$(OS)" "Windows_NT"
 	PREDLL =
 	OSDLL = libgcc_s_dw2-1 libstdc++-6
 	FIND = busybox find
+	OSLDAR = -Wl,--leading-underscore
 else
 	EXE := .out
 	devnull := /dev/null
@@ -44,6 +45,7 @@ else
 	PREDLL = lib
 	OSDLL =
 	FIND = find
+	OSLDAR =
 endif
 
 OBJ := .o
