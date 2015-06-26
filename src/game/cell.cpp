@@ -35,60 +35,14 @@ inline static auto operator*(const Vector2<T1> & lhs, const Vector2<T2> & rhs) -
 }
 
 
-static map<int, vector<Vector2f>> points({
-	{1, {
-		{.5, .5}
-	}},
-	{2, {
-		{.3, .3},
-		{.7, .7}
-	}},
-	{3, {
-		{.3, .3},
-		{.5, .5},
-		{.7, .7}
-	}},
-	{4, {
-		{.3, .3},
-		{.7, .3},
-		{.7, .7},
-		{.3, .7}
-	}},
-	{5, {
-		{.3, .3},
-		{.7, .3},
-		{.5, .5},
-		{.7, .7},
-		{.3, .7}
-	}},
-	{6, {
-		{.3, .3},
-		{.7, .3},
-		{.7, .5},
-		{.7, .7},
-		{.3, .7},
-		{.3, .5}
-	}},
-	{7, {
-		{.3, .3},
-		{.7, .3},
-		{.7, .5},
-		{.5, .5},
-		{.7, .7},
-		{.3, .7},
-		{.3, .5}
-	}},
-	{8, {
-		{.3, .3},
-		{.5, .3},
-		{.7, .3},
-		{.7, .5},
-		{.7, .7},
-		{.3, .7},
-		{.3, .5},
-		{.5, .7}
-	}}
-});
+static map<int, vector<Vector2f>> points({{1, {{.5, .5}}},
+                                          {2, {{.3, .3}, {.7, .7}}},
+                                          {3, {{.3, .3}, {.5, .5}, {.7, .7}}},
+                                          {4, {{.3, .3}, {.7, .3}, {.7, .7}, {.3, .7}}},
+                                          {5, {{.3, .3}, {.7, .3}, {.5, .5}, {.7, .7}, {.3, .7}}},
+                                          {6, {{.3, .3}, {.7, .3}, {.7, .5}, {.7, .7}, {.3, .7}, {.3, .5}}},
+                                          {7, {{.3, .3}, {.7, .3}, {.7, .5}, {.5, .5}, {.7, .7}, {.3, .7}, {.3, .5}}},
+                                          {8, {{.3, .3}, {.5, .3}, {.7, .3}, {.7, .5}, {.7, .7}, {.3, .7}, {.3, .5}, {.5, .7}}}});
 
 
 static Color half_cyan([&]() {
@@ -119,10 +73,10 @@ void cell::draw(RenderTarget & target, RenderStates states) const {
 }
 
 cell::cell() : mines_around(-1), mine_inside(false), uncovered(false) {}
-cell::cell(const Vector2u & theindices, const Vector2f & thesize, const function<bool()> & gen) : mines_around(-1), indices(theindices), size(thesize),
-                                                                                                  mine_inside(gen()), uncovered(false) {}
+cell::cell(const Vector2u & theindices, const Vector2f & thesize, const function<bool()> & gen)
+      : mines_around(-1), indices(theindices), size(thesize), mine_inside(gen()), uncovered(false) {}
 
-void cell::click(const std::function<const cell *(int, int)> & getter) {
+void cell::click(const function<const cell &(int, int)> & getter) {
 	uncovered = true;
 
 	if(mines_around < 0) {
@@ -130,7 +84,9 @@ void cell::click(const std::function<const cell *(int, int)> & getter) {
 
 		for(int x = indices.x - 1; x <= floor(indices.x + 1); ++x)
 			for(int y = indices.y - 1; y <= floor(indices.y + 1); ++y)
-				if(const cell * c = getter(x, y))
-					mines_around += c->mine_inside;
+				try {
+					mines_around += getter(x, y).mine_inside;
+				} catch(const out_of_range &) {
+				}
 	}
 }

@@ -33,27 +33,27 @@
 
 
 class main_menu_screen : public screen {
-	public:
-		enum class direction : unsigned char {up, down};
-		using button_clickable = std::tuple<sf::Text, localizer::string_t, std::function<void(const sf::Event &)>,
-		                                    std::function<localizer::string_t(const localizer::string_t &)>>;
+public:
+	enum class direction : unsigned char { up, down };
+	using button_clickable =
+	    std::tuple<sf::Text, localizer::string_t, std::function<void(const sf::Event &)>, std::function<localizer::string_t(const localizer::string_t &)>>;
 
-	private:
-		std::list<button_clickable> main_buttons;
-		decltype(main_buttons.begin()) selected;
+private:
+	std::list<button_clickable> main_buttons;
+	decltype(main_buttons.begin()) selected;
 
-		void move_selection(direction dir);
-		void select(const sf::Event & event);
+	void move_selection(direction dir);
+	void select(const sf::Event & event);
 
-	public:
-		virtual void setup() override;
-		virtual int draw() override;
-		virtual int handle_event(const sf::Event & event) override;
+public:
+	virtual void setup() override;
+	virtual int draw() override;
+	virtual int handle_event(const sf::Event & event) override;
 
-		main_menu_screen(application & theapp);
-		main_menu_screen(const main_menu_screen & other);
-		main_menu_screen(main_menu_screen && other);
-		virtual ~main_menu_screen();
+	main_menu_screen(application & theapp);
+	main_menu_screen(const main_menu_screen & other);
+	main_menu_screen(main_menu_screen && other);
+	virtual ~main_menu_screen();
 };
 
 

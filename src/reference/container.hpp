@@ -29,7 +29,6 @@
 #include "../resource/texture_loader.hpp"
 #include "../resource/image_loader.hpp"
 #include "../resource/localizer.hpp"
-//#include <audiere.h>
 #include <SFML/Graphics.hpp>
 #include <string>
 #include <vector>
@@ -42,24 +41,21 @@ extern const std::string sound_root;
 extern const std::string localization_root;
 
 extern const std::string app_name;
-extern       std::string app_language;
-extern       configurables_configuration app_configuration;
+extern /***/ std::string app_language;
+extern /***/ configurables_configuration app_configuration;
 
-extern       texture_loader main_texture_loader;
-extern       image_loader   main_image_loader;
+extern /***/ texture_loader main_texture_loader;
+extern /***/ image_loader main_image_loader;
 
-extern       localizer fallback_izer;
-extern       localizer local_izer;
-extern       localizer global_izer;
+extern /***/ localizer fallback_izer;
+extern /***/ localizer local_izer;
+extern /***/ localizer global_izer;
 
-extern       std::vector<std::string> present_languages;
+extern /***/ std::vector<std::string> present_languages;
 
 extern const sf::Font font_standard;
 extern const sf::Font font_7segment;
 extern const sf::Font font_swirly;
-
-
-//extern const audiere::AudioDevicePtr audio_device;
 
 
 #endif  // CONTAINER_HPP

@@ -33,8 +33,7 @@ void screen::setup() {
 }
 
 int screen::handle_event(const Event & event) {
-	if(event.type == Event::Closed ||
-	   (event.type == Event::KeyPressed && event.key.code == Keyboard::Escape))
+	if(event.type == Event::Closed || (event.type == Event::KeyPressed && event.key.code == Keyboard::Escape))
 		window.close();
 	else if(event.type == Event::MouseButtonPressed)
 		window.requestFocus();

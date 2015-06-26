@@ -30,37 +30,40 @@
 #include <SFML/Graphics.hpp>
 #include <memory>
 #include <mutex>
+#include <iostream>
 
 
 class application : configurable {
 	friend class screen;
 
-	private:
-		sf::RenderWindow window;
-		float idle_fps;
-		unsigned int idle_fps_chunks;
-		volatile bool force_redraw;
+private:
+	sf::RenderWindow window;
+	float idle_fps;
+	unsigned int idle_fps_chunks;
+	volatile bool force_redraw;
 
-		std::mutex active_screen_mutex;
-		std::unique_ptr<screen> active_screen;
-		std::unique_ptr<screen> scheduled_screen;
+	std::mutex active_screen_mutex;
+	std::mutex scheduled_screen_mutex;
+	std::unique_ptr<screen> active_screen;
+	std::unique_ptr<screen> scheduled_screen;
 
-		int loop();
-		int draw();
+	int loop();
+	int draw();
 
-		virtual void config(cpponfig::configuration & cfg) override;
+	virtual void config(cpponfig::configuration & cfg) override;
 
-	public:
-		int run();
-		void schedule_redraw();
+public:
+	int run();
+	void schedule_redraw();
 
-		template<class T, class... A>
-		void schedule_screen(const A &... args) {
-			scheduled_screen = std::make_unique<T>(*this, std::forward<A>(args)...);
-		}
+	template <class T, class... A>
+	void schedule_screen(const A &... args) {
+		std::lock_guard<std::mutex> scheduled_lock(scheduled_screen_mutex);
+		scheduled_screen = std::make_unique<T>(*this, std::forward<A>(args)...);
+	}
 
-		application();
-		virtual ~application();
+	application();
+	virtual ~application();
 };
 
 

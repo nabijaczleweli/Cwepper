@@ -27,22 +27,22 @@
 
 
 class game_map : public sf::Drawable, configurable {
-	private:
-		Eigen::Matrix<cell, Eigen::Dynamic, Eigen::Dynamic> map;
-		sf::Vector2f cell_size;
+private:
+	Eigen::Matrix<cell, Eigen::Dynamic, Eigen::Dynamic> map;
+	sf::Vector2f cell_size;
 
-		virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
-		virtual void config(cpponfig::configuration & cfg) override;
+	virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
+	virtual void config(cpponfig::configuration & cfg) override;
 
-	public:
-		game_map(unsigned int w, unsigned int h, const sf::Vector2u & destsize);
-		game_map(const game_map & other) = default;
-		game_map(game_map && other) = default;
+public:
+	game_map(unsigned int w, unsigned int h, const sf::Vector2u & destsize);
+	game_map(const game_map & other) = default;
+	game_map(game_map && other) = default;
 
-		virtual ~game_map() = default;
+	virtual ~game_map() = default;
 
-		game_map & operator=(const game_map &) = default;
-		game_map & operator=(game_map &&) = default;
+	game_map & operator=(const game_map &) = default;
+	game_map & operator=(game_map &&) = default;
 
-		void click(int x, int y);
+	void click(int x, int y);
 };

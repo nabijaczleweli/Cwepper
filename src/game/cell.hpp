@@ -25,24 +25,24 @@
 
 
 class cell : public sf::Drawable {
-	private:
-		int mines_around;
-		sf::Vector2u indices;
+private:
+	int mines_around;
+	sf::Vector2u indices;
 
-		void draw(sf::RenderTarget & target, sf::RenderStates states) const;
+	void draw(sf::RenderTarget & target, sf::RenderStates states) const;
 
-	public:
-		sf::Vector2f size;
-		bool mine_inside;
-		bool uncovered;
+public:
+	sf::Vector2f size;
+	bool mine_inside;
+	bool uncovered;
 
-		cell();
-		cell(const sf::Vector2u & theindices, const sf::Vector2f & thesize, const std::function<bool()> & gen);
-		cell(const cell &) = default;
-		cell(cell &&) = default;
+	cell();
+	cell(const sf::Vector2u & theindices, const sf::Vector2f & thesize, const std::function<bool()> & gen);
+	cell(const cell &) = default;
+	cell(cell &&) = default;
 
-		cell & operator=(const cell &) = default;
-		cell & operator=(cell &&) = default;
+	cell & operator=(const cell &) = default;
+	cell & operator=(cell &&) = default;
 
-		void click(const std::function<const cell *(int, int)> & getter);
+	void click(const std::function<const cell &(int, int)> & getter);
 };

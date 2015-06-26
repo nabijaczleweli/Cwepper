@@ -42,24 +42,24 @@
  *   not interrupted             -> thread enforces new screen.
  */
 class splash_screen : public screen, configurable {
-	private:
-		unsigned int showing_time;  // Milliseconds
-		sf::Sprite background;
-		sf::Text text;
-		std::reference_wrapper<volatile bool> ended;
+private:
+	unsigned int showing_time;  // Milliseconds
+	sf::Sprite background;
+	sf::Text text;
+	std::reference_wrapper<volatile bool> ended;
 
-		void end();
+	void end();
 
-	public:
-		virtual void setup() override;
-		virtual int draw() override;
-		virtual int handle_event(const sf::Event & event) override;
-		virtual void config(cpponfig::configuration & cfg) override;
+public:
+	virtual void setup() override;
+	virtual int draw() override;
+	virtual int handle_event(const sf::Event & event) override;
+	virtual void config(cpponfig::configuration & cfg) override;
 
-		splash_screen(application & theapp);
-		splash_screen(const splash_screen & other);
-		splash_screen(splash_screen && other);
-		virtual ~splash_screen();
+	splash_screen(application & theapp);
+	splash_screen(const splash_screen & other);
+	splash_screen(splash_screen && other);
+	virtual ~splash_screen();
 };
 
 

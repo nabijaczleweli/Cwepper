@@ -48,7 +48,7 @@ void splash_screen::setup() {
 	screen::setup();
 	thread([&](unsigned int ticks, reference_wrapper<volatile bool> & ended, auto callback) {
 		volatile bool killed = false;
-		ended = ref(killed);
+		ended                = ref(killed);
 
 		this_thread::sleep_for(chrono::milliseconds(ticks));
 		if(!killed)
@@ -69,7 +69,8 @@ int splash_screen::draw() {
 }
 
 int splash_screen::handle_event(const Event & event) {
-	if((event.type == Event::KeyPressed && !event.key.alt && !event.key.control && !event.key.shift && !event.key.system) || event.type == Event::MouseButtonPressed)
+	if((event.type == Event::KeyPressed && !event.key.alt && !event.key.control && !event.key.shift && !event.key.system) ||
+	   event.type == Event::MouseButtonPressed)
 		end();
 	else if(event.type == Event::Closed)
 		window.close();
@@ -80,13 +81,14 @@ void splash_screen::config(configuration & cfg) {
 	showing_time = cfg.get("splash_screen:showing_time", property("2000", "[ms]")).unsigned_integer();
 }
 
-splash_screen::splash_screen(application & theapp) : screen(theapp), configurable(), background(main_texture_loader[textures_root + "/gui/main/splash.png"]),
-                                                     text(app_name, font_7segment), ended(ref(dummy_bool)) {
+splash_screen::splash_screen(application & theapp)
+      : screen(theapp), configurable(), background(main_texture_loader[textures_root + "/gui/main/splash.png"]), text(app_name, font_7segment),
+        ended(ref(dummy_bool)) {
 	text.setColor(Color::Green);
 }
-splash_screen::splash_screen(const splash_screen & other) : screen(other), configurable(other), background(other.background), text(other.text),
-                                                            ended(other.ended) {}
-splash_screen::splash_screen(splash_screen && other) : screen(move(other)), configurable(move(other)), background(move(other.background)),
-                                                       text(move(other.text)), ended(move(other.ended)) {}
+splash_screen::splash_screen(const splash_screen & other)
+      : screen(other), configurable(other), background(other.background), text(other.text), ended(other.ended) {}
+splash_screen::splash_screen(splash_screen && other)
+      : screen(move(other)), configurable(move(other)), background(move(other.background)), text(move(other.text)), ended(move(other.ended)) {}
 
 splash_screen::~splash_screen() {}

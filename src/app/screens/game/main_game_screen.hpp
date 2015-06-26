@@ -31,22 +31,22 @@
 
 
 class main_game_screen : public screen, configurable {
-	private:
-		sf::RenderTexture map_texture;
-		sf::Sprite map_sprite;
-		game_map map;
+private:
+	sf::RenderTexture map_texture;
+	sf::Sprite map_sprite;
+	game_map map;
 
-		virtual void config(cpponfig::configuration & cfg) override;
+	virtual void config(cpponfig::configuration & cfg) override;
 
-	public:
-		virtual void setup() override;
-		virtual int draw() override;
-		virtual int handle_event(const sf::Event & event) override;
+public:
+	virtual void setup() override;
+	virtual int draw() override;
+	virtual int handle_event(const sf::Event & event) override;
 
-		main_game_screen(application & theapp);
-		main_game_screen(const main_game_screen & other);
-		main_game_screen(main_game_screen && other);
-		virtual ~main_game_screen();
+	main_game_screen(application & theapp);
+	main_game_screen(const main_game_screen & other);
+	main_game_screen(main_game_screen && other);
+	virtual ~main_game_screen();
 };
 
 

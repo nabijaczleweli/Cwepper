@@ -25,7 +25,6 @@
 
 using namespace sf;
 using namespace std;
-//using namespace audiere;
 
 
 auto load_font(const char * name) {
@@ -42,22 +41,19 @@ const string sound_root("./assets/sound");
 const string localization_root("./assets/lang");
 
 const string app_name("Cwepper");
-      string app_language("en_US");
-      configurables_configuration app_configuration("./" + app_name + ".cfg");
+/***/ string app_language("en_US");
+/***/ configurables_configuration app_configuration("./" + app_name + ".cfg");
 
-      texture_loader main_texture_loader(main_image_loader);
-      image_loader   main_image_loader;
+/***/ texture_loader main_texture_loader(main_image_loader);
+/***/ image_loader main_image_loader;
 
-      localizer fallback_izer(nothrow);
-      localizer local_izer(nothrow);
-      localizer global_izer(nothrow);
+/***/ localizer fallback_izer(nothrow);
+/***/ localizer local_izer(nothrow);
+/***/ localizer global_izer(nothrow);
 
-      vector<string> present_languages;
+/***/ vector<string> present_languages;
 
 
 const Font font_standard(load_font("2-Questa_Grande_Regular.otf"));
 const Font font_7segment(load_font("digital-7 (mono).ttf"));
 const Font font_swirly(load_font("MACABRA_.ttf"));
-
-
-//const AudioDevicePtr audio_device(OpenDevice());

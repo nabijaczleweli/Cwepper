@@ -30,7 +30,7 @@ using namespace std;
 
 // http://stackoverflow.com/questions/612097/how-can-i-get-a-list-of-files-in-a-directory-using-c-or-c
 vector<string> list_files(const string & directory) {
-	DIR * dir = nullptr;
+	DIR * dir    = nullptr;
 	dirent * ent = nullptr;
 	vector<string> result;
 

@@ -58,7 +58,7 @@ git :
 	@rm -rf "ext/all/*"
 	@$(MKDIR) "ext/all" 1>$(devnull) 2>$(devnull) || :
 	$(foreach submod,$(SUBMODULES_GIT),ln -s "$(subst \,/,$(shell pwd))/$(submod)/src" "$(subst \,/,$(shell pwd))/ext/all/$(notdir $(submod))" 1>$(devnull) \
-	                                                                                                                                           2>$(devnull) &) :
+		                                                                                                                                         2>$(devnull) &) :
 
 
 $(OBJDIR)%$(OBJ) : $(SRCDIR)%.cpp

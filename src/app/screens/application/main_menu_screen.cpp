@@ -48,9 +48,7 @@ const constexpr static auto on_select = [&](const Event & event, const auto & ca
 		callback();
 };
 
-const constexpr static auto simple_translate = [&](const auto & from) {
-	return global_izer.translate(from);
-};
+const constexpr static auto simple_translate = [&](const auto & from) { return global_izer.translate(from); };
 
 
 struct locale_changer {
@@ -75,11 +73,11 @@ struct locale_changer {
 
 		if(event.type == Event::KeyPressed)
 			switch(event.key.code) {
-				case Keyboard::Key::Left :
+				case Keyboard::Key::Left:
 					if(lang != present_languages.cbegin())
 						--lang;
 					break;
-				case Keyboard::Key::Right :
+				case Keyboard::Key::Right:
 					if(lang != --present_languages.cend())
 						++lang;
 					break;
@@ -88,7 +86,7 @@ struct locale_changer {
 			}
 
 		if(pre != lang) {
-			local_izer = localizer(*lang);
+			local_izer  = localizer(*lang);
 			global_izer = localizer(local_izer, fallback_izer);
 			app.schedule_redraw();
 		}
@@ -100,11 +98,11 @@ void main_menu_screen::move_selection(direction dir) {
 	const auto pre = selected;
 
 	switch(dir) {
-		case direction::up :
+		case direction::up:
 			if(selected != main_buttons.begin())
 				--selected;
 			break;
-		case direction::down :
+		case direction::down:
 			if(selected != --main_buttons.end())
 				++selected;
 			break;
@@ -115,7 +113,7 @@ void main_menu_screen::move_selection(direction dir) {
 }
 
 void main_menu_screen::select(const Event & event) {
-	get<2>(*selected)(event);
+	(get<2>)(*selected)(event);
 }
 
 void main_menu_screen::setup() {
@@ -126,8 +124,8 @@ int main_menu_screen::draw() {
 	const auto & winsize = window.getSize();
 
 	const unsigned int selected_ridx = distance(selected, main_buttons.end());
-	unsigned int buttidx = 0;
-	unsigned int texty = winsize.y * (7.f / 8.f);
+	unsigned int buttidx             = 0;
+	unsigned int texty               = winsize.y * (7.f / 8.f);
 
 	for_each(main_buttons.rbegin(), main_buttons.rend(), [&](auto & button) {
 		static const auto line_spacing = winsize.y / 90.f;
@@ -155,30 +153,29 @@ int main_menu_screen::handle_event(const Event & event) {
 		return i;
 
 	switch(event.type) {
-		case Event::MouseMoved : {
-				const auto itr = find_if(main_buttons.begin(), main_buttons.end(), bind(interlap_checker, _1, event.mouseMove.x, event.mouseMove.y));
-				if(itr != main_buttons.end()) {
-					selected = itr;
-					app.schedule_redraw();
-				}
+		case Event::MouseMoved: {
+			const auto itr = find_if(main_buttons.begin(), main_buttons.end(), bind(interlap_checker, _1, event.mouseMove.x, event.mouseMove.y));
+			if(itr != main_buttons.end()) {
+				selected = itr;
+				app.schedule_redraw();
 			}
-			break;
+		} break;
 
-		case Event::MouseButtonPressed :
+		case Event::MouseButtonPressed:
 			if(find_if(main_buttons.begin(), main_buttons.end(), bind(interlap_checker, _1, event.mouseButton.x, event.mouseButton.y)) != main_buttons.end())
 				select(event);
 			break;
 
-		case Event::MouseWheelMoved :
+		case Event::MouseWheelMoved:
 			move_selection((event.mouseWheel.delta > 0) ? direction::up : direction::down);
 			break;
 
-		case Event::KeyPressed :
+		case Event::KeyPressed:
 			switch(event.key.code) {
-				case Keyboard::Key::Up :
+				case Keyboard::Key::Up:
 					move_selection(direction::up);
 					break;
-				case Keyboard::Key::Down :
+				case Keyboard::Key::Down:
 					move_selection(direction::down);
 					break;
 				default:
@@ -196,19 +193,13 @@ int main_menu_screen::handle_event(const Event & event) {
 main_menu_screen::main_menu_screen(application & theapp) : screen(theapp) {
 	using placeholders::_1;
 
-	main_buttons.emplace_back(Text("", font_swirly), L"gui.application.text.start"s, bind(on_select, _1, [&]() {
-		app.schedule_screen<main_game_screen>();
-	}), simple_translate);
-	main_buttons.emplace_back(Text("", font_swirly), L"gui.application.text.quit"s, bind(on_select, _1, [&]() {
-		window.close();
-	}), simple_translate);
+	main_buttons.emplace_back(Text("", font_swirly), L"gui.application.text.start"s, bind(on_select, _1, [&]() { app.schedule_screen<main_game_screen>(); }),
+	                          simple_translate);
+	main_buttons.emplace_back(Text("", font_swirly), L"gui.application.text.quit"s, bind(on_select, _1, [&]() { window.close(); }), simple_translate);
 
 	const auto switcher = make_shared<locale_changer>(app);
-	main_buttons.emplace_back(Text("", font_swirly), L"gui.application.text.switch_locale"s, [=](const Event & event) {
-		(*switcher)(event);
-	}, [=](const localizer::string_t & from) {
-		return (*switcher)(from);
-	});
+	main_buttons.emplace_back(Text("", font_swirly), L"gui.application.text.switch_locale"s, [=](const Event & event) { (*switcher)(event); },
+	                          [=](const localizer::string_t & from) { return (*switcher)(from); });
 
 	selected = main_buttons.begin();
 }

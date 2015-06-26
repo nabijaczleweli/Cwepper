@@ -19,12 +19,14 @@
 // IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 // CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+
 #include "application.hpp"
 #include "screens/application/splash_screen.hpp"
 #include "../reference/container.hpp"
 #include "../util/configurable.hpp"
 #include "../util/file.hpp"
 #include <iostream>
+#include <atomic>
 #include <chrono>
 #include <thread>
 
@@ -51,8 +53,7 @@ int application::run() {
 }
 
 int application::loop() {
-	volatile int result = 0;
-
+	volatile atomic_int result(0);
 	window.setActive(false);
 
 	thread draw_thread([&]() {
@@ -61,25 +62,27 @@ int application::loop() {
 		window.setActive(true);
 		while(window.isOpen()) {
 			const bool wasforced = force_redraw;
-			const auto start = high_resolution_clock::now();
+			const auto start     = high_resolution_clock::now();
 
 			if(const int i = draw()) {
 				result = i;
 				break;
 			}
 
-			const auto end = high_resolution_clock::now();
+			const auto end                    = high_resolution_clock::now();
 			const auto stepped_sleep_duration = duration_cast<chrono::microseconds>(idle_delay - (end - start)) / idle_fps_chunks;
 
 			for(unsigned int i = 0; !force_redraw && i < idle_fps_chunks; ++i) {
 				this_thread::sleep_for(stepped_sleep_duration);
 
-				if(scheduled_screen && active_screen_mutex.try_lock()) {
+				unique_lock<mutex> active_lock(active_screen_mutex, defer_lock);
+				if(scheduled_screen && active_lock.try_lock()) {
+					unique_lock<mutex> scheduled_lock(scheduled_screen_mutex);
+
 					while(scheduled_screen) {
 						active_screen = move(scheduled_screen);
 						active_screen->setup();
 					}
-					active_screen_mutex.unlock();
 					schedule_redraw();
 				}
 			}
@@ -91,7 +94,8 @@ int application::loop() {
 	Event event;
 	while(!result && window.waitEvent(event)) {
 		if(active_screen) {
-			lock_guard<mutex> locker(active_screen_mutex);
+			lock_guard<mutex> active_lock(active_screen_mutex);
+
 			if(const int i = active_screen->handle_event(event))
 				result = i;
 		}
@@ -111,7 +115,7 @@ int application::draw() {
 	window.clear(Color::Black);
 
 	if(active_screen) {
-		lock_guard<mutex> locker(active_screen_mutex);
+		lock_guard<mutex> active_lock(active_screen_mutex);
 		active_screen->draw();
 	}
 
@@ -124,7 +128,8 @@ void application::schedule_redraw() {
 }
 
 void application::config(configuration & cfg) {
-	idle_fps = cfg.get("application:idle_FPS", property("1", "FPS when nothing is happenning on-screen")).floating();
+	idle_fps        = cfg.get("application:idle_FPS", property("1", "FPS when nothing is happenning on-screen")).floating();
 	idle_fps_chunks = cfg.get("application:idle_FPS_chunks", property("10", "Denominator for individual delay; up this, if you're "
-	                                                                        "experiencing non-responiveness when switching to game window")).unsigned_integer();
+	                                                                        "experiencing non-responiveness when switching to game window"))
+	                      .unsigned_integer();
 }

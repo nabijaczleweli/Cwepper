@@ -32,12 +32,12 @@
 
 
 class image_loader {
-	private:
-		std::unordered_map<std::string, std::unique_ptr<sf::Image>> cache;
+private:
+	std::unordered_map<std::string, std::unique_ptr<sf::Image>> cache;
 
-	public:
-		sf::Image & operator[](const std::string & filename);
+public:
+	sf::Image & operator[](const std::string & filename);
 };
 
 
-#endif // IMAGE_LOADER_HPP
+#endif  // IMAGE_LOADER_HPP

@@ -39,59 +39,59 @@ std::vector<std::string> available_languages(const std::string & root = localiza
 
 
 class localizer {
-	public:
-		using string_t = std::wstring;
-		using stream_t = std::istream;
+public:
+	using string_t = std::wstring;
+	using stream_t = std::istream;
 
-	private:
-		std::unordered_map<string_t, string_t> language;
+private:
+	std::unordered_map<string_t, string_t> language;
 
-		void init(stream_t & from);
+	void init(stream_t & from);
 
-	public:
-		static std::string          default_locale;
-		static std::string          file_extension;
-		static string_t::value_type assignment_character;
-		static string_t::value_type comment_character;
+public:
+	static std::string default_locale;
+	static std::string file_extension;
+	static string_t::value_type assignment_character;
+	static string_t::value_type comment_character;
 
 
-		localizer();
-		/** Used to disambugate the opening and non-opening constructors */
-		explicit localizer(std::nothrow_t);
-		explicit localizer(stream_t & from);
-		explicit localizer(const std::string & locale);
-		localizer(localizer && loc);
-		localizer(const localizer & loc);
-		/** Equivalent to `localizer(loc0).merge(loc1)` */
-		explicit localizer(const localizer & loc0, const localizer & loc1);
+	localizer();
+	/** Used to disambugate the opening and non-opening constructors */
+	explicit localizer(std::nothrow_t);
+	explicit localizer(stream_t & from);
+	explicit localizer(const std::string & locale);
+	localizer(localizer && loc);
+	localizer(const localizer & loc);
+	/** Equivalent to `localizer(loc0).merge(loc1)` */
+	explicit localizer(const localizer & loc0, const localizer & loc1);
 
-		virtual ~localizer() = default;
+	virtual ~localizer() = default;
 
-		/** Adds keys from `loc` for which there are no elements in `this` */
-		localizer & merge(const localizer & loc);
-		localizer & open(const std::string & locale = default_locale);
+	/** Adds keys from `loc` for which there are no elements in `this` */
+	localizer & merge(const localizer & loc);
+	localizer & open(const std::string & locale = default_locale);
 
-		localizer & operator=(const localizer & loc);
-		localizer & operator=(localizer && loc);
+	localizer & operator=(const localizer & loc);
+	localizer & operator=(localizer && loc);
 
-		bool operator==(const localizer & loc);
-		bool operator!=(const localizer & loc);
+	bool operator==(const localizer & loc);
+	bool operator!=(const localizer & loc);
 
-		bool empty() const;
+	bool empty() const;
 
-		template<class StringT>
-		inline bool can_translate(const StringT & key) const {
-			return can_translate(to_wstring<string_t>(key));
-		}
+	template <class StringT>
+	inline bool can_translate(const StringT & key) const {
+		return can_translate(to_wstring<string_t>(key));
+	}
 
-		bool can_translate(const string_t & key) const;
+	bool can_translate(const string_t & key) const;
 
-		template<class StringT>
-		inline const string_t & translate(const StringT & key) const {
-			return translate(to_wstring<string_t>(key));
-		}
+	template <class StringT>
+	inline const string_t & translate(const StringT & key) const {
+		return translate(to_wstring<string_t>(key));
+	}
 
-		const string_t & translate(const string_t & key) const;
+	const string_t & translate(const string_t & key) const;
 };
 
 

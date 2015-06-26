@@ -29,7 +29,7 @@
 #include <string>
 
 
-template<class T>
+template <class T>
 inline constexpr std::string to_string(const T & from) {
 	return static_cast<std::ostringstream &>(std::ostringstream() << from).str(); /* G++ doesn't understand std::to_string. */
 }
