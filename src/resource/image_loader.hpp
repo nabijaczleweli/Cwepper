@@ -21,8 +21,6 @@
 
 
 #pragma once
-#ifndef IMAGE_LOADER_HPP
-#define IMAGE_LOADER_HPP
 
 
 #include <SFML/Graphics.hpp>
@@ -38,6 +36,3 @@ private:
 public:
 	sf::Image & operator[](const std::string & filename);
 };
-
-
-#endif  // IMAGE_LOADER_HPP

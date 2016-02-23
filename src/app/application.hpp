@@ -21,8 +21,6 @@
 
 
 #pragma once
-#ifndef APPLICATION_HPP
-#define APPLICATION_HPP
 
 
 #include "../util/configurable.hpp"
@@ -65,6 +63,3 @@ public:
 	application();
 	virtual ~application();
 };
-
-
-#endif  // APPLICATION_HPP

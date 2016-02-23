@@ -21,8 +21,6 @@
 
 
 #pragma once
-#ifndef BROKEN_GCC_HPP
-#define BROKEN_GCC_HPP
 
 
 #include <sstream>
@@ -33,6 +31,3 @@ template <class T>
 inline constexpr std::string to_string(const T & from) {
 	return static_cast<std::ostringstream &>(std::ostringstream() << from).str(); /* G++ doesn't understand std::to_string. */
 }
-
-
-#endif  // BROKEN_GCC_HPP

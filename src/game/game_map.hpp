@@ -20,6 +20,9 @@
 // CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
+#pragma once
+
+
 #include "cell.hpp"
 #include "../util/configurable.hpp"
 #include "Eigen/Dense"

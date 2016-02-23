@@ -21,8 +21,6 @@
 
 
 #pragma once
-#ifndef CONFIGURABLE_HPP
-#define CONFIGURABLE_HPP
 
 
 #include "cpponfiguration/configuration.hpp"
@@ -49,6 +47,3 @@ protected:
 	configurable & operator=(const configurable &) = default;
 	configurable & operator=(configurable &&) = default;
 };
-
-
-#endif  // CONFIGURABLE_HPP

@@ -21,8 +21,6 @@
 
 
 #pragma once
-#ifndef CONTAINER_HPP
-#define CONTAINER_HPP
 
 
 #include "../resource/configurables_configuration.hpp"
@@ -56,6 +54,3 @@ extern /***/ std::vector<std::string> present_languages;
 extern const sf::Font font_standard;
 extern const sf::Font font_7segment;
 extern const sf::Font font_swirly;
-
-
-#endif  // CONTAINER_HPP

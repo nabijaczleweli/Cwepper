@@ -21,8 +21,6 @@
 
 
 #pragma once
-#ifndef CONFIGURABLES_CONFIG_HPP
-#define CONFIGURABLES_CONFIG_HPP
 
 
 #include "../util/configurable.hpp"
@@ -59,6 +57,3 @@ public:
 
 configurables_configuration operator+(const configurables_configuration & lhs, const configurables_configuration & rhs);
 configurables_configuration operator-(const configurables_configuration & lhs, const configurables_configuration & rhs);
-
-
-#endif  // CONFIGURABLES_CONFIG_HPP

@@ -21,8 +21,6 @@
 
 
 #pragma once
-#ifndef STRINGS_HPP
-#define STRINGS_HPP
 
 
 #include <functional>
@@ -77,6 +75,3 @@ inline constexpr StringT to_wstring(const T & from) {
 	using stream_t = std::basic_ostringstream<typename StringT::value_type, typename StringT::traits_type, typename StringT::allocator_type>;
 	return static_cast<stream_t &>(stream_t() << from).str();
 }
-
-
-#endif  // STRINGS_HPP

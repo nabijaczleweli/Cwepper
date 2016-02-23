@@ -21,8 +21,6 @@
 
 
 #pragma once
-#ifndef LOCALIZER_HPP
-#define LOCALIZER_HPP
 
 
 #include "../util/strings.hpp"
@@ -93,6 +91,3 @@ public:
 
 	const string_t & translate(const string_t & key) const;
 };
-
-
-#endif  // LOCALIZER_HPP

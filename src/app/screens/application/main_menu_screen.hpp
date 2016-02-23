@@ -21,8 +21,6 @@
 
 
 #pragma once
-#ifndef MAIN_MENU_SCREEN_HPP
-#define MAIN_MENU_SCREEN_HPP
 
 
 #include "../screen.hpp"
@@ -55,6 +53,3 @@ public:
 	main_menu_screen(main_menu_screen && other);
 	virtual ~main_menu_screen();
 };
-
-
-#endif  // MAIN_MENU_SCREEN_HPP

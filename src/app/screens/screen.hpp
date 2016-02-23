@@ -21,8 +21,6 @@
 
 
 #pragma once
-#ifndef SCREEN_HPP
-#define SCREEN_HPP
 
 
 #include <SFML/Graphics.hpp>
@@ -46,6 +44,3 @@ public:
 	screen(screen && other);
 	virtual ~screen();
 };
-
-
-#endif  // SCREEN_HPP

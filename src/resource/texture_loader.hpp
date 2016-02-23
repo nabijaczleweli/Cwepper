@@ -21,8 +21,6 @@
 
 
 #pragma once
-#ifndef TEXTURE_LOADER_HPP
-#define TEXTURE_LOADER_HPP
 
 
 #include <SFML/Graphics.hpp>
@@ -61,4 +59,3 @@ public:
 };
 
 
-#endif  // TEXTURE_LOADER_HPP
