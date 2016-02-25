@@ -4,3 +4,6 @@
 [submodule "cppformat"]
 	path = ext/cppformat
 	url = https://github.com/cppformat/cppformat.git
+[submodule "ext/cereal"]
+	path = ext/cereal
+	url = https://github.com/USCiLab/cereal.git

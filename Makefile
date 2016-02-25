@@ -59,7 +59,7 @@ $(OUTDIR)ext/cppformat$(ARCH) : $(patsubst %.cc,$(OBJDIR)%$(OBJ),$(wildcard ext/
 
 $(OBJDIR)%$(OBJ) : $(SRCDIR)%.cpp
 	@mkdir -p $(dir $@)
-	$(CXX) $(CXXAR) -Iext/cppformat -Iext/cppformat/Eigen -c -o$@ $^
+	$(CXX) $(CXXAR) -Iext/cppformat -Iext/cppformat/Eigen -Iext/cereal/include -c -o$@ $^
 
 $(OBJDIR)ext/cppformat/%$(OBJ) : ext/cppformat/%.cc
 	@mkdir -p $(dir $@)
