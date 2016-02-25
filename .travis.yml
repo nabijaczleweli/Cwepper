@@ -2,6 +2,8 @@ language: generic
 sudo: false
 git:
   submodules: false
+cache:
+  apt: true
 
 matrix:
   include:

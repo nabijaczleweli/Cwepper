@@ -23,21 +23,18 @@
 include configMakefile
 
 
-SUBMODULES_GIT := ext/Eigen ext/cpponfiguration ext/cppformat
-#                 ^ $(shell git submodule status --recursive | sed "s/[ +-][0-9a-f]* //g" | sed "s/ .*//g")
 SUBSYSTEMS_SFML := system window graphics
-CUSTOM_DLLS := $(foreach submod,$(SUBMODULES_GIT),$(wildcard $(submod)/$(OUTDIR)*$(DLL)))
 LDDLLS := $(foreach subsystem,$(SUBSYSTEMS_SFML),sfml-$(subsystem)) $(foreach custdll,$(CUSTOM_DLLS),$(basename $(notdir $(custdll))))
 #        ^ audiere
 LDAR := $(OSLDAR) $(PIC) $(foreach custdll,$(CUSTOM_DLLS),-L"$(dir $(custdll))") $(foreach dll,$(LDDLLS),-l$(subst $(PREDLL),,$(dll)))
-SOURCES := $(sort $(filter-out ./ext/%,$(shell $(FIND) src -name *.cpp)))
+SOURCES := $(wildcard src/**/*.cpp)
 
 
-.PHONY : clean all release git
+.PHONY : clean all release git cppformat
 
 
 all : $(subst $(SRCDIR),$(OBJDIR),$(subst .cpp,$(OBJ),$(SOURCES)))
-	$(CXX) $(CPPAR) -o$(OUTDIR)Cwepper$(EXE) $(subst $(SRCDIR),$(OBJDIR),$^) $(LDAR)
+	$(CXX) $(CXXAR) -o$(OUTDIR)Cwepper$(EXE) $(subst $(SRCDIR),$(OBJDIR),$^) $(LDAR)
 	@cp -ur $(ASSETDIR) $(OUTDIR)
 
 clean :
@@ -52,15 +49,18 @@ release : clean all
 	cp -ur $(ASSETDIR) $(RELEASEDIR)
 	tar -cjv $(RELEASEDIR)/* > release.tar.bz2
 
-git :
-	git submodule    update  --recursive --init --remote
-	git submodule -q foreach --recursive "make --silent --no-print-directory dll"
-	@rm -rf "ext/all/*"
-	@$(MKDIR) "ext/all" 1>$(devnull) 2>$(devnull) || :
-	$(foreach submod,$(SUBMODULES_GIT),ln -s "$(subst \,/,$(shell pwd))/$(submod)/src" "$(subst \,/,$(shell pwd))/ext/all/$(notdir $(submod))" 1>$(devnull) \
-		                                                                                                                                         2>$(devnull) &) :
+cppformat : $(OUTDIR)ext/cppformat$(ARCH)
+
+
+$(OUTDIR)ext/cppformat$(ARCH) : $(patsubst %.cc,$(OBJDIR)%$(OBJ),$(wildcard ext/cppformat/cppformat/*.cc))
+	@mkdir -p $(dir $@)
+	$(AR) cr $@ $^
 
 
 $(OBJDIR)%$(OBJ) : $(SRCDIR)%.cpp
-	@$(MKDIR) -p $(dir $@) || :
-	$(CXX) $(CPPAR) -c -o$@ $^
+	@mkdir -p $(dir $@)
+	$(CXX) $(CXXAR) -Iext/all -c -o$@ $^
+
+$(OBJDIR)ext/cppformat/%$(OBJ) : ext/cppformat/%.cc
+	@mkdir -p $(dir $@)
+	$(CXX) $(CXXAR) -c -o$@ $^

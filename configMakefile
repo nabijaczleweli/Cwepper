@@ -29,7 +29,6 @@ ifeq "$(OS)" "Windows_NT"
 	PIC :=
 	PREDLL =
 	OSDLL = libgcc_s_dw2-1 libstdc++-6
-	FIND = busybox find
 	OSLDAR = -Wl,--leading-underscore
 else
 	EXE := .out
@@ -44,14 +43,13 @@ else
 	PIC := -fPIC
 	PREDLL = lib
 	OSDLL =
-	FIND = find
 	OSLDAR =
 endif
 
 OBJ := .o
 ARCH := .a
 AR := ar
-CPPAR := -Os -std=c++14 -pedantic -Wall -Wextra -pipe -fomit-frame-pointer -Iext/all $(PIC)
+CXXAR := -Os -std=c++14 -pedantic -Wall -Wextra -pipe $(PIC)
 STRIP := strip
 STRIPAR := --strip-all --remove-section=.comment --remove-section=.note
 
