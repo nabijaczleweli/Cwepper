@@ -52,7 +52,7 @@ $(OUTDIR)ext/libcppformat$(ARCH) : $(patsubst %.cc,$(OBJDIR)%$(OBJ),$(wildcard e
 
 $(OBJDIR)%$(OBJ) : $(SRCDIR)%.cpp
 	@mkdir -p $(dir $@)
-	$(CXX) $(CXXAR) -Iext/cppformat -Iext/Eigen -Iext/cereal/include $(SFML_INCLUDES) -c -o$@ $^
+	$(CXX) $(CXXAR) -Iext/cppformat -Iext/Eigen -Iext/cereal/include $(SFML_HEADERS) -c -o$@ $^
 
 $(OBJDIR)ext/cppformat/%$(OBJ) : ext/cppformat/%.cc
 	@mkdir -p $(dir $@)

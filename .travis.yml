@@ -54,7 +54,7 @@ install:
   # build and install it
   - mkdir build && cd build
   - cmake -G"Unix Makefiles" .. -DCMAKE_INSTALL_PREFIX:PATH="$SFML_INSTALLDIR"
-  - make install
+  - make -j2 install
   - cd $TRAVIS_BUILD_DIR
 
 deploy:
@@ -66,4 +66,4 @@ deploy:
   on:
     tags: true
 
-script: make
+script: make -j2
