@@ -1,9 +1,9 @@
 language: generic
 sudo: false
-git:
-  submodules: false
 cache:
   apt: true
+env:
+  - SFML_INSTALLDIR="$HOME"
 
 matrix:
   include:
@@ -55,7 +55,7 @@ install:
   - cd SFML
   # build and install it
   - mkdir build && cd build
-  - cmake -G"Unix Makefiles" .. -DCMAKE_INSTALL_PREFIX:PATH="$HOME"
+  - cmake -G"Unix Makefiles" .. -DCMAKE_INSTALL_PREFIX:PATH="$SFML_INSTALLDIR"
   - make install
   - cd $TRAVIS_BUILD_DIR
 
@@ -68,6 +68,4 @@ deploy:
   on:
     tags: true
 
-script:
-  - make git
-  - make release
+script: make

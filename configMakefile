@@ -21,27 +21,19 @@
 
 
 ifeq "$(OS)" "Windows_NT"
-	EXE := .exe
-	devnull := nul
-	nop := echo > $(devnull)
-	DLL := .dll
-	MKDIR := busybox mkdir
 	PIC :=
-	PREDLL =
-	OSDLL = libgcc_s_dw2-1 libstdc++-6
+	PREDLL :=
 else
-	EXE := .out
-	devnull := /dev/null
-	nop := echo > $(devnull)
-	ifeq "$(OS)" "Darwin"
-		DLL := .dylib
-	else
-		DLL := .so
-	endif
-	MKDIR := mkdir
 	PIC := -fPIC
-	PREDLL = lib
-	OSDLL =
+	PREDLL := lib
+endif
+
+ifneq "$(SFML_INSTALLDIR)" ""
+	SFML_HEADERS := -isystem$(SFML_INSTALLDIR)/include
+	SFML_LINKLIB := -L$(SFML_INSTALLDIR)/lib
+else
+	SFML_HEADERS :=
+	SFML_LINKLIB :=
 endif
 
 OBJ := .o
@@ -54,12 +46,4 @@ STRIPAR := --strip-all --remove-section=.comment --remove-section=.note
 OUTDIR := out/
 OBJDIR := $(OUTDIR)obj/
 SRCDIR := src/
-ASSETDIR = assets/
-RELEASEDIR := release
-ifeq "$(OS)" "Windows_NT"
-	SHELL := cmd
-	DLLDIR := $(dir $(shell c:\WINDOWS\system32\cmd.exe /s /c call win/which.bat $(CXX) | c:\WINDOWS\system32\find.exe "$(CXX)"))
-	SHELL := /bin/sh
-else
-	DLLDIR := /usr/local/lib/
-endif
+ASSETDIR := assets/

@@ -26,30 +26,21 @@ include configMakefile
 SUBSYSTEMS_SFML := system window graphics
 LDDLLS := $(foreach subsystem,$(SUBSYSTEMS_SFML),sfml-$(subsystem)) cppformat
 #        ^ audiere
-LDAR := $(PIC) -L$(OUTDIR)ext $(foreach dll,$(LDDLLS),-l$(subst $(PREDLL),,$(dll)))
+LDAR := $(PIC) -L$(OUTDIR)ext $(foreach dll,$(LDDLLS),-l$(subst $(PREDLL),,$(dll))) $(SFML_LINKLIB)
 SOURCES := $(wildcard src/*.cpp) $(wildcard src/**/*.cpp) $(wildcard src/**/**/*.cpp) $(wildcard src/**/**/**/*.cpp)
 
 
-.PHONY : clean all release git cppformat exe
+.PHONY : clean all git cppformat exe
 
 
 all : cppformat exe
 
 exe : $(patsubst $(SRCDIR)%.cpp,$(OBJDIR)%$(OBJ),$(SOURCES))
-	$(CXX) $(CXXAR) -o$(OUTDIR)Cwepper$(EXE) $(subst $(SRCDIR),$(OBJDIR),$^) $(LDAR)
+	$(CXX) $(CXXAR) -o$(OUTDIR)Cwepper $(subst $(SRCDIR),$(OBJDIR),$^) $(LDAR)
 	@cp -ur $(ASSETDIR) $(OUTDIR)
 
 clean :
-	rm -rf $(OUTDIR) $(RELEASEDIR)
-
-release : clean all
-	@$(MKDIR) $(RELEASEDIR)
-	cp $(OUTDIR)Cwepper$(EXE) $(RELEASEDIR)
-	cp --target-directory=$(RELEASEDIR) $(foreach lib,$(filter-out $(foreach custdll,$(CUSTOM_DLLS),$(basename $(notdir $(custdll)))), \
-	                                    $(foreach dll,$(LDDLLS) $(OSDLL),$(PREDLL)$(subst $(PREDLL),,$(dll)))), $(DLLDIR)$(lib)$(DLL)) $(CUSTOM_DLLS)
-	$(STRIP) $(STRIPAR) $(RELEASEDIR)/*$(EXE) $(RELEASEDIR)/*$(DLL)
-	cp -ur $(ASSETDIR) $(RELEASEDIR)
-	tar -cjv $(RELEASEDIR)/* > release.tar.bz2
+	rm -rf $(OUTDIR)
 
 cppformat : $(OUTDIR)ext/libcppformat$(ARCH)
 
@@ -61,7 +52,7 @@ $(OUTDIR)ext/libcppformat$(ARCH) : $(patsubst %.cc,$(OBJDIR)%$(OBJ),$(wildcard e
 
 $(OBJDIR)%$(OBJ) : $(SRCDIR)%.cpp
 	@mkdir -p $(dir $@)
-	$(CXX) $(CXXAR) -Iext/cppformat -Iext/Eigen -Iext/cereal/include -c -o$@ $^
+	$(CXX) $(CXXAR) -Iext/cppformat -Iext/Eigen -Iext/cereal/include $(SFML_INCLUDES) -c -o$@ $^
 
 $(OBJDIR)ext/cppformat/%$(OBJ) : ext/cppformat/%.cc
 	@mkdir -p $(dir $@)
