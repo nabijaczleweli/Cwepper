@@ -45,9 +45,6 @@ struct generator {
 	}
 };
 
-
-void main_game_screen::config(cpponfig::configuration &) {}
-
 void main_game_screen::setup() {
 	screen::setup();
 }
@@ -81,8 +78,6 @@ int main_game_screen::handle_event(const Event & event) {
 	return 0;
 }
 
-main_game_screen::main_game_screen(application & theapp) : screen(theapp), configurable(), map(100, 20, window.getSize()) {}
-main_game_screen::main_game_screen(const main_game_screen & other) : screen(other), configurable(other), map(other.map) {}
-main_game_screen::main_game_screen(main_game_screen && other) : screen(move(other)), configurable(move(other)), map(move(other.map)) {}
+main_game_screen::main_game_screen(application & theapp) : screen(theapp), map(100, 20, window.getSize()) {}
 
 main_game_screen::~main_game_screen() {}

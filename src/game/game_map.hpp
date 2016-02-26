@@ -24,18 +24,16 @@
 
 
 #include "cell.hpp"
-#include "../util/configurable.hpp"
 #include "Eigen/Dense"
 #include <SFML/Graphics.hpp>
 
 
-class game_map : public sf::Drawable, configurable {
+class game_map : public sf::Drawable {
 private:
 	Eigen::Matrix<cell, Eigen::Dynamic, Eigen::Dynamic> map;
 	sf::Vector2f cell_size;
 
 	virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
-	virtual void config(cpponfig::configuration & cfg) override;
 
 public:
 	game_map(unsigned int w, unsigned int h, const sf::Vector2u & destsize);

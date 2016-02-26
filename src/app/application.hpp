@@ -23,7 +23,6 @@
 #pragma once
 
 
-#include "../util/configurable.hpp"
 #include "screens/screen.hpp"
 #include <SFML/Graphics.hpp>
 #include <memory>
@@ -31,13 +30,11 @@
 #include <iostream>
 
 
-class application : configurable {
+class application {
 	friend class screen;
 
 private:
 	sf::RenderWindow window;
-	float idle_fps;
-	unsigned int idle_fps_chunks;
 	volatile bool force_redraw;
 
 	std::mutex active_screen_mutex;
@@ -48,7 +45,6 @@ private:
 	int loop();
 	int draw();
 
-	virtual void config(cpponfig::configuration & cfg) override;
 
 public:
 	int run();
@@ -61,5 +57,4 @@ public:
 	}
 
 	application();
-	virtual ~application();
 };

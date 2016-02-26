@@ -29,7 +29,6 @@ ifeq "$(OS)" "Windows_NT"
 	PIC :=
 	PREDLL =
 	OSDLL = libgcc_s_dw2-1 libstdc++-6
-	OSLDAR = -Wl,--leading-underscore
 else
 	EXE := .out
 	devnull := /dev/null
@@ -43,7 +42,6 @@ else
 	PIC := -fPIC
 	PREDLL = lib
 	OSDLL =
-	OSLDAR =
 endif
 
 OBJ := .o

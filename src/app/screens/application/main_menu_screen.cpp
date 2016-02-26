@@ -22,7 +22,6 @@
 
 #include "main_menu_screen.hpp"
 #include "../../../reference/container.hpp"
-#include "../../../util/broken_gcc.hpp"
 #include "../../application.hpp"
 #include "../game/main_game_screen.hpp"
 #include "cppformat/format.h"
@@ -53,7 +52,7 @@ const constexpr static auto simple_translate = [&](const auto & from) { return g
 
 struct locale_changer {
 	application & app;
-	decltype(present_languages.cbegin()) lang = find(present_languages.cbegin(), present_languages.cend(), app_language);
+	decltype(present_languages.cbegin()) lang = find(present_languages.cbegin(), present_languages.cend(), app_configuration.language);
 
 	locale_changer(application & theapp) : app(theapp) {}
 
@@ -123,25 +122,25 @@ void main_menu_screen::setup() {
 int main_menu_screen::draw() {
 	const auto & winsize = window.getSize();
 
-	const unsigned int selected_ridx = distance(selected, main_buttons.end());
-	unsigned int buttidx             = 0;
-	unsigned int texty               = winsize.y * (7.f / 8.f);
-
-	for_each(main_buttons.rbegin(), main_buttons.rend(), [&](auto & button) {
-		static const auto line_spacing = winsize.y / 90.f;
+	unsigned int texty = winsize.y * (7.f / 8.f);
 
 
-		auto & txt = get<0>(button);
+	for_each(main_buttons.rbegin(), main_buttons.rend(),
+	         [&, buttidx = 0u, selected_ridx = distance(selected, main_buttons.end()) ](auto & button) mutable {  // GCC ICEs if *idx are normal variables
+		         static const auto line_spacing = winsize.y / 90.f;
 
-		txt.setString(get<3>(button)(get<1>(button)));
-		++buttidx;
 
-		texty -= txt.getGlobalBounds().height + line_spacing;
-		txt.setPosition((winsize.x * (59.f / 60.f)) - txt.getGlobalBounds().width, texty);
-		txt.setColor(buttidx == selected_ridx ? Color::Red : Color::White);
+		         auto & txt = get<0>(button);
 
-		window.draw(txt);
-	});
+		         txt.setString(get<3>(button)(get<1>(button)));
+		         ++buttidx;
+
+		         texty -= txt.getGlobalBounds().height + line_spacing;
+		         txt.setPosition((winsize.x * (59.f / 60.f)) - txt.getGlobalBounds().width, texty);
+		         txt.setColor((buttidx == selected_ridx) ? Color::Red : Color::White);
+
+		         window.draw(txt);
+		       });
 
 	return 0;
 }

@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 
-// Copyright (c) 2014 nabijaczleweli
+// Copyright (c) 2016 nabijaczleweli
 
 // Permission is hereby granted, free of charge, to any person obtaining a copy of
 // this software and associated documentation files (the "Software"), to deal in
@@ -23,27 +23,24 @@
 #pragma once
 
 
-#include "cpponfiguration/configuration.hpp"
-#include <new>
+#include <string>
 
 
-class configurable {
-public:
-	virtual void config(cpponfig::configuration & cfg) = 0;
+struct cwepper_configuration {
+	float idle_fps               = 1;
+	unsigned int idle_fps_chunks = 10;
+
+	float mine_distribution = 0.3;
+
+	std::string language = "en_US";
+
+	unsigned int splash_showing_time = 2000;
+
+
+	cwepper_configuration();
+	cwepper_configuration(std::string && fname);
+	~cwepper_configuration();
 
 private:
-	configurable(bool do_load);
-
-	bool load;
-
-protected:
-	configurable();
-	explicit configurable(std::nothrow_t);
-	configurable(const configurable &) = default;
-	configurable(configurable &&) = default;
-
-	virtual ~configurable() = default;
-
-	configurable & operator=(const configurable &) = default;
-	configurable & operator=(configurable &&) = default;
+	std::string filename;
 };

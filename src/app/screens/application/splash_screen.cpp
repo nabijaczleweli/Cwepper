@@ -29,7 +29,6 @@
 
 using namespace sf;
 using namespace std;
-using namespace cpponfig;
 
 
 static volatile bool dummy_bool;
@@ -46,14 +45,17 @@ void splash_screen::end() {
 
 void splash_screen::setup() {
 	screen::setup();
-	thread([&](unsigned int ticks, reference_wrapper<volatile bool> & ended, auto callback) {
-		volatile bool killed = false;
-		ended                = ref(killed);
+	thread(
+	    [&](unsigned int ticks, reference_wrapper<volatile bool> & ended, auto callback) {
+		    volatile bool killed = false;
+		    ended                = ref(killed);
 
-		this_thread::sleep_for(chrono::milliseconds(ticks));
-		if(!killed)
-			callback();
-	}, showing_time, reference_wrapper<decltype(ended)>(ended), bind(schedule, ref(app))).detach();
+		    this_thread::sleep_for(chrono::milliseconds(ticks));
+		    if(!killed)
+			    callback();
+		  },
+	    app_configuration.splash_showing_time, reference_wrapper<decltype(ended)>(ended), bind(schedule, ref(app)))
+	    .detach();
 
 	const float scale = static_cast<float>(window.getSize().y - text.getGlobalBounds().height * 1.75f) / background.getLocalBounds().height;
 	background.setScale(scale, scale);
@@ -77,18 +79,9 @@ int splash_screen::handle_event(const Event & event) {
 	return 0;
 }
 
-void splash_screen::config(configuration & cfg) {
-	showing_time = cfg.get("splash_screen:showing_time", property("2000", "[ms]")).unsigned_integer();
-}
-
 splash_screen::splash_screen(application & theapp)
-      : screen(theapp), configurable(), background(main_texture_loader[textures_root + "/gui/main/splash.png"]), text(app_name, font_7segment),
-        ended(ref(dummy_bool)) {
+      : screen(theapp), background(main_texture_loader[textures_root + "/gui/main/splash.png"]), text(app_name, font_7segment), ended(ref(dummy_bool)) {
 	text.setColor(Color::Green);
 }
-splash_screen::splash_screen(const splash_screen & other)
-      : screen(other), configurable(other), background(other.background), text(other.text), ended(other.ended) {}
-splash_screen::splash_screen(splash_screen && other)
-      : screen(move(other)), configurable(move(other)), background(move(other.background)), text(move(other.text)), ended(move(other.ended)) {}
 
 splash_screen::~splash_screen() {}

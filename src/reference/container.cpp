@@ -42,7 +42,7 @@ const string localization_root("./assets/lang");
 
 const string app_name("Cwepper");
 /***/ string app_language("en_US");
-/***/ configurables_configuration app_configuration("./" + app_name + ".cfg");
+const cwepper_configuration app_configuration("./" + app_name + ".cfg");
 
 /***/ texture_loader main_texture_loader(main_image_loader);
 /***/ image_loader main_image_loader;
@@ -51,7 +51,7 @@ const string app_name("Cwepper");
 /***/ localizer local_izer(nothrow);
 /***/ localizer global_izer(nothrow);
 
-/***/ vector<string> present_languages;
+/***/ vector<string> present_languages = available_languages();
 
 
 const Font font_standard(load_font("2-Questa_Grande_Regular.otf"));

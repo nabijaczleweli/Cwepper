@@ -23,7 +23,6 @@
 #include "application.hpp"
 #include "screens/application/splash_screen.hpp"
 #include "../reference/container.hpp"
-#include "../util/configurable.hpp"
 #include "../util/file.hpp"
 #include <iostream>
 #include <atomic>
@@ -35,12 +34,9 @@ using namespace sf;
 using namespace std;
 using namespace std::chrono;
 using namespace std::chrono_literals;
-using namespace cpponfig;
 
 
 application::application() : force_redraw(true) {}
-
-application::~application() {}
 
 int application::run() {
 	window.create(VideoMode::getDesktopMode(), app_name, Style::Fullscreen);
@@ -57,7 +53,7 @@ int application::loop() {
 	window.setActive(false);
 
 	thread draw_thread([&]() {
-		const auto idle_delay = 1000000us / idle_fps;
+		const auto idle_delay = 1000000us / app_configuration.idle_fps;
 
 		window.setActive(true);
 		while(window.isOpen()) {
@@ -70,9 +66,9 @@ int application::loop() {
 			}
 
 			const auto end                    = high_resolution_clock::now();
-			const auto stepped_sleep_duration = duration_cast<chrono::microseconds>(idle_delay - (end - start)) / idle_fps_chunks;
+			const auto stepped_sleep_duration = duration_cast<chrono::microseconds>(idle_delay - (end - start)) / app_configuration.idle_fps_chunks;
 
-			for(unsigned int i = 0; !force_redraw && i < idle_fps_chunks; ++i) {
+			for(unsigned int i = 0; !force_redraw && i < app_configuration.idle_fps_chunks; ++i) {
 				this_thread::sleep_for(stepped_sleep_duration);
 
 				unique_lock<mutex> active_lock(active_screen_mutex, defer_lock);
@@ -125,11 +121,4 @@ int application::draw() {
 
 void application::schedule_redraw() {
 	force_redraw = true;
-}
-
-void application::config(configuration & cfg) {
-	idle_fps        = cfg.get("application:idle_FPS", property("1", "FPS when nothing is happenning on-screen")).floating();
-	idle_fps_chunks = cfg.get("application:idle_FPS_chunks", property("10", "Denominator for individual delay; up this, if you're "
-	                                                                        "experiencing non-responiveness when switching to game window"))
-	                      .unsigned_integer();
 }

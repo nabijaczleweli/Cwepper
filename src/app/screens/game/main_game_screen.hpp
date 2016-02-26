@@ -24,17 +24,14 @@
 
 
 #include "../screen.hpp"
-#include "../../../util/configurable.hpp"
 #include "../../../game/game_map.hpp"
 
 
-class main_game_screen : public screen, configurable {
+class main_game_screen : public screen {
 private:
 	sf::RenderTexture map_texture;
 	sf::Sprite map_sprite;
 	game_map map;
-
-	virtual void config(cpponfig::configuration & cfg) override;
 
 public:
 	virtual void setup() override;
@@ -42,7 +39,7 @@ public:
 	virtual int handle_event(const sf::Event & event) override;
 
 	main_game_screen(application & theapp);
-	main_game_screen(const main_game_screen & other);
-	main_game_screen(main_game_screen && other);
+	main_game_screen(const main_game_screen & other) = default;
+	main_game_screen(main_game_screen && other) = default;
 	virtual ~main_game_screen();
 };

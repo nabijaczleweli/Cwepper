@@ -23,10 +23,10 @@
 #pragma once
 
 
-#include "../resource/configurables_configuration.hpp"
 #include "../resource/texture_loader.hpp"
 #include "../resource/image_loader.hpp"
 #include "../resource/localizer.hpp"
+#include "../resource/config.hpp"
 #include <SFML/Graphics.hpp>
 #include <string>
 #include <vector>
@@ -39,8 +39,7 @@ extern const std::string sound_root;
 extern const std::string localization_root;
 
 extern const std::string app_name;
-extern /***/ std::string app_language;
-extern /***/ configurables_configuration app_configuration;
+extern const cwepper_configuration app_configuration;
 
 extern /***/ texture_loader main_texture_loader;
 extern /***/ image_loader main_image_loader;

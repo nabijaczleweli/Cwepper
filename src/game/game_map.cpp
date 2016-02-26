@@ -21,7 +21,7 @@
 
 
 #include "game_map.hpp"
-#include "../util/broken_gcc.hpp"
+#include "../reference/container.hpp"
 #include "cppformat/format.h"
 #include <stdexcept>
 #include <string>
@@ -29,7 +29,6 @@
 
 using namespace sf;
 using namespace std;
-using namespace cpponfig;
 
 using fmt::format;
 
@@ -57,20 +56,17 @@ void game_map::draw(RenderTarget & target, RenderStates states) const {
 			target.draw(map(y, x), states);
 }
 
-void game_map::config(configuration & cfg) {
+game_map::game_map(unsigned int width, unsigned int height, const Vector2u & destsize) : map(height, width) {
 	static mt19937 random(random_device{}());
 
-	const auto p = cfg.get("game_map:mines", property("0.3", "How much of the field is contains with mines.")).floating();
-	bernoulli_distribution dist(p);
+	cell_size.x = min(destsize.x / map.cols(), destsize.y / map.rows());
+	cell_size.y = cell_size.x;
+
+	bernoulli_distribution dist(app_configuration.mine_distribution);
 
 	for(int y = 0; y < map.rows(); ++y)
 		for(int x = 0; x < map.cols(); ++x)
 			map(y, x) = cell(Vector2u(x, y), cell_size, bind(ref(dist), ref(random)));
-}
-
-game_map::game_map(unsigned int width, unsigned int height, const Vector2u & destsize) : map(height, width) {
-	cell_size.x = min(destsize.x / map.cols(), destsize.y / map.rows());
-	cell_size.y = cell_size.x;
 }
 
 void game_map::click(int x, int y) {

@@ -24,7 +24,6 @@
 
 
 #include "../screen.hpp"
-#include "../../../util/configurable.hpp"
 #include <functional>
 #include <SFML/Graphics.hpp>
 
@@ -39,7 +38,7 @@
  *   interrupted by key or mouse -> tell it to thread, will simply not force new screen after sleeping for long enough;
  *   not interrupted             -> thread enforces new screen.
  */
-class splash_screen : public screen, configurable {
+class splash_screen : public screen {
 private:
 	unsigned int showing_time;  // Milliseconds
 	sf::Sprite background;
@@ -52,10 +51,9 @@ public:
 	virtual void setup() override;
 	virtual int draw() override;
 	virtual int handle_event(const sf::Event & event) override;
-	virtual void config(cpponfig::configuration & cfg) override;
 
 	splash_screen(application & theapp);
-	splash_screen(const splash_screen & other);
-	splash_screen(splash_screen && other);
+	splash_screen(const splash_screen & other) = default;
+	splash_screen(splash_screen && other) = default;
 	virtual ~splash_screen();
 };

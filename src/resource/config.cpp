@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 
-// Copyright (c) 2014 nabijaczleweli
+// Copyright (c) 2016 nabijaczleweli
 
 // Permission is hereby granted, free of charge, to any person obtaining a copy of
 // this software and associated documentation files (the "Software"), to deal in
@@ -20,14 +20,36 @@
 // CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-#pragma once
+#include "config.hpp"
+#include "cereal/cereal.hpp"
+#include "cereal/archives/json.hpp"
+#include <fstream>
 
 
-#include <sstream>
-#include <string>
+using namespace std;
 
 
-template <class T>
-inline constexpr std::string to_string(const T & from) {
-	return static_cast<std::ostringstream &>(std::ostringstream() << from).str(); /* G++ doesn't understand std::to_string. */
+template <class Archive>
+void serialize(Archive & archive, cwepper_configuration & cc) {
+	archive(cereal::make_nvp("application:idle_FPS", cc.idle_fps), cereal::make_nvp("application:idle_FPS_chunks", cc.idle_fps_chunks),
+	        cereal::make_nvp("game_map:mines", cc.mine_distribution), cereal::make_nvp("system:language", cc.language),
+	        cereal::make_nvp("splash_screen:showing_time", cc.splash_showing_time));
+}
+
+
+cwepper_configuration::cwepper_configuration(string && fname) : filename(move(fname)) {
+	ifstream configfile(filename);
+	if(configfile.is_open()) {
+		cereal::JSONInputArchive archive(configfile);
+		try {
+			archive(*this);
+		} catch(cereal::RapidJSONException &) {
+		}
+	}
+}
+
+cwepper_configuration::~cwepper_configuration() {
+	ofstream configfile(filename);
+	cereal::JSONOutputArchive archive(configfile);
+	archive(cereal::make_nvp("Cwepper configuration", *this));
 }

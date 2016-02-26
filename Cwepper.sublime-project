@@ -2,7 +2,7 @@
 	"build_systems":
 	[
 		{
-			"cmd": "make --no-print-directory -C\"$project_path\" all",
+			"cmd": "make --no-print-directory -C\"$project_path\" all -j4",
 			"name": "Build Cwepper"
 		}
 	],

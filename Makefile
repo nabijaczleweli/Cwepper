@@ -24,16 +24,18 @@ include configMakefile
 
 
 SUBSYSTEMS_SFML := system window graphics
-LDDLLS := $(foreach subsystem,$(SUBSYSTEMS_SFML),sfml-$(subsystem)) $(foreach custdll,$(CUSTOM_DLLS),$(basename $(notdir $(custdll))))
+LDDLLS := $(foreach subsystem,$(SUBSYSTEMS_SFML),sfml-$(subsystem)) cppformat
 #        ^ audiere
-LDAR := $(OSLDAR) $(PIC) $(foreach custdll,$(CUSTOM_DLLS),-L"$(dir $(custdll))") $(foreach dll,$(LDDLLS),-l$(subst $(PREDLL),,$(dll)))
-SOURCES := $(wildcard src/**/*.cpp)
+LDAR := $(PIC) -L$(OUTDIR)ext $(foreach dll,$(LDDLLS),-l$(subst $(PREDLL),,$(dll)))
+SOURCES := $(wildcard src/*.cpp) $(wildcard src/**/*.cpp) $(wildcard src/**/**/*.cpp) $(wildcard src/**/**/**/*.cpp)
 
 
-.PHONY : clean all release git cppformat
+.PHONY : clean all release git cppformat exe
 
 
-all : $(patsubst $(SRCDIR)%.cpp,$(OBJDIR)%$(OBJ),$(SOURCES))
+all : cppformat exe
+
+exe : $(patsubst $(SRCDIR)%.cpp,$(OBJDIR)%$(OBJ),$(SOURCES))
 	$(CXX) $(CXXAR) -o$(OUTDIR)Cwepper$(EXE) $(subst $(SRCDIR),$(OBJDIR),$^) $(LDAR)
 	@cp -ur $(ASSETDIR) $(OUTDIR)
 
@@ -49,17 +51,17 @@ release : clean all
 	cp -ur $(ASSETDIR) $(RELEASEDIR)
 	tar -cjv $(RELEASEDIR)/* > release.tar.bz2
 
-cppformat : $(OUTDIR)ext/cppformat$(ARCH)
+cppformat : $(OUTDIR)ext/libcppformat$(ARCH)
 
 
-$(OUTDIR)ext/cppformat$(ARCH) : $(patsubst %.cc,$(OBJDIR)%$(OBJ),$(wildcard ext/cppformat/cppformat/*.cc))
+$(OUTDIR)ext/libcppformat$(ARCH) : $(patsubst %.cc,$(OBJDIR)%$(OBJ),$(wildcard ext/cppformat/cppformat/*.cc))
 	@mkdir -p $(dir $@)
 	$(AR) cr $@ $^
 
 
 $(OBJDIR)%$(OBJ) : $(SRCDIR)%.cpp
 	@mkdir -p $(dir $@)
-	$(CXX) $(CXXAR) -Iext/cppformat -Iext/cppformat/Eigen -Iext/cereal/include -c -o$@ $^
+	$(CXX) $(CXXAR) -Iext/cppformat -Iext/Eigen -Iext/cereal/include -c -o$@ $^
 
 $(OBJDIR)ext/cppformat/%$(OBJ) : ext/cppformat/%.cc
 	@mkdir -p $(dir $@)
