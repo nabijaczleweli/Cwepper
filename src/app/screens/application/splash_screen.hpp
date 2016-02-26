@@ -40,7 +40,6 @@
  */
 class splash_screen : public screen {
 private:
-	unsigned int showing_time;  // Milliseconds
 	sf::Sprite background;
 	sf::Text text;
 	std::reference_wrapper<volatile bool> ended;

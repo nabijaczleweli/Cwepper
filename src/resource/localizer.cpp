@@ -31,7 +31,6 @@
 using namespace std;
 using namespace sf;
 
-
 using string_t = localizer::string_t;
 using stream_t = localizer::stream_t;
 

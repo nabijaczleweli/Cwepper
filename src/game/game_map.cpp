@@ -35,7 +35,7 @@ using fmt::format;
 
 static cell placeholder_cell;
 
-static const constexpr auto with_bounds = [&](auto & map, int x, int y) {
+static const auto with_bounds = [](auto & map, int x, int y) {
 	if(x < 0 || y < 0 || x >= map.cols() || y >= map.rows())
 		throw out_of_range(format("Indices not in map! ({} < 0 || {} < 0 || {} >= {} || {} >= {})", x, y, x, map.cols(), y, map.rows()));
 	return map(y, x);

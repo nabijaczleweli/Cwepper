@@ -45,7 +45,7 @@ static map<int, vector<Vector2f>> points({{1, {{.5, .5}}},
                                           {8, {{.3, .3}, {.5, .3}, {.7, .3}, {.7, .5}, {.7, .7}, {.3, .7}, {.3, .5}, {.5, .7}}}});
 
 
-static Color half_cyan([&]() {
+static Color half_cyan([] () {
 	Color temp(Color::Cyan);
 	temp.a = 128;
 	return temp;

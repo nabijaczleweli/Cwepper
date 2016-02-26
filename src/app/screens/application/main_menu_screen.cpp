@@ -37,17 +37,17 @@ using fmt::format;
 typedef main_menu_screen::direction direction;
 
 
-const constexpr static auto interlap_checker = [&](const auto & button, const auto & xpos, const auto & ypos) {
+const static auto interlap_checker = [](const auto & button, const auto & xpos, const auto & ypos) {
 	return get<0>(button).getGlobalBounds().contains(xpos, ypos);
 };
 
-const constexpr static auto on_select = [&](const Event & event, const auto & callback) {
+const static auto on_select = [](const Event & event, const auto & callback) {
 	if((event.type == Event::KeyPressed && (event.key.code == Keyboard::Key::Return || event.key.code == Keyboard::Key::Space)) ||
 	   (event.type == Event::MouseButtonPressed && event.mouseButton.button == Mouse::Left))
 		callback();
 };
 
-const constexpr static auto simple_translate = [&](const auto & from) { return global_izer.translate(from); };
+const static auto simple_translate = [](const auto & from) { return global_izer.translate(from); };
 
 
 struct locale_changer {

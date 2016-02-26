@@ -30,7 +30,7 @@ using namespace std;
 auto load_font(const char * name) {
 	Font tmp;
 	tmp.loadFromFile(font_root + '/' + name);
-	return move(tmp);
+	return tmp;
 }
 
 

@@ -31,7 +31,7 @@
 
 
 namespace {
-	const constexpr static auto whitespace_selector = [&](auto c) { return !std::isspace(c); };
+	const static auto whitespace_selector = [](auto c) { return !std::isspace(c); };
 }
 
 // Stolen from http://stackoverflow.com/a/217605/2851815
