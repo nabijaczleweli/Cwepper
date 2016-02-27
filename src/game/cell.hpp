@@ -41,11 +41,6 @@ public:
 
 	cell();
 	cell(const sf::Vector2u & theindices, const sf::Vector2f & thesize, const std::function<bool()> & gen);
-	cell(const cell &) = default;
-	cell(cell &&) = default;
-
-	cell & operator=(const cell &) = default;
-	cell & operator=(cell &&) = default;
 
 	void click(const std::function<const cell &(int, int)> & getter);
 };

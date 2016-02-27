@@ -37,13 +37,7 @@ private:
 
 public:
 	game_map(unsigned int w, unsigned int h, const sf::Vector2u & destsize);
-	game_map(const game_map & other) = default;
-	game_map(game_map && other) = default;
-
 	virtual ~game_map() = default;
-
-	game_map & operator=(const game_map &) = default;
-	game_map & operator=(game_map &&) = default;
 
 	void click(int x, int y);
 };

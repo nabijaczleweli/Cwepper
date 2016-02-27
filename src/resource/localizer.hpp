@@ -58,17 +58,12 @@ public:
 	explicit localizer(std::nothrow_t);
 	explicit localizer(stream_t & from);
 	explicit localizer(const std::string & locale);
-	localizer(localizer && loc);
-	localizer(const localizer & loc);
 	/** Equivalent to `localizer(loc0).merge(loc1)` */
 	explicit localizer(const localizer & loc0, const localizer & loc1);
 
 	/** Adds keys from `loc` for which there are no elements in `this` */
 	localizer & merge(const localizer & loc);
 	localizer & open(const std::string & locale = default_locale);
-
-	localizer & operator=(const localizer & loc) = default;
-	localizer & operator=(localizer && loc) = default;
 
 	bool operator==(const localizer & loc);
 	bool operator!=(const localizer & loc);

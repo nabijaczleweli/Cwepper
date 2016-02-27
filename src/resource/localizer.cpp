@@ -77,8 +77,6 @@ localizer::localizer(const string & locale) {
 		init(in);
 }
 
-localizer::localizer(localizer && loc) : language(loc.language) {}
-localizer::localizer(const localizer & loc) : language(loc.language) {}
 localizer::localizer(const localizer & loc0, const localizer & loc1) : localizer(loc0) {
 	merge(loc1);
 }

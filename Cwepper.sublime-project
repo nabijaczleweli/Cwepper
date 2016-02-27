@@ -4,6 +4,10 @@
 		{
 			"cmd": "make --no-print-directory -C\"$project_path\" all -j4",
 			"name": "Build Cwepper"
+		},
+		{
+			"cmd": "make --no-print-directory -C\"$project_path\" clean",
+			"name": "Clean Cwepper build artifacts"
 		}
 	],
 	"folders":
