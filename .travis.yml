@@ -49,9 +49,8 @@ matrix:
 
 install:
   - cd ..
-  - git clone --depth 1 https://github.com/SFML/SFML.git
-  - cd SFML
-  # build and install it
+  - git clone --depth 100 https://github.com/SFML/SFML.git && cd SFML  # SFML tags every 15-50 commits, so we're safe o that front
+  - git reset --hard $(git describe --tags --abbrev=0)
   - mkdir build && cd build
   - cmake -G"Unix Makefiles" .. -DCMAKE_INSTALL_PREFIX:PATH="$SFML_INSTALLDIR"
   - make -j2 install

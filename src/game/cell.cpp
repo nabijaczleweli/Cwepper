@@ -29,7 +29,7 @@ using namespace sf;
 using namespace std;
 
 
-template<class T1, class T2>
+template <class T1, class T2>
 inline static auto operator*(const Vector2<T1> & lhs, const Vector2<T2> & rhs) -> Vector2<decltype(lhs.x * rhs.x)> {
 	return {lhs.x * rhs.x, lhs.y * rhs.y};
 }
@@ -45,7 +45,7 @@ static map<int, vector<Vector2f>> points({{1, {{.5, .5}}},
                                           {8, {{.3, .3}, {.5, .3}, {.7, .3}, {.7, .5}, {.7, .7}, {.3, .7}, {.3, .5}, {.5, .7}}}});
 
 
-static Color half_cyan([] () {
+static Color half_cyan([] {
 	Color temp(Color::Cyan);
 	temp.a = 128;
 	return temp;
