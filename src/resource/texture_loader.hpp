@@ -57,5 +57,3 @@ public:
 
 	sf::Texture & operator[](const std::string & filename);
 };
-
-
