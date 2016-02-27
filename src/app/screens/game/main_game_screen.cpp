@@ -79,5 +79,3 @@ int main_game_screen::handle_event(const Event & event) {
 }
 
 main_game_screen::main_game_screen(application & theapp) : screen(theapp), map(100, 20, window.getSize()) {}
-
-main_game_screen::~main_game_screen() {}

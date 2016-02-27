@@ -25,6 +25,7 @@
 #include "cppformat/format.h"
 #include <stdexcept>
 #include <string>
+#include <iostream>
 
 
 using namespace sf;
@@ -34,12 +35,6 @@ using fmt::format;
 
 
 static cell placeholder_cell;
-
-static const auto with_bounds = [](auto & map, int x, int y) {
-	if(x < 0 || y < 0 || x >= map.cols() || y >= map.rows())
-		throw out_of_range(format("Indices not in map! ({} < 0 || {} < 0 || {} >= {} || {} >= {})", x, y, x, map.cols(), y, map.rows()));
-	return map(y, x);
-};
 
 
 void game_map::draw(RenderTarget & target, RenderStates states) const {
@@ -70,9 +65,6 @@ game_map::game_map(unsigned int width, unsigned int height, const Vector2u & des
 }
 
 void game_map::click(int x, int y) {
-	using placeholders::_1;
-	using placeholders::_2;
-
 	if(cell_size.x == 0 || cell_size.y == 0)
 		return;
 
@@ -80,5 +72,9 @@ void game_map::click(int x, int y) {
 	y = floor(y / cell_size.y);
 
 	if(y < map.rows() && x < map.cols())
-		map(y, x).click(bind(with_bounds, ref(map), _1, _2));
+		map(y, x).click([&](int x, int y) -> const cell & {
+			if(x < 0 || y < 0 || x >= map.cols() || y >= map.rows())
+				throw out_of_range(format("Indices not in map! ({0} < 0 || {1} < 0 || {0} >= {2} || {1} >= {3})", x, y, map.cols(), map.rows()));
+			return map(y, x);
+		});
 }

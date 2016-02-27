@@ -23,6 +23,7 @@
 #include "cell.hpp"
 #include <vector>
 #include <map>
+#include <iostream>
 
 
 using namespace sf;
@@ -85,7 +86,7 @@ void cell::click(const function<const cell &(int, int)> & getter) {
 		for(int x = indices.x - 1; x <= floor(indices.x + 1); ++x)
 			for(int y = indices.y - 1; y <= floor(indices.y + 1); ++y)
 				try {
-					mines_around += getter(x, y).mine_inside;
+					const auto has_mine = getter(x, y).mine_inside;
 				} catch(const out_of_range &) {
 				}
 	}

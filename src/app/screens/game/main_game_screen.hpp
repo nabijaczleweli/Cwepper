@@ -39,5 +39,5 @@ public:
 	virtual int handle_event(const sf::Event & event) override;
 
 	main_game_screen(application & theapp);
-	virtual ~main_game_screen();
+	virtual ~main_game_screen() = default;
 };
