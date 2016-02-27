@@ -36,6 +36,9 @@ else
 	SFML_LINKLIB :=
 endif
 
+CEREAL_VERSION := "$(shell cd ext/cereal && git describe --tags)"
+CPPFORMAT_VERSION := "$(shell grep 'set.CPPFORMAT_VERSION' ext/cppformat/CMakeLists.txt | perl -pe 's/set\(CPPFORMAT_VERSION (.+)\)/\1/')"
+
 OBJ := .o
 ARCH := .a
 AR := ar

@@ -23,11 +23,8 @@
 #include "app/application.hpp"
 #include "reference/container.hpp"
 #include "resource/localizer.hpp"
-#include "util/file.hpp"
+#include "Eigen/Core"
 #include <iostream>
-#include <random>
-#include <string>
-#include <stdexcept>
 
 
 using namespace std;
@@ -56,6 +53,7 @@ void init_app(int, char * []) {
 	global_izer.merge(local_izer).merge(fallback_izer);
 }
 
+
 void log_versions() {
 	cout << "Compiled under "
 #ifdef _WIN32
@@ -71,8 +69,25 @@ void log_versions() {
 #else
 	        "an unknown OS"
 #endif
-	        ".\n";
 
-	cout << "GCC version " << __GNUC__ << '.' << __GNUC_MINOR__ << '.' << __GNUC_PATCHLEVEL__ << ".\n"
-	     << "SFML version " << SFML_VERSION_MAJOR << '.' << SFML_VERSION_MINOR << ".\n";
+	        " with "
+#if defined __clang__
+	        "Clang version "
+	     << __clang_major__ << '.' << __clang_minor__ << '.' << __clang_patchlevel__
+#elif defined(__GNUC__)
+	        "GCC version "
+	     << __GNUC__ << '.' << __GNUC_MINOR__ << '.' << __GNUC_PATCHLEVEL__
+#elif defined _MSC_VER
+	        "MSVC version "
+	     << _MSC_VER
+#elif defined(BOOST_ASSERT_CONFIG)
+	        "a niche compiler"
+#endif
+	     << ".\n"
+	     << "Uses:\n"
+	     << "  SFML version " << SFML_VERSION_MAJOR << '.' << SFML_VERSION_MINOR << ", found at http://sfml-dev.org.\n"
+	     << "  cereal version " << CWEPPER_CEREAL_VERSION << ", found at http://uscilab.github.io/cereal.\n"
+	     << "  cppformat version " << CWEPPER_CEREAL_VERSION << ", found at http://cppformat.github.io.\n"
+	     << "  Eigen version " << EIGEN_WORLD_VERSION << '.' << EIGEN_MAJOR_VERSION << '.' << EIGEN_MINOR_VERSION << ", found at http://eigen.tuxfamily.org.\n"
+	     << '\n';
 }

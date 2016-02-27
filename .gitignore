@@ -1,37 +1,14 @@
-# Compiled Object files
-*.slo
-*.lo
-*.o
-*.obj
-
-# Precompiled Headers
-*.gch
-*.pch
-
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
-
-# Fortran module files
-*.mod
-
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
-
-# Executables
-*.exe
-*.out
-*.app
-
-# Miscellaneous
-.DS_Store
-out/*
-release/*
-release.*
-ext/all
-*.s*-toks
-*.s*-workspace
+*
+!assets
+!assets/**
+!ext
+!ext/**
+!src
+!src/**
+!.git*
+!.clang-format
+!.travis.yml
+!*Makefile
+!*.sublime-project
+!LICENSE
+!README.md

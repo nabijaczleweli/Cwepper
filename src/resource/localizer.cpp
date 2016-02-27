@@ -93,16 +93,6 @@ localizer & localizer::open(const string & loc) {
 	return merge(localizer(loc));
 }
 
-localizer & localizer::operator=(const localizer & loc) {
-	language = loc.language;
-	return *this;
-}
-
-localizer & localizer::operator=(localizer && loc) {
-	language = move(loc.language);
-	return *this;
-}
-
 bool localizer::operator==(const localizer & loc) {
 	return language == loc.language;
 }
