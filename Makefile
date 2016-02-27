@@ -30,7 +30,7 @@ LDAR := $(PIC) -L$(OUTDIR)ext $(foreach dll,$(LDDLLS),-l$(subst $(PREDLL),,$(dll
 SOURCES := $(wildcard src/*.cpp) $(wildcard src/**/*.cpp) $(wildcard src/**/**/*.cpp) $(wildcard src/**/**/**/*.cpp)
 
 
-.PHONY : clean all git cppformat exe
+.PHONY : all exe clean cppformat
 
 
 all : cppformat exe

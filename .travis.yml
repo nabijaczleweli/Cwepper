@@ -5,7 +5,7 @@ cache:
 
 matrix:
   include:
-    - env: SFML_INSTALLDIR="$HOME" CXX=g++-5 CC=gcc-5
+    - env: SFML_INSTALLDIR="$HOME" COMPILER_NAME="GCC 5" CXX=g++-5 CC=gcc-5
       addons:
         apt:
           packages:
@@ -27,7 +27,7 @@ matrix:
             - r-packages-precise
             - llvm-toolchain-precise
             - ubuntu-toolchain-r-test
-    - env: SFML_INSTALLDIR="$HOME" CXX=clang++-3.8 CC=clang-3.8
+    - env: SFML_INSTALLDIR="$HOME" COMPILER_NAME="Clang 3.8" CXX=clang++-3.8 CC=clang-3.8
       addons:
         apt:
           packages:
@@ -49,20 +49,27 @@ matrix:
 
 install:
   - cd ..
-  - git clone --depth 100 https://github.com/SFML/SFML.git && cd SFML  # SFML tags every 15-50 commits, so we're safe o that front
-  - git reset --hard $(git describe --tags --abbrev=0)
+  - git clone --depth 100 https://github.com/SFML/SFML.git && cd SFML  # SFML tags every 15-50 commits, so we're safe on that front
+  - export SFML_TAG=$(git describe --tags --abbrev=0)
+  - git reset --hard $SFML_TAG
   - mkdir build && cd build
   - cmake -G"Unix Makefiles" .. -DCMAKE_INSTALL_PREFIX:PATH="$SFML_INSTALLDIR"
   - make -j2 install
   - cd $TRAVIS_BUILD_DIR
 
+script: make -j2
+
+before_deploy:
+  - mkdir release
+  - cp -r out/Cwepper assets release/
+  - LD_LIBRARY_PATH=~/lib ldd release/Cwepper | grep sfml | awk '{system("cp " $3 " release/")}'
+  - tar -caf "$TRAVIS_TAG Ubuntu precise x86_64 $COMPILER_NAME.tbz2" release
+
 deploy:
   provider: releases
   api-key:
     secure: T40df2pQsgo3oAmQxVqrz28g0nXVeTLlTnk7p5jrIwxcX8myRGe4C6OuE7qzECl7BAS6zRr/t8Gv7ytZQyZ0occHZctfybV7m+PXISavTpjwtVqjjYo0N9DT1lD3p5awDqnaPfRt657J0nvSp1gXThgdC5l1zrrnRK/L0HY43co=
-  file: "release.tar.bz2"
+  file: "$TRAVIS_TAG Ubuntu precise x86_64 $COMPILER_NAME.tbz2"
   skip_cleanup: true
   on:
     tags: true
-
-script: make -j2
