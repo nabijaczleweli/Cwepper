@@ -25,7 +25,7 @@ include configMakefile
 
 SUBSYSTEMS_SFML := system window graphics
 LDDLLS := $(foreach subsystem,$(SUBSYSTEMS_SFML),sfml-$(subsystem)) cppformat seed11
-LDAR := $(PIC) -L$(OUTDIR)ext $(foreach dll,$(LDDLLS),-l$(subst $(PREDLL),,$(dll))) $(SFML_LINKLIB)
+LDAR := $(PIC) -L$(OUTDIR)ext $(foreach dll,$(LDDLLS),-l$(dll)) $(SFML_LINKLIB)
 SOURCES := $(wildcard src/*.cpp) $(wildcard src/**/*.cpp) $(wildcard src/**/**/*.cpp) $(wildcard src/**/**/**/*.cpp)
 
 
@@ -56,7 +56,7 @@ $(OUTDIR)ext/libseed11$(ARCH) : $(foreach source,$(SYSTEM_TYPE) system_agnostic,
 
 $(OBJDIR)%$(OBJ) : $(SRCDIR)%.cpp
 	@mkdir -p $(dir $@)
-	$(CXX) $(CXXAR) -Iext/cppformat -Iext/Eigen -Iext/cereal/include -Iext/seed11/include $(SFML_HEADERS) -DCWEPPER_CEREAL_VERSION='$(CEREAL_VERSION)' -DCWEPPER_CPPFORMAT_VERSION='$(CPPFORMAT_VERSION)' -c -o$@ $^
+	$(CXX) $(CXXAR) -Iext/cppformat -Iext/Eigen -Iext/cereal/include -Iext/seed11/include $(SFML_HEADERS) -DCWEPPER_CEREAL_VERSION='$(CEREAL_VERSION)' -DCWEPPER_CPPFORMAT_VERSION='$(CPPFORMAT_VERSION)' -DCWEPPER_SEED11_VERSION='$(SEED11_VERSION)' -c -o$@ $^
 
 $(OBJDIR)ext/cppformat/%$(OBJ) : ext/cppformat/%.cc
 	@mkdir -p $(dir $@)

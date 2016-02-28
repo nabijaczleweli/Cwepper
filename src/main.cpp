@@ -92,5 +92,6 @@ void log_versions() {
 	     << "  cereal version " << CWEPPER_CEREAL_VERSION << ", found at http://uscilab.github.io/cereal.\n"
 	     << "  cppformat version " << CWEPPER_CEREAL_VERSION << ", found at http://cppformat.github.io.\n"
 	     << "  Eigen version " << EIGEN_WORLD_VERSION << '.' << EIGEN_MAJOR_VERSION << '.' << EIGEN_MINOR_VERSION << ", found at http://eigen.tuxfamily.org.\n"
+	     << "  seed11 revision " << CWEPPER_SEED11_VERSION << ", found at http://github.com/milleniubug/seed11.\n"
 	     << '\n';
 }

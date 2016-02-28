@@ -22,11 +22,9 @@
 
 ifeq "$(OS)" "Windows_NT"
 	PIC :=
-	PREDLL :=
 	SYSTEM_TYPE := windows
 else
 	PIC := -fPIC
-	PREDLL := lib
 	SYSTEM_TYPE := linux
 endif
 
@@ -40,6 +38,7 @@ endif
 
 CEREAL_VERSION := "$(shell cd ext/cereal && git describe --tags)"
 CPPFORMAT_VERSION := "$(shell grep 'set.CPPFORMAT_VERSION' ext/cppformat/CMakeLists.txt | perl -pe 's/set\(CPPFORMAT_VERSION (.+)\)/\1/')"
+SEED11_VERSION := "$(shell cd ext/seed11 && git log -1 --pretty=format:%h)"
 
 OBJ := .o
 ARCH := .a
