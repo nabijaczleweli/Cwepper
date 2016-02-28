@@ -54,7 +54,7 @@ void splash_screen::setup() {
 		    if(!killed)
 			    callback();
 		  },
-	    app_configuration.splash_showing_time, reference_wrapper<decltype(ended)>(ended), bind(schedule, ref(app)))
+	    app_configuration.splash_showing_time, reference_wrapper<decltype(ended)>(ended), [&]() { return schedule(app); })
 	    .detach();
 
 	const float scale = static_cast<float>(window.getSize().y - text.getGlobalBounds().height * 1.75f) / background.getLocalBounds().height;

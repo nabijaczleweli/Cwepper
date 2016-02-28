@@ -86,12 +86,12 @@ void log_versions() {
 #elif defined(BOOST_ASSERT_CONFIG)
 	        "a niche compiler"
 #endif
+
 	     << ".\n"
 	     << "Uses:\n"
 	     << "  SFML version " << SFML_VERSION_MAJOR << '.' << SFML_VERSION_MINOR << ", found at http://sfml-dev.org.\n"
 	     << "  cereal version " << CWEPPER_CEREAL_VERSION << ", found at http://uscilab.github.io/cereal.\n"
 	     << "  cppformat version " << CWEPPER_CEREAL_VERSION << ", found at http://cppformat.github.io.\n"
 	     << "  Eigen version " << EIGEN_WORLD_VERSION << '.' << EIGEN_MAJOR_VERSION << '.' << EIGEN_MINOR_VERSION << ", found at http://eigen.tuxfamily.org.\n"
-	     << "  seed11 revision " << CWEPPER_SEED11_VERSION << ", found at http://github.com/milleniubug/seed11.\n"
-	     << '\n';
+	     << "  seed11 revision " << CWEPPER_SEED11_VERSION << ", found at http://github.com/milleniubug/seed11.\n\n";
 }

@@ -41,11 +41,12 @@ const static auto interlap_checker = [](const auto & button, const auto & xpos, 
 	return get<0>(button).getGlobalBounds().contains(xpos, ypos);
 };
 
-const static auto on_select = [](const Event & event, const auto & callback) {
+template <class F>
+static inline void on_select(const Event & event, F && callback) {
 	if((event.type == Event::KeyPressed && (event.key.code == Keyboard::Key::Return || event.key.code == Keyboard::Key::Space)) ||
 	   (event.type == Event::MouseButtonPressed && event.mouseButton.button == Mouse::Left))
 		callback();
-};
+}
 
 const static auto simple_translate = [](const auto & from) { return global_izer.translate(from); };
 
@@ -146,14 +147,13 @@ int main_menu_screen::draw() {
 }
 
 int main_menu_screen::handle_event(const Event & event) {
-	using placeholders::_1;
-
 	if(int i = screen::handle_event(event))
 		return i;
 
 	switch(event.type) {
 		case Event::MouseMoved: {
-			const auto itr = find_if(main_buttons.begin(), main_buttons.end(), bind(interlap_checker, _1, event.mouseMove.x, event.mouseMove.y));
+			const auto itr =
+			    find_if(main_buttons.begin(), main_buttons.end(), [&](const auto & butt) { return interlap_checker(butt, event.mouseMove.x, event.mouseMove.y); });
 			if(itr != main_buttons.end()) {
 				selected = itr;
 				app.schedule_redraw();
@@ -161,7 +161,8 @@ int main_menu_screen::handle_event(const Event & event) {
 		} break;
 
 		case Event::MouseButtonPressed:
-			if(find_if(main_buttons.begin(), main_buttons.end(), bind(interlap_checker, _1, event.mouseButton.x, event.mouseButton.y)) != main_buttons.end())
+			if(find_if(main_buttons.begin(), main_buttons.end(),
+			           [&](const auto & butt) { return interlap_checker(butt, event.mouseButton.x, event.mouseButton.y); }) != main_buttons.end())
 				select(event);
 			break;
 
@@ -190,11 +191,10 @@ int main_menu_screen::handle_event(const Event & event) {
 }
 
 main_menu_screen::main_menu_screen(application & theapp) : screen(theapp) {
-	using placeholders::_1;
-
-	main_buttons.emplace_back(Text("", font_swirly), L"gui.application.text.start"s, bind(on_select, _1, [&]() { app.schedule_screen<main_game_screen>(); }),
+	main_buttons.emplace_back(Text("", font_swirly), L"gui.application.text.start"s,
+	                          [&](const auto & ev) { on_select(ev, [&] { app.schedule_screen<main_game_screen>(); }); }, simple_translate);
+	main_buttons.emplace_back(Text("", font_swirly), L"gui.application.text.quit"s, [&](const auto & ev) { on_select(ev, [&] { window.close(); }); },
 	                          simple_translate);
-	main_buttons.emplace_back(Text("", font_swirly), L"gui.application.text.quit"s, bind(on_select, _1, [&]() { window.close(); }), simple_translate);
 
 	const auto switcher = make_shared<locale_changer>(app);
 	main_buttons.emplace_back(Text("", font_swirly), L"gui.application.text.switch_locale"s, [=](const Event & event) { (*switcher)(event); },

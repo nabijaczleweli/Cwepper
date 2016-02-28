@@ -21,12 +21,16 @@
 
 
 #include "cell.hpp"
+#include "../reference/container.hpp"
+#include "cppformat/format.h"
 #include <vector>
 #include <map>
 
 
 using namespace sf;
 using namespace std;
+
+using fmt::format;
 
 
 template <class T1, class T2>
@@ -45,13 +49,6 @@ static map<int, vector<Vector2f>> points({{1, {{.5, .5}}},
                                           {8, {{.3, .3}, {.5, .3}, {.7, .3}, {.7, .5}, {.7, .7}, {.3, .7}, {.3, .5}, {.5, .7}}}});
 
 
-static Color half_cyan([] {
-	Color temp(Color::Cyan);
-	temp.a = 128;
-	return temp;
-}());
-
-
 void cell::draw(RenderTarget & target, RenderStates states) const {
 	const Vector2f pos = indices * size;
 
@@ -63,11 +60,11 @@ void cell::draw(RenderTarget & target, RenderStates states) const {
 		shape.setFillColor(Color::Transparent);
 		target.draw(shape, states);
 
-		if(uncovered)
-			for(const auto & pointpos : points[mines_around]) {
-				const Vertex vtx(pos + pointpos * size, Color::White);
-				target.draw(addressof(vtx), 1, PrimitiveType::Points, states);
-			}
+		if(uncovered) {
+			Text mines(format("{}{}", mines_around, static_cast<int>(mine_inside)), font_7segment, size.y);
+			mines.setPosition(pos);
+			target.draw(mines, states);
+		}
 	}
 }
 
