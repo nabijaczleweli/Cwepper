@@ -24,8 +24,8 @@
 #include "../reference/container.hpp"
 #include "cppformat/format.h"
 #include <stdexcept>
-#include <string>
 #include <iostream>
+#include <string>
 
 
 using namespace sf;
@@ -40,20 +40,12 @@ static cell placeholder_cell;
 void game_map::draw(RenderTarget & target, RenderStates states) const {
 	target.clear(Color::Transparent);
 
-	RectangleShape shape(static_cast<Vector2f>(target.getSize()));
-	shape.setOutlineThickness(-2);
-	shape.setOutlineColor(Color::Magenta);
-	shape.setFillColor(Color::Transparent);
-	target.draw(shape, states);
-
 	for(int y = 0; y < map.rows(); ++y)
 		for(int x = 0; x < map.cols(); ++x)
 			target.draw(map(y, x), states);
 }
 
 game_map::game_map(unsigned int width, unsigned int height, const Vector2u & destsize) : map(height, width) {
-	static mt19937 random(random_device{}());
-
 	cell_size.x = min(destsize.x / map.cols(), destsize.y / map.rows());
 	cell_size.y = cell_size.x;
 
@@ -61,7 +53,7 @@ game_map::game_map(unsigned int width, unsigned int height, const Vector2u & des
 
 	for(int y = 0; y < map.rows(); ++y)
 		for(int x = 0; x < map.cols(); ++x)
-			map(y, x) = cell(Vector2u(x, y), cell_size, bind(ref(dist), ref(random)));
+			map(y, x) = cell(Vector2u(x, y), cell_size, [&]() { return dist(random_engine); });
 }
 
 void game_map::click(int x, int y) {

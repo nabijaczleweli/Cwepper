@@ -21,13 +21,15 @@
 
 
 #include "container.hpp"
+#include "seed11/seed_device.hpp"
 
 
 using namespace sf;
 using namespace std;
+using namespace seed11;
 
 
-auto load_font(const char * name) {
+Font load_font(const char * name) {
 	Font tmp;
 	tmp.loadFromFile(font_root + '/' + name);
 	return tmp;
@@ -53,7 +55,8 @@ const cwepper_configuration app_configuration("./" + app_name + ".cfg");
 
 /***/ vector<string> present_languages = available_languages();
 
-
 const Font font_standard(load_font("2-Questa_Grande_Regular.otf"));
 const Font font_7segment(load_font("digital-7 (mono).ttf"));
 const Font font_swirly(load_font("MACABRA_.ttf"));
+
+/***/ std::mt19937 random_engine(seed_device{}());

@@ -30,21 +30,6 @@ using namespace std;
 using namespace sf;
 
 
-struct generator {
-	unsigned int idx;
-	unsigned int radius;
-	float step;
-
-	generator(unsigned int rds, float stp) : idx(0), radius(rds), step(stp) {}
-
-	Vertex operator()() {
-		const float i = idx * step;
-		const Vertex temp({radius + radius * cos(i), radius + radius * sin(i)});
-		++idx;
-		return temp;
-	}
-};
-
 void main_game_screen::setup() {
 	screen::setup();
 }
@@ -78,4 +63,4 @@ int main_game_screen::handle_event(const Event & event) {
 	return 0;
 }
 
-main_game_screen::main_game_screen(application & theapp) : screen(theapp), map(100, 20, window.getSize()) {}
+main_game_screen::main_game_screen(application & theapp) : screen(theapp), map(100, 100, window.getSize()) {}

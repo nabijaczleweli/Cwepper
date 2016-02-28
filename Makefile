@@ -56,7 +56,7 @@ $(OUTDIR)ext/libseed11$(ARCH) : $(foreach source,$(SYSTEM_TYPE) system_agnostic,
 
 $(OBJDIR)%$(OBJ) : $(SRCDIR)%.cpp
 	@mkdir -p $(dir $@)
-	$(CXX) $(CXXAR) -Iext/cppformat -Iext/Eigen -Iext/cereal/include -isystemext/seed11/include $(SFML_HEADERS) -DCWEPPER_CEREAL_VERSION='$(CEREAL_VERSION)' -DCWEPPER_CPPFORMAT_VERSION='$(CPPFORMAT_VERSION)' -c -o$@ $^
+	$(CXX) $(CXXAR) -Iext/cppformat -Iext/Eigen -Iext/cereal/include -Iext/seed11/include $(SFML_HEADERS) -DCWEPPER_CEREAL_VERSION='$(CEREAL_VERSION)' -DCWEPPER_CPPFORMAT_VERSION='$(CPPFORMAT_VERSION)' -c -o$@ $^
 
 $(OBJDIR)ext/cppformat/%$(OBJ) : ext/cppformat/%.cc
 	@mkdir -p $(dir $@)

@@ -23,7 +23,6 @@
 #include "cell.hpp"
 #include <vector>
 #include <map>
-#include <iostream>
 
 
 using namespace sf;
@@ -54,16 +53,15 @@ static Color half_cyan([] {
 
 
 void cell::draw(RenderTarget & target, RenderStates states) const {
-	const Vector2f pos(indices.x * size.x, indices.y * size.y);
+	const Vector2f pos = indices * size;
 
 	if(size.x != 0 && size.y != 0) {
-		if(mine_inside) {
-			CircleShape circle(1);
-			circle.setPosition(pos);
-			circle.setFillColor(half_cyan);
-			circle.setScale(size / 2.f);
-			target.draw(circle, states);
-		}
+		RectangleShape shape(size);
+		shape.setPosition(pos);
+		shape.setOutlineThickness(-1);
+		shape.setOutlineColor(Color(0x25, 0x25, 0x25));
+		shape.setFillColor(Color::Transparent);
+		target.draw(shape, states);
 
 		if(uncovered)
 			for(const auto & pointpos : points[mines_around]) {

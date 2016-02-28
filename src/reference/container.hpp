@@ -28,6 +28,7 @@
 #include "../resource/localizer.hpp"
 #include "../resource/config.hpp"
 #include <SFML/Graphics.hpp>
+#include <random>
 #include <string>
 #include <vector>
 
@@ -53,3 +54,5 @@ extern /***/ std::vector<std::string> present_languages;
 extern const sf::Font font_standard;
 extern const sf::Font font_7segment;
 extern const sf::Font font_swirly;
+
+extern /***/ std::mt19937 random_engine;
