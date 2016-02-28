@@ -24,15 +24,15 @@ include configMakefile
 
 
 SUBSYSTEMS_SFML := system window graphics
-LDDLLS := $(foreach subsystem,$(SUBSYSTEMS_SFML),sfml-$(subsystem)) cppformat
+LDDLLS := $(foreach subsystem,$(SUBSYSTEMS_SFML),sfml-$(subsystem)) cppformat seed11
 LDAR := $(PIC) -L$(OUTDIR)ext $(foreach dll,$(LDDLLS),-l$(subst $(PREDLL),,$(dll))) $(SFML_LINKLIB)
 SOURCES := $(wildcard src/*.cpp) $(wildcard src/**/*.cpp) $(wildcard src/**/**/*.cpp) $(wildcard src/**/**/**/*.cpp)
 
 
-.PHONY : all exe clean cppformat
+.PHONY : all exe clean cppformat seed11
 
 
-all : cppformat exe
+all : cppformat seed11 exe
 
 exe : $(patsubst $(SRCDIR)%.cpp,$(OBJDIR)%$(OBJ),$(SOURCES))
 	$(CXX) $(CXXAR) -o$(OUTDIR)Cwepper $(subst $(SRCDIR),$(OBJDIR),$^) $(LDAR)
@@ -42,17 +42,26 @@ clean :
 	rm -rf $(OUTDIR)
 
 cppformat : $(OUTDIR)ext/libcppformat$(ARCH)
+seed11 : $(OUTDIR)ext/libseed11$(ARCH)
 
 
 $(OUTDIR)ext/libcppformat$(ARCH) : $(patsubst %.cc,$(OBJDIR)%$(OBJ),$(wildcard ext/cppformat/cppformat/*.cc))
 	@mkdir -p $(dir $@)
 	$(AR) cr $@ $^
 
+$(OUTDIR)ext/libseed11$(ARCH) : $(foreach source,$(SYSTEM_TYPE) system_agnostic,$(OBJDIR)ext/seed11/seed11_$(source)$(OBJ))
+	@mkdir -p $(dir $@)
+	$(AR) cr $@ $^
+
 
 $(OBJDIR)%$(OBJ) : $(SRCDIR)%.cpp
 	@mkdir -p $(dir $@)
-	$(CXX) $(CXXAR) -Iext/cppformat -Iext/Eigen -Iext/cereal/include $(SFML_HEADERS) -DCWEPPER_CEREAL_VERSION='$(CEREAL_VERSION)' -DCWEPPER_CPPFORMAT_VERSION='$(CPPFORMAT_VERSION)' -c -o$@ $^
+	$(CXX) $(CXXAR) -Iext/cppformat -Iext/Eigen -Iext/cereal/include -isystemext/seed11/include $(SFML_HEADERS) -DCWEPPER_CEREAL_VERSION='$(CEREAL_VERSION)' -DCWEPPER_CPPFORMAT_VERSION='$(CPPFORMAT_VERSION)' -c -o$@ $^
 
 $(OBJDIR)ext/cppformat/%$(OBJ) : ext/cppformat/%.cc
 	@mkdir -p $(dir $@)
 	$(CXX) $(CXXAR) -c -o$@ $^
+
+$(OBJDIR)ext/seed11/%$(OBJ) : ext/seed11/src/%.cpp
+	@mkdir -p $(dir $@)
+	$(CXX) $(CXXAR) -isystemext/seed11/include -c -o$@ $^

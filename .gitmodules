@@ -8,3 +8,6 @@
 [submodule "ext/cereal"]
 	path = ext/cereal
 	url = https://github.com/USCiLab/cereal.git
+[submodule "ext/seed11"]
+	path = ext/seed11
+	url = https://github.com/milleniumbug/seed11.git

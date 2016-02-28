@@ -23,9 +23,11 @@
 ifeq "$(OS)" "Windows_NT"
 	PIC :=
 	PREDLL :=
+	SYSTEM_TYPE := windows
 else
 	PIC := -fPIC
 	PREDLL := lib
+	SYSTEM_TYPE := linux
 endif
 
 ifneq "$(SFML_INSTALLDIR)" ""
@@ -42,7 +44,7 @@ CPPFORMAT_VERSION := "$(shell grep 'set.CPPFORMAT_VERSION' ext/cppformat/CMakeLi
 OBJ := .o
 ARCH := .a
 AR := ar
-CXXAR := -Os -std=c++14 -pedantic -Wall -Wextra -pipe $(PIC)
+CXXAR := -O3 -std=c++14 -Wall -Wextra -pedantic -pipe $(PIC)
 STRIP := strip
 STRIPAR := --strip-all --remove-section=.comment --remove-section=.note
 
