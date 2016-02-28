@@ -30,7 +30,7 @@ struct cwepper_configuration {
 	float idle_fps               = 1;
 	unsigned int idle_fps_chunks = 10;
 
-	float mine_distribution = 0.3;
+	float mine_distribution = 0.30000000000000000;
 
 	std::string language = "en_US";
 

@@ -24,7 +24,10 @@
 
 
 #include "cell.hpp"
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 #include "Eigen/Dense"
+#pragma GCC diagnostic pop
 #include <SFML/Graphics.hpp>
 
 

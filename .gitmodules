@@ -1,6 +1,7 @@
 [submodule "Eigen"]
 	path = ext/Eigen
 	url = https://github.com/RLovelett/eigen.git
+	branch = 3.3-beta1
 [submodule "cppformat"]
 	path = ext/cppformat
 	url = https://github.com/cppformat/cppformat.git

@@ -23,7 +23,10 @@
 #include "app/application.hpp"
 #include "reference/container.hpp"
 #include "resource/localizer.hpp"
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 #include "Eigen/Core"
+#pragma GCC diagnostic pop
 #include <iostream>
 
 
