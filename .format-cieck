@@ -1,0 +1,1 @@
+! (clang-format -style=file -output-replacements-xml src/*.* src/**/*.* | grep "<replacement ")
